@@ -93,16 +93,16 @@
       </v-card>
     </v-dialog>
 
-    <Subscribe
+    <SignUp
       class="absolute"
       :showDialogSubs="showDialogSubs"
       @updatedSubslValue="updatedSubslValue"
       @newProfile="newProfile"
-    ></Subscribe>
+    ></SignUp>
   </div>
 </template>
 <script>
-import Subscribe from "./Subscribe.vue";
+import SignUp from "./SignUp.vue";
 export default {
   data() {
     return {
@@ -165,7 +165,7 @@ export default {
     ];
   },
   components: {
-    Subscribe
+    SignUp
   },
   props: {
     showLoginDialog: { value: true, type: Boolean },
