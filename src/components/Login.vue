@@ -5,8 +5,7 @@
         <v-card class="mx-auto pa-12 pb-8 md:w-[600px] sm:w-[400px]" elevation="8" rounded="lg">
           <v-form fast-fail @submit.prevent="login" class="text-right" autocomplete="on">
             <v-btn
-              class="signWithgoogle text-center justify-center gap-2 items-center flex !bg-red-500 p-2 !text-white mx-auto !my-3"
-              color="#0d6efd"
+              class="signWithgoogle text-center justify-center gap-2 items-center flex !bg-[#0d6efd] p-2 !text-white mx-auto !my-3"
               block
               size="large"
               variant="tonal"
