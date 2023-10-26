@@ -8,6 +8,8 @@ Vue.prototype.$http = axios
 
 
 
+console.log(axios.isCancel('something'));
+
 
 const MOBILEREG=  /^(00213|\+213|0)(5|6|7)[0-9]{8}$/
 VeeValidate.Validator.extend('phone', {  getMessage: field => `The ${field} must be either a valid phone number `,

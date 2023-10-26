@@ -9,8 +9,7 @@
         </div>
         <form @submit.prevent="submit" autocomplete="on">
           <v-btn
-            class="signWithgoogle text-center justify-center gap-2 items-center flex !bg-red-500 !text-white mx-auto !my-3"
-            color="#0d6efd"
+            class="signWithgoogle text-center justify-center gap-2 items-center flex !bg-[#0d6efd] !text-white mx-auto !my-3"
             block
             size="large"
             variant="tonal"
@@ -29,26 +28,26 @@
           ></v-text-field>-->
 
           <v-text-field
-            v-model="newProfile.fullName"
+            v-model="newUser.name"
             :counter="15"
             label=" الاسم و اللقب"
             name="fullName"
-            v-validate="'required|alpha'"
+            v-validate="'required|alpha_spaces'"
             :error-messages="errors.first('fullName')"
             reverse
           ></v-text-field>
 
-          <v-text-field
-            v-model="newProfile.phone"
+          <!-- <v-text-field
+            v-model="newUser.phone"
             reverse
             label="الهاتف "
             name="phone"
             v-validate="'required|phone'"
             :error-messages="errors.first('phone')"
-          ></v-text-field>
+          ></v-text-field>-->
 
           <v-text-field
-            v-model="newProfile.email"
+            v-model="newUser.email"
             reverse
             label="الايميل"
             name="email"
@@ -56,8 +55,8 @@
             :error-messages="errors.first('email')"
           ></v-text-field>
           <v-text-field
-            v-model="newProfile.password"
-            :error-messages="errors.first('password')"
+            v-model="newUser.password"
+            :error-messages="errors.first('password')||this.errorMessages"
             label="كلمة السر"
             reverse
             v-validate="'required'"
@@ -80,8 +79,9 @@
             density="compact"
             variant="outlined"
             @click:prepend-inner="visible = !visible"
-            v-model="confirmPass"
+            v-model="newUser.passwordConfirm"
           ></v-text-field>
+
           <!-- <v-file-input
             :counter="1"
             type="file"
@@ -110,19 +110,7 @@
         </form>
       </v-sheet>
     </v-dialog>
-    <v-dialog v-model="dialogDelete" max-width="500px">
-      <v-card>
-        <v-card-title class="text-center p-2 md:!text-lg sm:!text-base !text-sm m-2">
-          تم تسجيل طلبك بنجاج سيتم مراجعته يرجى منك
-          <br />تصفح اميلك بطريقة منتظمة شكرا
-        </v-card-title>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="confirm">متفهم</v-btn>
-          <v-spacer></v-spacer>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+
     <v-dialog v-model="dialogError" max-width="500px">
       <v-card>
         <v-card-title
@@ -139,24 +127,25 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
+      error: "",
+      errorMessages: "",
       newSubscribes: [],
       checkBox: null,
       dialogError: false,
       confirmPass: "",
       visible: false,
       dialogDelete: false,
-      newProfile: {
-        id: "11",
-        fullName: "moH",
-        phone: "0555545161",
-        email: "M@GMAIL.COM",
+      newUser: {
+        name: "moh",
+        // phone: "0555545161",
+        email: "m@gmail.com",
         password: "aaa",
-        photo: {
-          src: ""
-        }
+
+        passwordConfirm: ""
       }
     };
   },
@@ -173,11 +162,36 @@ export default {
     },
     submit() {
       this.$validator.validateAll().then(result => {
+        this.errorMessages = "";
         if (result) {
-          console.log(this.newProfile);
-          this.subsvalue = false;
-          this.dialogDelete = true;
-          this.$emit("newProfile", this.newProfile);
+          axios
+            .post(
+              "https://anthropologyca.onrender.com/api/v1/users/signup",
+
+              this.newUser,
+
+              {
+                headers: {
+                  "Content-Type": "application/json; charset=utf-8"
+                }
+              }
+            )
+            .then(res => {
+              if (res.status === 200) {
+                console.log(res);
+              }
+            })
+            .catch(e => {
+              this.error = e;
+              console.log(e.response.data.message);
+              this.errorMessages = e.response.data.message;
+            })
+            .finally(() => console.log(this.newUser));
+          this.errorMessages = "";
+
+          // this.subsvalue = false;
+          // this.dialogDelete = true;
+          this.$emit("newProfile", this.newUser);
         } else {
           this.dialogError = true;
         }
@@ -185,7 +199,7 @@ export default {
     },
     reset() {
       this.$nextTick(() => {
-        this.newProfile = {
+        this.newUser = {
           id: "",
           fullName: "",
           phone: "",

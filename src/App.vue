@@ -1,6 +1,6 @@
 <template>
   <div class>
-    <router-view :isLogin.sync="isLogin" @isloged="isloged"></router-view>
+    <router-view :isLogin.sync="isLogin" @isloged="isloged" @logOut="logOut"></router-view>
     <Footer :isLogin.sync="isLogin "></Footer>
   </div>
 </template>
@@ -19,6 +19,9 @@ export default {
     Footer
   },
   methods: {
+    logOut() {
+      this.isLogin = true;
+    },
     isloged() {
       this.isLogin = false;
     }

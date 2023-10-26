@@ -1,6 +1,6 @@
 <template>
   <div>
-    <navBar :isLogin="isLogin"></navBar>
+    <navBar :isLogin="isLogin" @logOut="logOut"></navBar>
     <MainPage :isLogin="isLogin" @isloged="isloged"></MainPage>
     <ArticleSection :isLogin="isLogin"></ArticleSection>
     <ArticleAvailaible :isLogin="isLogin"></ArticleAvailaible>
@@ -35,6 +35,9 @@ export default {
     contactUs
   },
   methods: {
+    logOut() {
+      this.$emit("logOut");
+    },
     isloged(e) {
       console.log(e + "hhhhh");
       this.$emit("isloged");

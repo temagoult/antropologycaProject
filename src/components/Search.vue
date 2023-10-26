@@ -46,7 +46,9 @@
           @click="action"
         >
           <img
-            :src="e.phtotArticle.src"
+            crossorigin="anonymous"
+            src
+            alt="img"
             class="w-[140px] lg-h-[100px] md:h-[84px] sm:h-[65px] h-[60px] p-1"
           />
           <div class="flex flex-col">
@@ -59,7 +61,7 @@
             <p
               class="text-gray-500 lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] leading-4"
             >
-              {{ e.brefContent.split(" ")
+              {{ e.summary.split(" ")
               .slice(0, numwords.value)
               .join(" ") + "..." }}
             </p>
@@ -82,6 +84,7 @@
 </template>
 <script>
 import Login from "@/components/Login.vue";
+import axios from "axios";
 export default {
   data() {
     return {
@@ -89,7 +92,8 @@ export default {
       showLoginDialog: false,
       dialoglogin: false,
       allArticles: [],
-      search: ""
+      search: "",
+      data: ""
     };
   },
   components: {
@@ -99,40 +103,18 @@ export default {
     isLogin: { type: Boolean }
   },
   created() {
-    this.allArticles = [
-      {
-        title: " انتروبولوجيا المدبنة",
-        phtotArticle: {
-          src: require("@/assets/images/sousArticle1.jpeg")
-        },
-        brefContent:
-          "  تصفحها تصفحهاذا الموقع  فحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحهافحها وتصفحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقالات وتصفيحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقصفحهامختص في نشر المقالات  ا تصفحها"
-      },
-      {
-        title: " منهج البحث ",
-        phtotArticle: {
-          src: require("@/assets/images/article3.jpeg")
-        },
-        brefContent:
-          "  تصفحها تصفحهاذا الموقع  فحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحهافحها وتصفحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقالات وتصفيحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقصفحهامختص في نشر المقالات  ا تصفحها"
-      },
-      {
-        title: " انتروبولوجيا المقاهي",
-        phtotArticle: {
-          src: require("@/assets/images/sousArticle3.jpeg")
-        },
-        brefContent:
-          "  تصفحها تصفحهاذا الموقع  فحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحهافحها وتصفحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقالات وتصفيحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقصفحهامختص في نشر المقالات  ا تصفحها"
-      },
-      {
-        title: "  العصر الحجري",
-        phtotArticle: {
-          src: require("@/assets/images/article.jpeg")
-        },
-        brefContent:
-          "  تصفحها تصفحهاذا الموقع  فحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحهافحها وتصفحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقالات وتصفيحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقصفحهامختص في نشر المقالات  ا تصفحها"
-      }
-    ];
+    axios
+      .get("https://anthropologyca.onrender.com/api/v1/posts/")
+      .then(response => {
+        this.allArticles = response.data.data.docs;
+        console.log(this.allArticles);
+      })
+      .catch(function(error) {
+        console.log(error.response);
+      })
+      .finally(function() {
+        // always executed
+      });
   },
   computed: {
     filterBlog() {
@@ -153,6 +135,7 @@ export default {
     action() {
       if (this.isLogin == true) {
         this.dialoglogin = true;
+
         console.log("hello" + this.showLoginDialog);
       }
     }

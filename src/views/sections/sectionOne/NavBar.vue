@@ -65,7 +65,7 @@
           </div>
         </div>
         <div v-if="isLogin==false">
-          <Avatar class></Avatar>
+          <Avatar @logOut="logOut"></Avatar>
         </div>
       </div>
     </div>
@@ -153,6 +153,9 @@ export default {
     isLogin: { type: Boolean }
   },
   methods: {
+    logOut() {
+      this.$emit("logOut");
+    },
     dialogMustlogin() {
       this.dialoglogin = false;
       this.showLoginDialog = true;

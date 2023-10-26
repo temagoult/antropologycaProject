@@ -35,6 +35,7 @@
                   rounded
                   text
                   class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px]"
+                  @click="logOut"
                 >تسجيل الخروج</v-btn>
               </div>
             </v-list-item-content>
@@ -53,7 +54,11 @@ export default {
       email: "john.doe@doe.com"
     }
   }),
-  methods: {},
+  methods: {
+    logOut() {
+      this.$emit("logOut");
+    }
+  },
 
   computed: {
     // eslint-disable-next-line
