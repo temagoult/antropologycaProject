@@ -25,6 +25,7 @@
       :showLoginDialog="showLoginDialog"
       @updatemodelValue="updatemodelValue "
       @isloged="isloged"
+      @islogedSignUp="islogedSignUp"
     ></Login>
   </div>
 </template>
@@ -44,6 +45,9 @@ export default {
   },
 
   methods: {
+    islogedSignUp() {
+      this.$emit("islogedSignUp");
+    },
     isloged() {
       this.$emit("isloged");
     },

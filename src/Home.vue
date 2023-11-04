@@ -1,16 +1,15 @@
 <template>
-  <div>
-    <navBar :isLogin="isLogin" @logOut="logOut"></navBar>
-    <MainPage :isLogin="isLogin" @isloged="isloged"></MainPage>
-    <ArticleSection :isLogin="isLogin"></ArticleSection>
-    <ArticleAvailaible :isLogin="isLogin"></ArticleAvailaible>
-    <Profile :isLogin="isLogin"></Profile>
-    <contactUs :isLogin="isLogin"></contactUs>
+  <div class="overflow-x-hidden">
+    <MainPage :isLogin="isLogin" @isloged="isloged" @islogedSignUp="islogedSignUp"></MainPage>
+    <ArticleSection @isloged="isloged" :isLogin="isLogin"></ArticleSection>
+    <ArticleAvailaible :isLogin="isLogin" @isloged="isloged"></ArticleAvailaible>
+    <Profile :isLogin="isLogin" @isloged="isloged"></Profile>
+    <contactUs :isLogin="isLogin" @isloged="isloged"></contactUs>
   </div>
 </template>
   <script>
 import "./styles/style.css";
-import navBar from "./views/sections/sectionOne/NavBar.vue";
+
 import MainPage from "./views/sections/sectionTwo/MainPage.vue";
 import ArticleSection from "./views/sections/sectionThree/ArticleSection.vue";
 import ArticleAvailaible from "./views/sections/sectionFoor/ََArticleAvailaible.vue";
@@ -23,11 +22,11 @@ export default {
   },
   name: "Home",
   props: {
-    isLogin: { type: Boolean }
+    isLogin: { type: Boolean },
+    user: { type: Object }
   },
 
   components: {
-    navBar,
     MainPage,
     ArticleSection,
     ArticleAvailaible,
@@ -41,6 +40,10 @@ export default {
     isloged(e) {
       console.log(e + "hhhhh");
       this.$emit("isloged");
+      console.log(this.user);
+    },
+    islogedSignUp() {
+      this.$emit("islogedSignUp");
     }
   }
 };

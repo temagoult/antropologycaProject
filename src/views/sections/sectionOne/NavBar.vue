@@ -4,23 +4,24 @@
   >
     <div class="myContainer grid grid-flow-col">
       <div class="md:hidden flex p-2">
-        <div v-if="displayBar">
+        <!-- <div>
           <div @click="onDisplayBar" class="flex items-start">
             <i class="fa-solid fa-xmark cursor-pointer text-[24px] w-[30px]"></i>
           </div>
-        </div>
+        </div>-->
 
-        <div v-else class>
+        <div v-if="displayBar==false" class>
           <div @click="onDisplayBar" class="flex items-start">
             <i class="fa-solid fa-bars cursor-pointer text-[24px] w-[30px]"></i>
           </div>
         </div>
       </div>
 
-      <div class="flex md:justify-start justify-center gap-6">
+      <div class="md:flex hidden md:justify-start justify-end gap-6">
         <div
           class="logo lg:text-[34px] md:text-3xl sm:text-2xl text-xl p-2 cursor-pointer"
         >انتروبولوجيكا</div>
+
         <div class="listeNav md:flex hidden p-2">
           <ul
             class="list-none flex lg:gap-5 md:gap-4 sm:gap-3 lg:text-3xl md:text-2xl sm:text-xl text-gray-500"
@@ -33,43 +34,81 @@
         </div>
       </div>
 
-      <div class="flex gap-6 justify-end">
-        <v-list class="md:flex hidden p-2">
+      <div class="gap-3 justify-end self-end flex">
+        <v-list class="!px-3">
           <v-list-item
+            v-if="notDisplaySearch"
             class="lg:!text-[18px] md:!text-[21px] sm:!text-[15px] !text-[12px]"
             to="/Search"
+            @click="toggleSearchDisplay"
           >
             <v-list-item-content>
-              <i class="fa-solid fa-magnifying-glass p-1 cursor-pointer self-center text-black"></i>
+              <i
+                class="fa-solid fa-magnifying-glass md:p-2 p-1 cursor-pointer self-center text-black text-[18px]"
+              ></i>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item
+            class="lg:!text-[18px] md:!text-[21px] sm:!text-[15px] !text-[12px]"
+            to="/"
+            v-else
+            @click="toggleSearchDisplay"
+          >
+            <v-list-item-content>
+              <i class="fa-solid fa-xmark md:p-2 p-1 cursor-pointer self-center text-black"></i>
             </v-list-item-content>
           </v-list-item>
         </v-list>
 
-        <div
-          :class="isLogin==false? 'lightMode p-2 self-center md:block hidden':'lightMode p-2 self-center '"
-        >
-          <div v-if="displayMode">
-            <div @click="ondisplayMode" class="flex">
-              <i
-                class="fa-solid fa-sun cursor-pointer w-[30px] text-[24px] md:text-[34px] text-gray-800"
-              ></i>
-            </div>
-          </div>
+        <div v-if="isLogin==false && notDisplaySearch">
+          <v-app class="!h-0 !m-0 !p-0">
+            <v-container class="md:!p-3 !p-1" fluid>
+              <v-menu bottom :min-width="widht" offset-y>
+                <template v-slot:activator="{ on }">
+                  <v-btn class="!text-black font-semibold" plain stacked v-on="on" depressed>
+                    <div class="flex flex-shrink-0">
+                      <span
+                        :class="notifications.length>0?'font-bold text-red-500 text-[15px]':'font-bold text-black text-[15px]'"
+                      >{{ notifications.length }}</span>
 
-          <div v-else class>
-            <div @click="ondisplayMode" class="flex">
-              <i
-                class="fa-solid fa-moon cursor-pointer w-[30px] text-[24px] md:text-[34px] text-gray-800"
-              ></i>
-            </div>
-          </div>
+                      <v-icon>mdi-bell-outline</v-icon>
+                    </div>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-list-item-content
+                    class="justify-center"
+                    v-for="(e,index)
+                  in
+                  notifications"
+                    :key="index"
+                  >
+                    <div class="mx-auto text-center">
+                      <v-btn
+                        depressed
+                        rounded
+                        text
+                        class="lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
+                      >
+                        {{e}}
+                        <v-icon
+                          class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
+                        >mdi-bell-outline</v-icon>
+                      </v-btn>
+                      <v-divider class="my-3"></v-divider>
+                    </div>
+                  </v-list-item-content>
+                </v-card>
+              </v-menu>
+            </v-container>
+          </v-app>
         </div>
-        <div v-if="isLogin==false">
-          <Avatar @logOut="logOut"></Avatar>
+        <div v-if="isLogin==false" class="md:flex hidden">
+          <Avatar :user="user" @logOut="logOut"></Avatar>
         </div>
       </div>
     </div>
-
+    <!-- 
     <div :class="this.displayBar?'sm:flex flex-col   justify-center ':'hidden'">
       <ul
         class="list-none flex flex-col lg:gap-5 md:gap-4 sm:gap-3 gap-2 lg:text-2xl md:text-xl sm:text-lg text-gray-500 items-center"
@@ -88,26 +127,164 @@
             </v-list-item-content>
           </v-list-item>
         </div>
-        <div v-if="isLogin==false" class="lightMode self-cener md:hidden block">
-          <div v-if="displayMode">
-            <div @click="ondisplayMode" class="flex">
-              <i
-                class="fa-solid fa-sun cursor-pointer w-[30px] text-[24px] md:text-[34px] text-gray-800"
-              ></i>
+      </ul>
+    </div>-->
+
+    <v-navigation-drawer v-model="displayBar" elevation="0" fixed class="md:!hidden">
+      <v-list-item-content class="justify-center">
+        <div class="mx-auto text-center">
+          <v-btn
+            v-if="isLogin"
+            depressed
+            rounded
+            text
+            class="lg:!text-[18px] md:!text-[16px] sm:!text-[22px] !text-[20px] !font-extrabold"
+          >انتروبولوجيكا</v-btn>
+
+          <div v-if="isLogin==false">
+            <v-avatar color="#0d6efd">
+              <v-img
+                v-if="showAltImage==false"
+                src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"
+                v-on:error="onImgError"
+              ></v-img>
+              <span
+                v-else
+                class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
+              >{{userAvatar.data.user.name.charAt(0)}}</span>
+            </v-avatar>
+            <h3
+              class="lg:!text-[20px] md:!text-[25px] sm:!text-[20px] !text-[18px]"
+            >{{ userAvatar.data.user.name}}</h3>
+
+            <p
+              class="text-caption mt-1 lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
+            >{{userAvatar.data.user.email}}</p>
+            <div class="flex justify-center items-center mb-[2px]" v-if="isLogin==false">
+              <p
+                class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
+              >{{userAvatar.data.user.bio}}</p>
             </div>
+
+            <span
+              v-if="userAvatar.data.user.verified"
+              class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px] !font-extrabold"
+            >الحساب :مفعل</span>
+            <span
+              class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px] !font-extrabold"
+              v-else
+            >الحساب : غير مفعل</span>
           </div>
 
-          <div v-else class>
-            <div @click="ondisplayMode" class="flex">
-              <i
-                class="fa-solid fa-moon cursor-pointer w-[30px] text-[24px] md:text-[34px] text-gray-800"
-              ></i>
-            </div>
+          <v-divider class="my-3"></v-divider>
+          <v-btn
+            depressed
+            rounded
+            text
+            class="lg:!text-[18px] md:!text-[16px] sm:!text-[20px] !text-[18px] !font-extrabold"
+          >الرئيسية</v-btn>
+          <v-divider class="my-3"></v-divider>
+          <v-btn
+            depressed
+            rounded
+            text
+            class="lg:!text-[18px] md:!text-[16px] sm:!text-[20px] !text-[18px] !font-extrabold"
+          >المقالات</v-btn>
+          <v-divider class="my-3"></v-divider>
+          <v-btn
+            depressed
+            rounded
+            text
+            class="lg:!text-[18px] md:!text-[16px] sm:!text-[20px] !text-[18px] !font-extrabold"
+          >فريق العمل</v-btn>
+          <v-divider class="my-3"></v-divider>
+          <v-btn
+            depressed
+            rounded
+            text
+            class="lg:!text-[18px] md:!text-[16px] sm:!text-[20px] !text-[18px] !font-extrabold"
+          >اتصل بنا</v-btn>
+          <v-divider class="my-3"></v-divider>
+          <div v-if="isLogin==false">
+            <v-btn
+              depressed
+              rounded
+              text
+              class="lg:!text-[18px] md:!text-[16px] sm:!text-[20px] !text-[18px]"
+            >
+              تفعييل الحساب
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[20px] !text-[18px] !p-1"
+              >mdi-arrow-up-bold</v-icon>
+            </v-btn>
+            <v-divider class="my-3"></v-divider>
+
+            <v-btn
+              to="/AddPost"
+              depressed
+              rounded
+              text
+              class="lg:!text-[18px] md:!text-[16px] sm:!text-[20px] !text-[18px]"
+            >
+              اضافة مقالة جدبدة
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[20px] !text-[18px] !p-1"
+              >mdi-text-box-plus</v-icon>
+            </v-btn>
+
+            <v-divider class="my-3"></v-divider>
+            <v-btn
+              depressed
+              rounded
+              text
+              class="lg:!text-[18px] md:!text-[16px] sm:!text-[20px] !text-[18px]"
+            >
+              مقالاتي المفضلة
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[20px] !text-[18px] !p-1"
+              >mdi-star</v-icon>
+            </v-btn>
+
+            <v-divider class="my-3"></v-divider>
+
+            <v-btn
+              depressed
+              rounded
+              text
+              to="/EditProfile"
+              class="lg:!text-[18px] md:!text-[16px] sm:!text-[20px] !text-[18px]"
+            >
+              معلومات الحساب
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[20px] !text-[18px] !p-1"
+              >mdi-account-cog</v-icon>
+            </v-btn>
+
+            <v-divider class="my-3"></v-divider>
+            <v-btn
+              depressed
+              rounded
+              text
+              class="lg:!text-[20px] md:!text-[18px] sm:!text-[20px] !text-[18px]"
+              @click="logOut"
+            >
+              تسجيل الخروج
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[20px] !text-[18px] !p-1"
+              >mdi-logout</v-icon>
+            </v-btn>
           </div>
         </div>
-      </ul>
-    </div>
-    <Login class="absolute" :showLoginDialog="showLoginDialog" @updatemodelValue="updatemodelValue"></Login>
+      </v-list-item-content>
+    </v-navigation-drawer>
+
+    <Login
+      class="absolute"
+      :showLoginDialog="showLoginDialog"
+      @updatemodelValue="updatemodelValue"
+      @isloged="isloged"
+      @islogedSignUp="islogedSignUp"
+    ></Login>
 
     <v-dialog v-model="dialoglogin" max-width="300px">
       <v-card>
@@ -130,9 +307,20 @@ import Login from "@/components/Login.vue";
 import Avatar from "@/components/Avatar.vue";
 
 export default {
+  created() {
+    this.userAvatar = this.user;
+    console.log(this.user);
+  },
+  mounted() {
+    this.userAvatar = this.user;
+  },
   data() {
     return {
+      notDisplaySearch: true,
+      userAvatar: {},
+      showAltImage: false,
       showSearchDialog: false,
+      notifications: ["notification1", "notification2", "notification3"],
       showLoginDialog: false,
       dialoglogin: false,
       displayMode: false,
@@ -150,9 +338,19 @@ export default {
   },
   name: "navBar",
   props: {
-    isLogin: { type: Boolean }
+    isLogin: { type: Boolean },
+    user: {
+      type: Object
+    }
   },
   methods: {
+    toggleSearchDisplay() {
+      this.notDisplaySearch = !this.notDisplaySearch;
+    },
+    onImgError() {
+      this.showAltImage = true;
+    },
+
     logOut() {
       this.$emit("logOut");
     },
@@ -177,6 +375,7 @@ export default {
     },
     onDisplayBar() {
       this.displayBar = !this.displayBar;
+      this.userAvatar = this.user;
     },
     ondisplayMode() {
       this.displayMode = !this.displayMode;
@@ -220,7 +419,40 @@ export default {
         this.actif3 = false;
         this.actif1 = false;
       }
+    },
+    isloged() {
+      this.$emit("isloged");
+    },
+    islogedSignUp() {
+      this.$emit("islogedSignUp");
+    }
+  },
+
+  computed: {
+    // eslint-disable-next-line
+    widht() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xs":
+          return 180;
+        case "sm":
+          return 200;
+        case "md":
+          return 200;
+        case "lg":
+          return 250;
+        case "xl":
+          return 280;
+      }
     }
   }
 };
-</script>
+</script><style >
+.v-navigation-drawer--mini-variant,
+.v-navigation-drawer {
+  overflow: visible !important;
+}
+::v-deep ::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+</style>

@@ -3,7 +3,12 @@
     <v-app>
       <v-dialog v-model="localModelValue" class="p-2" width="auto" reverse>
         <v-card class="mx-auto pa-12 pb-8 md:w-[600px] sm:w-[400px]" elevation="8" rounded="lg">
-          <v-form fast-fail @submit.prevent="login" class="text-right" autocomplete="on">
+          <div class="flex items-center justify-end">
+            <v-btn color="#0d6efd" icon @click="close">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </div>
+          <v-form fast-fail class="text-right" autocomplete="on" @submit.prevent="login">
             <v-btn
               class="signWithgoogle text-center justify-center gap-2 items-center flex !bg-[#0d6efd] p-2 !text-white mx-auto !my-3"
               block
@@ -43,13 +48,13 @@
             <router-link to="#" class="text-body-2 font-weight-regular" aria-required>نسيت كلمة السر</router-link>
 
             <v-btn
-              @click="login"
+              type="submit"
               class="mb-8 !text-white"
               color="#0d6efd"
-              type="submit"
               block
               size="large"
               variant="tonal"
+              :loading="loading"
             >تسجيل الدخول</v-btn>
           </v-form>
           <v-card-text class="text-center">
@@ -96,27 +101,20 @@
       class="absolute"
       :showDialogSubs="showDialogSubs"
       @updatedSubslValue="updatedSubslValue"
-      @newProfile="newProfile"
+      @newUser="newUser"
+      @islogedSignUp="islogedSignUp"
     ></SignUp>
   </div>
 </template>
 <script>
 import SignUp from "./SignUp.vue";
+import axios from "axios";
 export default {
   data() {
     return {
-      isLoged: false,
-      selectedUser: {
-        id: "",
-        fullName: "",
-        phone: "",
-        email: "",
-        password: "",
-        photo: {
-          src: ""
-        }
-      },
-      users: [],
+      loading: false,
+      logedFromSignUp: false,
+
       dialogSucess: false,
       dialogtrue: false,
       dialogErro: false,
@@ -124,45 +122,12 @@ export default {
       showDialogSubs: false,
       visible: false,
       user: {
-        email: "M@GMAIL.COM",
-        password: "aaa"
+        email: "mohamed@gmail.com",
+        password: "aaaaaaaaa"
       }
     };
   },
-  created() {
-    this.users = [
-      {
-        id: "1134",
-        fullName: "brahim",
-        phone: "0555545161",
-        email: "b@GMAIL.COM",
-        password: "aaa",
-        photo: {
-          src: ""
-        }
-      },
-      {
-        id: "11",
-        fullName: "samir",
-        phone: "0555545161",
-        email: "s@GMAIL.COM",
-        password: "aaa",
-        photo: {
-          src: ""
-        }
-      },
-      {
-        id: "121",
-        fullName: "mohamed Temagoult",
-        phone: "0555545161",
-        email: "M@GMAIL.COM",
-        password: "aaa",
-        photo: {
-          src: ""
-        }
-      }
-    ];
-  },
+
   components: {
     SignUp
   },
@@ -171,15 +136,6 @@ export default {
     isLogin: { type: Boolean }
   },
   computed: {
-    filterLogin() {
-      let UserLogin = this.user;
-      return this.users.filter(function(user) {
-        return (
-          user.email.match(UserLogin.email) &&
-          user.password.match(UserLogin.password)
-        );
-      });
-    },
     localModelValue: {
       get() {
         return this.showLoginDialog;
@@ -190,9 +146,15 @@ export default {
     }
   },
   methods: {
-    newProfile(val) {
-      this.users.push(val);
-      console.log(this.users);
+    close() {
+      this.localModelValue = false;
+    },
+    islogedSignUp() {
+      this.$emit("islogedSignUp");
+      console.log("signUp");
+    },
+    newUser(val) {
+      console.log(val);
     },
     shwoSubs() {
       this.localModelValue = false;
@@ -204,18 +166,39 @@ export default {
       this.showDialogSubs = v;
     },
 
-    login() {
+    async login() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          if (this.filterLogin.length > 0) {
-            this.$emit("isloged");
-            this.dialogSucess = true;
-            this.localModelValue = false;
-            this.selectedUser = this.filterLogin[0];
-            this.isLoged = false;
-          } else {
-            this.dialogtrue = true;
-          }
+          this.loading = true;
+          axios
+            .post(
+              "https://anthropologyca.onrender.com/api/v1/users/login/",
+              this.user,
+              {
+                headers: {
+                  "Content-Type": "application/json "
+                }
+              }
+            )
+            .then(res => {
+              this.loading = false;
+              if (res.status === 200) {
+                localStorage.setItem("user", JSON.stringify(res.data));
+                console.log(res.data);
+
+                this.$emit("isloged");
+
+                this.localModelValue = false;
+              }
+            })
+            .catch(e => {
+              this.loading = false;
+              this.error = e;
+
+              console.log(e.response.data.message);
+              this.dialogtrue = true;
+            })
+            .finally(() => (this.loading = false));
         } else {
           this.dialogErro = true;
         }

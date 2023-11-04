@@ -96,10 +96,12 @@
                     >{{ article.nbrView }}</div>
                   </div>
                 </div>
-                <a
-                  class="underline text-[#0d6efd] cursor-pointer lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px]"
+
+                <v-btn
+                  to="/Post"
+                  class="!text-[#0d6efd] cursor-pointer lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px]"
                   @click="action"
-                >اقرا المزيد</a>
+                >اقرا المزيد</v-btn>
               </div>
             </div>
           </div>
@@ -130,7 +132,13 @@
         </div>
       </div>
     </div>
-    <Login class="absolute" :showLoginDialog="showLoginDialog" @updatemodelValue="updatemodelValue"></Login>
+    <Login
+      @islogedSignUp="islogedSignUp"
+      class="absolute"
+      :showLoginDialog="showLoginDialog"
+      @updatemodelValue="updatemodelValue "
+      @isloged="isloged"
+    ></Login>
     <v-dialog v-model="dialoglogin" max-width="300px">
       <v-card>
         <v-card-title
@@ -148,8 +156,28 @@ import { Scrollbar, Mousewheel, Navigation, Autoplay } from "swiper";
 import { SwiperCore, Swiper, SwiperSlide } from "swiper-vue2";
 import Login from "@/components/Login.vue";
 import "swiper/swiper-bundle.css";
+import axios from "axios"
 SwiperCore.use([Scrollbar, Mousewheel, Navigation, Autoplay]);
 export default {
+  created() {
+    axios
+      .get("https://anthropologyca.onrender.com/api/v1/posts/", {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8"
+        }
+      })
+      .then(response => {
+        console.log(response.data);
+        this.post = response.data;
+        console.log(this.post);
+      })
+      .catch(function(error) {
+        console.log(error.response);
+      })
+      .finally(function() {
+        // always executed
+      });
+  },
   data() {
     return {
       showLoginDialog: false,
@@ -259,6 +287,12 @@ export default {
       this.swiper.slidePrev();
       this.nextActif = false;
       this.prevActif = true;
+    },
+    isloged() {
+      this.$emit("isloged");
+    },
+    islogedSignUp() {
+      this.$emit("islogedSignUp");
     }
   },
   components: {

@@ -114,6 +114,14 @@
                     class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
                   >{{ article.nbrView }}</div>
                 </div>
+                <div class="like flex items-center gap-2">
+                  <i
+                    class="fa-regular fa-like lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
+                  ></i>
+                  <div
+                    class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
+                  >{{ article.nbrView }}</div>
+                </div>
               </div>
               <a
                 class="underline text-[#0d6efd] cursor-pointer lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px]"
@@ -124,7 +132,13 @@
         </div>
       </div>
     </div>
-    <Login class="absolute" :showLoginDialog="showLoginDialog" @updatemodelValue="updatemodelValue"></Login>
+    <Login
+      class="absolute"
+      :showLoginDialog="showLoginDialog"
+      @updatemodelValue="updatemodelValue"
+      @isloged="isloged"
+      @islogedSignUp="islogedSignUp"
+    ></Login>
     <v-dialog v-model="dialoglogin" max-width="300px">
       <v-card>
         <v-spacer></v-spacer>
@@ -212,6 +226,12 @@ export default {
         this.dialoglogin = true;
         console.log("hello" + this.showLoginDialog);
       }
+    },
+    isloged() {
+      this.$emit("isloged");
+    },
+    islogedSignUp() {
+      this.$emit("islogedSignUp");
     }
   }
 };

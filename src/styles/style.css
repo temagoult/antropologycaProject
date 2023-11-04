@@ -52,7 +52,7 @@ p{
  .v-messages__message {
         text-align: right;
 }
-.cardArticle,.cardSousArticle{
+.cardArticle,.cardSousArticle,.formAddPost,.editProfile,.h{
     box-shadow: 0px 0px 9px 2px rgba(0, 0, 0, 0.05); 
 }
 span{
@@ -62,15 +62,26 @@ span{
     box-shadow: 0px 0px 9px 2px rgba(0, 0, 0, 0.05);
     border: solid 1px #0d6efd; 
 }
- .v-label {
+ .v-label,.photoProfileEdit .v-label {
  color: #0d6efd !important;
     font-size: 18px !important;
   }
-  @media (min-width :0px )and (max-width: 768px){
+  @media screen and (max-width: 768px){
     .v-label{
-        font-size: 12px !important;
+        font-size: 16px !important;
     
-    };
+    }
+    .v-form .i input ,.v-form .i textarea{
+        color: gray !important;
+        font-size: 14px !important;
+        
+    }
+    .v-form  .i .v-label ,.photoProfileEdit .v-label{
+        font-size: 18px !important;
+    }
+  
+ 
+
  
   }
 
@@ -78,7 +89,15 @@ span{
         .v-label{
             font-size: 16px !important;
    
-    }}
+    }
+    .v-form  .i .v-label,.photoProfileEdit .v-label{
+        font-size: 20px !important;
+    }
+  
+ 
+
+   
+}
     .v-list-item,.v-list{
         padding: 0 !important;
         
@@ -87,6 +106,49 @@ span{
         font-size: 18px !important;
       
     }
+
     .v-list-item{
         cursor: pointer;
     }
+    .v-icon{
+        cursor: pointer !important;
+    }
+    .infoPerso input {
+        color: blue !important;
+        font-weight: 400 !important;
+        background-color: white ;
+      
+       
+    
+    }
+   
+    .fieldReadOnly input  ,.fieldReadOnly .v-icon{
+        color: #0d6efd !important;
+      ;
+        
+    }
+    .v-form .fieldReadOnly input, .infoPerso input {
+        font-size: 25px !important;
+    }
+    .v-form .i input ,.v-form .i textarea{
+        color: gray !important;
+        font-size: 18px !important;
+
+        
+    }
+    .ql-editor {
+height: 300px !important;
+}
+
+.ql-container {
+height: auto !important;
+}
+.photoProfileEdit .v-label{
+    font-size: 12px !important;
+    color: gray !important;
+}
+.navDraw{
+    direction: rtl !important;
+}
+
+ 

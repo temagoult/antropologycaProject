@@ -4,7 +4,43 @@ import router from './router'
 import vuetify from './plugins/vuetify'
 import VeeValidate from 'vee-validate'
 import axios from 'axios';
-Vue.prototype.$http = axios
+Vue.prototype.$http = axios;
+import VueLodash from 'vue-lodash'
+import lodash from 'lodash'
+import Vueditor from 'vueditor'
+import Vuex from 'vuex'
+
+import 'vueditor/dist/style/vueditor.min.css'
+import VueQuillEditor from 'vue-quill-editor'
+
+import 'quill/dist/quill.core.css' // import styles
+import 'quill/dist/quill.snow.css' // for snow theme
+import 'quill/dist/quill.bubble.css' // for bubble theme
+
+Vue.use(VueQuillEditor, /* { default global options } */)
+
+// your config here
+// let config = {
+//   toolbar: [
+//     'removeFormat', 'undo', '|', 'elements', 'fontName', 'fontSize', 'foreColor', 'backColor'
+//   ],
+//   fontName: [
+//     {val: 'arial black'}, 
+//     {val: 'times new roman'}, 
+//     {val: 'Courier New'}
+//   ],
+//   fontSize: ['12px', '14px', '16px', '18px', '0.8rem', '1.0rem', '1.2rem', '1.5rem', '2.0rem'],
+//   uploadUrl: ''
+// };
+// import Vue from "vue";
+// import Vue2Editor from "vue2-editor";
+Vue.use(Vuex);
+
+Vue.use(Vueditor);
+ 
+// name is optional
+Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
+
 
 
 

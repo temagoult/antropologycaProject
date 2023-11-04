@@ -39,7 +39,13 @@
       </div>
     </div>
     <CurrentProfile :current="current" :profileDialogShow="profileDialogShow" @close="close"></CurrentProfile>
-    <Login class="absolute" :showLoginDialog="showLoginDialog" @updatemodelValue="updatemodelValue"></Login>
+    <Login
+      class="absolute"
+      :showLoginDialog="showLoginDialog"
+      @updatemodelValue="updatemodelValue"
+      @isloged="isloged"
+      @islogedSignUp="islogedSignUp"
+    ></Login>
     <v-dialog v-model="dialoglogin" width="auto">
       <v-card>
         <v-spacer></v-spacer>
@@ -126,6 +132,12 @@ export default {
         console.log(this.current.fullName);
         this.profileDialogShow = true;
       }
+    },
+    isloged() {
+      this.$emit("isloged");
+    },
+    islogedSignUp() {
+      this.$emit("islogedSignUp");
     }
   },
   props: {

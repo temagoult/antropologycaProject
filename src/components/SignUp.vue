@@ -29,7 +29,7 @@
 
           <v-text-field
             v-model="newUser.name"
-            :counter="15"
+            :counter="20"
             label=" الاسم و اللقب"
             name="fullName"
             v-validate="'required|alpha_spaces'"
@@ -47,6 +47,7 @@
           ></v-text-field>-->
 
           <v-text-field
+            :counter="20"
             v-model="newUser.email"
             reverse
             label="الايميل"
@@ -104,7 +105,12 @@
             label="ساتقدم بطلب والانتظار لقبولي  في مجموعة دكاترة علم الانتروبولوجيا"
           ></v-checkbox>-->
 
-          <v-btn class="me-4 !text-white" color="#0d6efd" type="submit">انشاء حساب</v-btn>
+          <v-btn
+            class="me-4 !text-white"
+            color="#0d6efd"
+            type="submit"
+            :loading="loading"
+          >انشاء حساب</v-btn>
 
           <v-btn @click="reset" class="me-4">اعادة التعيين</v-btn>
         </form>
@@ -132,6 +138,7 @@ export default {
   data() {
     return {
       error: "",
+      loading: false,
       errorMessages: "",
       newSubscribes: [],
       checkBox: null,
@@ -140,10 +147,11 @@ export default {
       visible: false,
       dialogDelete: false,
       newUser: {
-        name: "moh",
+        name: "mohamed temagoult",
         // phone: "0555545161",
-        email: "m@gmail.com",
-        password: "aaa",
+        email: "mohamed@gmail.com",
+        password: "aaaaaaaaa",
+        bio: "say Somethings",
 
         passwordConfirm: ""
       }
@@ -158,9 +166,10 @@ export default {
     },
     getFile(file) {
       console.log(file);
-      this.newProfile.photo = file;
+      this.newUser.photo = file;
     },
     submit() {
+      this.loading = true;
       this.$validator.validateAll().then(result => {
         this.errorMessages = "";
         if (result) {
@@ -178,22 +187,29 @@ export default {
             )
             .then(res => {
               if (res.status === 200) {
-                console.log(res);
+                this.loading = false;
+                localStorage.setItem("user", JSON.stringify(res.data));
+                this.$emit("islogedSignUp");
+                console.log(res.data);
+                // console.log(res);
+                this.subsvalue = false;
               }
             })
             .catch(e => {
+              this.loading = false;
               this.error = e;
               console.log(e.response.data.message);
               this.errorMessages = e.response.data.message;
             })
-            .finally(() => console.log(this.newUser));
+            .finally(() => (this.loading = false));
           this.errorMessages = "";
 
           // this.subsvalue = false;
           // this.dialogDelete = true;
-          this.$emit("newProfile", this.newUser);
+          this.$emit("newUser", this.newUser);
         } else {
           this.dialogError = true;
+          this.loading = false;
         }
       });
     },
