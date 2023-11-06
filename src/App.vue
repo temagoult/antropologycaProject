@@ -35,8 +35,6 @@ export default {
     if (localStorage.getItem("user") !== null) {
       this.isLogin = false;
       this.user = JSON.parse(localStorage.getItem("user"));
-    } else {
-      this.isLogin = true;
     }
     console.log("isLogin in this case" + this.isLogin);
     console.log(this.user);

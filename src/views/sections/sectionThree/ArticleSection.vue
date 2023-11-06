@@ -47,7 +47,7 @@
                 class="dateP lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
               >
                 <span>عنوان المقال :</span>
-                {{ article.title.split("")
+                {{ article.title.split(" ")
                 .slice(0, numwords2.value)
                 .join(" ") + "..." }}
               </div>
@@ -69,7 +69,7 @@
               >
                 <div>
                   <span class>اضيف في :</span>
-                  {{ article.publishedAt }}
+                  {{getFormattedDate( article.publishedAt )}}
                 </div>
               </div>
               <div class="sousCard flex justify-between py-2 text-[#0d6efd]">
@@ -171,10 +171,12 @@ import Login from "@/components/Login.vue";
 import "swiper/swiper-bundle.css";
 import axios from "axios";
 import router from "../../../router";
+import moment from "moment";
 SwiperCore.use([Scrollbar, Mousewheel, Navigation, Autoplay]);
 export default {
   mounted() {
     this.getBlogs();
+    console.log(this.posts);
   },
   data() {
     return {
@@ -263,6 +265,9 @@ export default {
     };
   },
   methods: {
+    getFormattedDate(date) {
+      return moment(date).format("YYYY-MM-DD");
+    },
     async getBlogs() {
       await axios
         .get("https://anthropologyca.onrender.com/api/v1/posts/", {

@@ -208,6 +208,16 @@
             class="lg:!text-[18px] md:!text-[16px] sm:!text-[20px] !text-[18px] !font-extrabold"
           >اتصل بنا</v-btn>
           <v-divider class="my-3"></v-divider>
+          <v-btn
+            v-if="isLogin"
+            depressed
+            rounded
+            text
+            color
+            @click="dialogMustlogin"
+            class="lg:!text-[18px] md:!text-[16px] sm:!text-[20px] !text-[18px] !font-extrabold !bg-[#0d6efd]"
+          >تسجيل الدخول</v-btn>
+          <v-divider class="my-3"></v-divider>
           <div v-if="isLogin==false">
             <v-btn
               depressed

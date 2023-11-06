@@ -106,13 +106,16 @@
           ></v-checkbox>-->
 
           <v-btn
-            class="me-4 !text-white"
+            class="me-4 !text-white !w-[30%] lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
             color="#0d6efd"
             type="submit"
             :loading="loading"
           >انشاء حساب</v-btn>
 
-          <v-btn @click="reset" class="me-4">اعادة التعيين</v-btn>
+          <v-btn
+            @click="reset"
+            class="me-4 !w-[30%] lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
+          >اعادة التعيين</v-btn>
         </form>
       </v-sheet>
     </v-dialog>

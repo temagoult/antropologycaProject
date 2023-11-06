@@ -10,7 +10,7 @@
           </div>
           <v-form fast-fail class="text-right" autocomplete="on" @submit.prevent="login">
             <v-btn
-              class="signWithgoogle text-center justify-center gap-2 items-center flex !bg-[#0d6efd] p-2 !text-white mx-auto !my-3"
+              class="signWithgoogle text-center justify-center gap-2 items-center flex !bg-[#0d6efd] p-2 !text-white mx-auto !my-3 lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
               block
               size="large"
               variant="tonal"
@@ -45,11 +45,11 @@
               ref="password"
               autocomplete="on"
             ></v-text-field>
-            <router-link to="#" class="text-body-2 font-weight-regular" aria-required>نسيت كلمة السر</router-link>
+            <v-btn to="#" class="text-body-2 font-weight-regular">نسيت كلمة السر</v-btn>
 
             <v-btn
               type="submit"
-              class="mb-8 !text-white"
+              class="mb-8 !text-white !w-[30%] lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
               color="#0d6efd"
               block
               size="large"
@@ -59,7 +59,7 @@
           </v-form>
           <v-card-text class="text-center">
             <a
-              class="text-blue text-decoration-none"
+              class="text-blue text-decoration-none lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
               href="#"
               rel="noopener noreferrer"
               @click="shwoSubs"
