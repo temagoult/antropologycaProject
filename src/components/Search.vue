@@ -14,7 +14,7 @@
           </v-list-item>
         </div>-->
 
-        <div class="mt-[-90px] md:w-[80%] sm:w-[70%] w-[70%] placeholder:text-[#0d6efd]">
+        <div class="mt-[-90px] md:w-[100%] sm:w-[70%] w-[70%] placeholder:text-[#0d6efd]">
           <v-text-field
             class="!self-center !m-0"
             type="text"
@@ -50,7 +50,7 @@
           class="cardSousArticle border border-solid border-gray-300 flex items-start md:p-3 p-2 gap-1 rounded-[25px] hover:bg-slate-100 cursor-pointer"
           v-for="(e,index) in filterBlog "
           :key="index"
-          @click="action"
+          @click="action(e)"
         >
           <img
             crossorigin="anonymous"
@@ -163,11 +163,15 @@ export default {
     updatemodelValue(val) {
       this.showLoginDialog = val;
     },
-    action() {
+    action(article) {
       if (this.isLogin == true) {
         this.dialoglogin = true;
 
         console.log("hello" + this.showLoginDialog);
+      } else {
+        localStorage.setItem("postSelected", JSON.stringify(article));
+        this.$emit("postSelected", article);
+        this.$router.push({ path: "/Post" });
       }
     }
   }

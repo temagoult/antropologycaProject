@@ -37,35 +37,35 @@
             <v-label
               class="lg:!text-[23px] md:!text-[21px] sm:!text-[19px] !text-[17px] !text-blue !text-center fieldReadOnly !cursor-pointer"
             >اضافة مقالة</v-label>
+            <div class="md:flex">
+              <v-text-field
+                :counter="20"
+                label="   عنوان المقال"
+                name="title"
+                focusColor="red"
+                v-validate="'required|alpha_spaces'"
+                :error-messages="errors.first('title')"
+                persistent-placeholder
+                v-model="post.title"
+                persistent-hint
+                reverse
+                class="addPost md:!w-[50%]"
+              ></v-text-field>
 
-            <v-text-field
-              :counter="20"
-              label="   عنوان المقال"
-              name="title"
-              focusColor="red"
-              v-validate="'required|alpha_spaces'"
-              :error-messages="errors.first('title')"
-              persistent-placeholder
-              v-model="post.title"
-              persistent-hint
-              reverse
-              class="addPost md:!w-[50%]"
-            ></v-text-field>
-            <v-label
-              class="lg:!text-[18px] md:!text-[15px] sm:!text-[13px] !text-[12px]"
-            >صورة المقال</v-label>
-            <v-file-input
-              show-size
-              counter
-              reverse
-              class="md:!w-[50%]"
-              v-model="post.coverImage"
-              @change="onFileChange"
-              required
-            ></v-file-input>
-            <v-img :src="imageUrl" class="w-[50px] h-[50px]" v-model="image" />
+              <v-file-input
+                placeholder="صورة المقال"
+                show-size
+                counter
+                reverse
+                class="md:!w-[50%]"
+                v-model="post.coverImage"
+                @change="onFileChange"
+                required
+              ></v-file-input>
+              <v-img :src="imageUrl" class="w-[50px] h-[50px]" v-model="image" />
 
-            <v-label v-if="validImage">add a valid image</v-label>
+              <v-label v-if="validImage">add a valid image</v-label>
+            </div>
 
             <v-textarea
               persistent-placeholder
@@ -143,7 +143,7 @@ export default {
       }
     };
   },
-  created() {
+  mounted() {
     this.userBeforeUpdate = Object.assign({}, this.user.data.user);
   },
   methods: {

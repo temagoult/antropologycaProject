@@ -26,9 +26,12 @@
         autoplay
         loop
         :reversedirection="true"
+        observer
+        :disableOnInteraction="true"
+        observeParents
       >
         <Swiper-slide
-          v-for="(article,index) in newArticles"
+          v-for="(article,index) in posts"
           :key="index"
           class="md:!w-[25%] sm:!w-[35%] !w-[100%]"
         >
@@ -37,19 +40,21 @@
               class="cardArticle p-2 rounded-[25px] border border-solid border-gray-300 flex flex-col md:gap-1 sm:gap-[3px] gap-[2px]"
             >
               <img
-                :src="article.phtotArticle.src"
+                :src="photo.src"
                 class="w-[100%] lg:h-[300px] md:h-[250px] sm:h-[200px] h-[150px] rounded-t-[12px] cursor-pointer p-2"
               />
               <div
                 class="dateP lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
               >
                 <span>عنوان المقال :</span>
-                {{ article.title }}
+                {{ article.title.split("")
+                .slice(0, numwords2.value)
+                .join(" ") + "..." }}
               </div>
               <p
                 class="text-gray-500 leading-4 lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] lg:h-[70px] md:h-[60px] sm:h-[50px] h-[40px] py-[7px]"
               >
-                {{ article.brefContent.split(" ")
+                {{ article.summary.split(" ")
                 .slice(0, numwords.value)
                 .join(" ") + "..." }}
               </p>
@@ -57,25 +62,25 @@
                 class="dateP lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
               >
                 <span>كاتب المقال :</span>
-                {{ article.whritenby }}
+                {{ article.author.name }}
               </div>
               <div
                 class="whriter flex justify-between lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
               >
                 <div>
                   <span class>اضيف في :</span>
-                  {{ article.publishedOn }}
+                  {{ article.publishedAt }}
                 </div>
               </div>
               <div class="sousCard flex justify-between py-2 text-[#0d6efd]">
                 <div class="icons flex cursor-pointer !max-w-[50%]">
-                  <div class="share flex items-center gap-2">
+                  <div class="comment flex items-center gap-2">
                     <i
-                      class="fa-solid fa-share-nodes cursor-pointer lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
+                      class="fa-regular fa-comment cursor-pointer lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
                     ></i>
                     <div
                       class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
-                    >{{ article.nbrShare }}</div>
+                    >{{ article.commentsCounter }}</div>
                   </div>
                   <div
                     class="download flex items-center gap-2 lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
@@ -85,7 +90,7 @@
                     ></i>
                     <div
                       class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
-                    >{{ article.nbrDownolad }}</div>
+                    >{{ article.downloadCounter }}</div>
                   </div>
                   <div class="view flex items-center gap-2">
                     <i
@@ -93,14 +98,22 @@
                     ></i>
                     <div
                       class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
-                    >{{ article.nbrView }}</div>
+                    >{{ article.viewsCounter }}</div>
+                  </div>
+                  <div class="like flex items-center gap-2">
+                    <i
+                      class="fa-regular fa-heart lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
+                    ></i>
+                    <div
+                      class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
+                    >{{ article.likesCounter }}</div>
                   </div>
                 </div>
 
                 <v-btn
-                  to="/Post"
+                  :disabled="isLogin"
+                  @click="action(article)"
                   class="!text-[#0d6efd] cursor-pointer lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px]"
-                  @click="action"
                 >اقرا المزيد</v-btn>
               </div>
             </div>
@@ -156,90 +169,79 @@ import { Scrollbar, Mousewheel, Navigation, Autoplay } from "swiper";
 import { SwiperCore, Swiper, SwiperSlide } from "swiper-vue2";
 import Login from "@/components/Login.vue";
 import "swiper/swiper-bundle.css";
-import axios from "axios"
+import axios from "axios";
+import router from "../../../router";
 SwiperCore.use([Scrollbar, Mousewheel, Navigation, Autoplay]);
 export default {
-  created() {
-    axios
-      .get("https://anthropologyca.onrender.com/api/v1/posts/", {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8"
-        }
-      })
-      .then(response => {
-        console.log(response.data);
-        this.post = response.data;
-        console.log(this.post);
-      })
-      .catch(function(error) {
-        console.log(error.response);
-      })
-      .finally(function() {
-        // always executed
-      });
+  mounted() {
+    this.getBlogs();
   },
   data() {
     return {
+      posts: [
+        {
+          title: "",
+          summary: "",
+          viewsCounter: "",
+          likesCounter: "",
+          commentsCounter: "",
+          author: {}
+        },
+        {
+          title: "",
+          summary: "",
+          viewsCounter: "",
+          likesCounter: "",
+          commentsCounter: "",
+          author: {}
+        },
+        {
+          title: "",
+          summary: "",
+          viewsCounter: "",
+          likesCounter: "",
+          commentsCounter: "",
+          author: {}
+        },
+        {
+          title: "",
+          summary: "",
+          viewsCounter: "",
+          likesCounter: "",
+          commentsCounter: "",
+          author: {}
+        },
+        {
+          title: "",
+          summary: "",
+          viewsCounter: "",
+          likesCounter: "",
+          commentsCounter: "",
+          author: {}
+        },
+        {
+          title: "",
+          summary: "",
+          viewsCounter: "",
+          likesCounter: "",
+          commentsCounter: "",
+          author: {}
+        }
+      ],
+      photo: {
+        src: require("../../../assets/images/article3.jpeg")
+      },
+
       showLoginDialog: false,
       dialoglogin: false,
+      numwords2: { type: Number, value: 2 },
       numwords: { type: Number, value: 15 },
       swiper: null,
       nextActif: false,
       prevActif: false,
-      newArticles: [
-        {
-          title: " انتروبولوجيا المدبنة",
-          phtotArticle: {
-            src: require("../../../assets/images/article.jpeg")
-          },
-          brefContent:
-            "  تصفحها تصفحهاذا الموقع  فحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحهافحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفي نشر المقالات وتصفحها تصفحهامختص في نشر المقالات  ا تصفحها",
-          nbrDownolad: 0,
-          nbrView: 0,
-          nbrShare: 5,
-          publishedOn: "2023 / 07 / 02",
-          whritenby: "احمد امين"
-        },
-        {
-          title: " انتروبولوجيا المدبنة",
-          phtotArticle: {
-            src: require("../../../assets/images/article2.jpg")
-          },
-          brefContent:
-            "ذا الموقع مختص في نشر المقالاتفحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحهافحها وتصفحها تصفحهالموقع مختص في نشر مختص في نشر المقالات وتصفحها تصفحها وتصفحها تصفحها تصفحها",
-          nbrDownolad: 20,
-          nbrView: 30,
-          nbrShare: 52,
-          publishedOn: "2023 / 07 / 02",
-          whritenby: "خالدي وليد"
-        },
-        {
-          title: " انتروبولوجيا المدبنة",
-          phtotArticle: {
-            src: require("../../../assets/images/article3.jpeg")
-          },
-          brefContent:
-            "ذا الموقع مختص في نشر المقالات وتصفحها تصفحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحها وتصفحها تصفحهالموقع مختص فيموقع مختص في نشر المقالات وتصفحها تصفحها وتصفحها تصفحها",
-          nbrDownolad: 35,
-          nbrView: 43,
-          nbrShare: 3,
-          publishedOn: "2023 / 07 / 02",
-          whritenby: "سمير اتين"
-        },
-        {
-          title: " انتروبولوجيا المدبنة",
-          phtotArticle: {
-            src: require("../../../assets/images/article4.jpeg")
-          },
-          brefContent:
-            "ذا الموقع مختص في نشر المقالات وتصفحهافحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحهافحها وتصفحها تصفحهالموقع مخحها تصفحهافحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحها تصفحها  تصفحها",
-          nbrDownolad: 29,
-          nbrView: 50,
-          nbrShare: 15,
-          publishedOn: "2023 / 07 / 02",
-          whritenby: "محمد  تماقولت"
-        }
-      ],
+      observer: true,
+      observeParents: true,
+
       swiperOptions: {
         slidesPerView: "auto",
         spaceBetween: 0,
@@ -250,7 +252,7 @@ export default {
         paginationClickable: true,
         autoplay: {
           delay: 0,
-          disableOnInteraction: true,
+          disableOnInteraction: false,
           reverseDirection: true
         },
         navigation: {
@@ -261,6 +263,27 @@ export default {
     };
   },
   methods: {
+    async getBlogs() {
+      await axios
+        .get("https://anthropologyca.onrender.com/api/v1/posts/", {
+          headers: {
+            "Content-Type": "application/json; charset=utf-8"
+          }
+        })
+        .then(response => {
+          console.log(response.data);
+          localStorage.clear("allPosts");
+
+          this.posts = response.data.data.docs;
+          console.log(this.posts);
+        })
+        .catch(function(error) {
+          console.log(error.response);
+        })
+        .finally(function() {
+          // always executed
+        });
+    },
     dialogMustlogin() {
       this.dialoglogin = false;
       this.showLoginDialog = true;
@@ -268,14 +291,17 @@ export default {
     updatemodelValue(val) {
       this.showLoginDialog = val;
     },
-    action() {
+    action(article) {
       if (this.isLogin == true) {
         this.dialoglogin = true;
-        console.log("hello" + this.showLoginDialog);
+      } else {
+        localStorage.setItem("postSelected", JSON.stringify(article));
+        this.$emit("postSelected", article);
+        router.push({ path: "/Post" });
       }
     },
-    getRef(swiper) {
-      this.swiper = swiper;
+    getRef(s) {
+      this.swiper = s;
     },
 
     onNext() {

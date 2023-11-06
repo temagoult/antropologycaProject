@@ -26,7 +26,9 @@
           <ul
             class="list-none flex lg:gap-5 md:gap-4 sm:gap-3 lg:text-3xl md:text-2xl sm:text-xl text-gray-500"
           >
-            <li @click="onclick1" :class="actif1?'activ':''">الرئيسية</li>
+            <router-link to="/">
+              <li @click="onclick1" :class="actif1?'activ':''">الرئيسية</li>
+            </router-link>
             <li @click="onclick2" :class="actif2?'activ':''">المقالات</li>
             <li @click="onclick3" :class="actif3?'activ':''">فريق العمل</li>
             <li @click="onclick4" :class="actif4?'activ':''">اتصل بنا</li>
@@ -167,7 +169,7 @@
             </div>
 
             <span
-              v-if="userAvatar.data.user.verified"
+              v-if="userAvatar.verified"
               class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px] !font-extrabold"
             >الحساب :مفعل</span>
             <span
@@ -178,6 +180,7 @@
 
           <v-divider class="my-3"></v-divider>
           <v-btn
+            to="/"
             depressed
             rounded
             text
@@ -307,17 +310,13 @@ import Login from "@/components/Login.vue";
 import Avatar from "@/components/Avatar.vue";
 
 export default {
-  created() {
-    this.userAvatar = this.user;
-    console.log(this.user);
-  },
   mounted() {
-    this.userAvatar = this.user;
+    this.inisilise();
   },
   data() {
     return {
       notDisplaySearch: true,
-      userAvatar: {},
+      userAvatar: { name: "", email: "", bio: "" },
       showAltImage: false,
       showSearchDialog: false,
       notifications: ["notification1", "notification2", "notification3"],
@@ -344,6 +343,10 @@ export default {
     }
   },
   methods: {
+    inisilise() {
+      this.userAvatar = this.user;
+    },
+
     toggleSearchDisplay() {
       this.notDisplaySearch = !this.notDisplaySearch;
     },

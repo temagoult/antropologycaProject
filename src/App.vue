@@ -2,8 +2,10 @@
   <div class="overflow-x-hidden">
     <navBar :isLogin="isLogin" @logOut="logOut" :user="user"></navBar>
     <router-view
+      @postSelected="postSelected"
       :isLogin.sync="isLogin"
       :user="user"
+      :currentPost="currentPost"
       @islogedSignUp="islogedSignUp"
       @isloged="isloged"
       @logOut="logOut"
@@ -15,15 +17,21 @@
 import "./styles/style.css";
 import Footer from "./views/sections/sectionSeven/Footer.vue";
 import navBar from "./views/sections/sectionOne/NavBar.vue";
+import router from "./router";
 
 export default {
   data() {
     return {
+      currentPost: {},
       isLogin: "",
-      user: null
+      user: {
+        data: {
+          user: {}
+        }
+      }
     };
   },
-  created() {
+  mounted() {
     if (localStorage.getItem("user") !== null) {
       this.isLogin = false;
       this.user = JSON.parse(localStorage.getItem("user"));
@@ -40,6 +48,9 @@ export default {
     Footer
   },
   methods: {
+    postSelected(post) {
+      this.currentPost = post;
+    },
     islogedSignUp() {
       this.isLogin = false;
       this.user = JSON.parse(localStorage.getItem("user"));
@@ -47,6 +58,12 @@ export default {
     logOut() {
       this.isLogin = true;
       localStorage.removeItem("user");
+      console.log(this.currentPost);
+      if (this.$route.name != "Home") {
+        router.push({
+          path: "/"
+        });
+      }
     },
     isloged() {
       this.user = JSON.parse(localStorage.getItem("user"));

@@ -1,7 +1,7 @@
 <template>
   <div class="overflow-x-hidden">
     <MainPage :isLogin="isLogin" @isloged="isloged" @islogedSignUp="islogedSignUp"></MainPage>
-    <ArticleSection @isloged="isloged" :isLogin="isLogin"></ArticleSection>
+    <ArticleSection @postSelected="postSelected" @isloged="isloged" :isLogin="isLogin"></ArticleSection>
     <ArticleAvailaible :isLogin="isLogin" @isloged="isloged"></ArticleAvailaible>
     <Profile :isLogin="isLogin" @isloged="isloged"></Profile>
     <contactUs :isLogin="isLogin" @isloged="isloged"></contactUs>
@@ -34,6 +34,9 @@ export default {
     contactUs
   },
   methods: {
+    postSelected(post) {
+      this.$emit("postSelected", post);
+    },
     logOut() {
       this.$emit("logOut");
     },

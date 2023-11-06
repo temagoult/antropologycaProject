@@ -69,7 +69,6 @@
               ></v-text-field>
 
               <v-text-field
-                :counter="20"
                 class="lg:!text-[25px] md:!text-[23px] sm:!text-[30px] !text-[18px] !px-2 i"
                 reverse
                 label="الايميل"
@@ -92,17 +91,26 @@
               ></v-textarea>
               <v-btn
                 :disabled="isReallyUpdated"
-                class="!mb-7 !text-white w-[50%]"
-                color="#0d6efd"
+                class="!mb-7 !text-white"
+                :color="success? 'success' : '#0d6efd' "
                 :loading="loadingPerso"
                 name="persoData"
                 type="submit"
-              >تعدبل الملف الشخصي</v-btn>
+              >
+                <slot v-if="!success" />
+                <template v-else>
+                  <span>
+                    تم التعدبل بنجاح
+                    <v-icon>mdi-check</v-icon>
+                  </span>
+                </template>
+                <span v-if="!success">تعدبل الملف الشخصي</span>
+              </v-btn>
             </v-form>
           </div>
 
           <div class="px-5 md:h p-2">
-            <v-form @submit.prevent="updatePassword" data-vv-scope="form2">
+            <v-form @submit.prevent="updatePassword">
               <v-text-field
                 class="lg:!text-[23px] md:!text-[21px] sm:!text-[19px] !text-[17px] !text-white fieldReadOnly !cursor-pointer"
                 value=" تغيير كلمة السر"
@@ -172,11 +180,20 @@
               ></v-text-field>-->
               <v-btn
                 :disabled="!isNoteEmpty"
-                class="!mb-7 !text-white md:w-[50%]"
-                color="#0d6efd"
+                class="!mb-7 !text-white"
                 type="submit"
                 :loading="loading"
-              >تغيير كلمة السر</v-btn>
+                :color="passSucces? 'success' : '#0d6efd'"
+              >
+                <slot v-if="!passSucces" />
+                <template v-else>
+                  <span>
+                    تم تغيير كلمة السر بنجاح
+                    <v-icon>mdi-check</v-icon>
+                  </span>
+                </template>
+                <span v-if="!passSucces">تغيير كلمة السر</span>
+              </v-btn>
             </v-form>
           </div>
         </v-card>
@@ -208,6 +225,8 @@ export default {
   data() {
     return {
       loadingPerso: false,
+      success: false,
+      passSucces: false,
       userBeforeUpdate: {
         name: "",
         email: "",
@@ -251,7 +270,7 @@ export default {
       this.$validator.validateAll("form1").then(result => {
         if (result) {
           axios
-            .post(
+            .patch(
               "https://anthropologyca.onrender.com/api/v1/users/updateMe",
 
               this.userBeforeUpdate,
@@ -265,9 +284,11 @@ export default {
             )
             .then(res => {
               if (res.status === 200) {
+                this.success = true;
                 this.loadingPerso = false;
-
+                localStorage.setItem("user", JSON.stringify(res.data));
                 console.log(res.data);
+
                 // console.log(res);
               }
             })
@@ -276,7 +297,13 @@ export default {
               this.error = e;
               console.log(e.response.data.message);
             })
-            .finally(() => (this.loadingPerso = false));
+            .finally(() => {
+              this.loadingPerso = false;
+              setTimeout(() => {
+                location.reload();
+                this.success = false;
+              }, 3000);
+            });
 
           // this.subsvalue = false;
           // this.dialogDelete = true;
@@ -308,6 +335,7 @@ export default {
             .then(res => {
               if (res.status === 200) {
                 this.loading = false;
+                this.passSucces = true;
 
                 console.log(res.data);
                 // console.log(res);
@@ -318,7 +346,12 @@ export default {
               this.error = e;
               console.log(e.response.data.message);
             })
-            .finally(() => (this.loading = false));
+            .finally(() => {
+              this.loading = false;
+              setTimeout(() => {
+                this.passSucces = false;
+              }, 3000);
+            });
 
           // this.subsvalue = false;
           // this.dialogDelete = true;
