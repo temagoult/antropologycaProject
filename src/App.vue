@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       currentPost: {},
-      isLogin: "",
+      isLogin: false,
       user: {
         data: {
           user: {}
@@ -32,9 +32,14 @@ export default {
     };
   },
   mounted() {
-    if (localStorage.getItem("user") !== null) {
+    if ("user" in localStorage) {
       this.isLogin = false;
+      localStorage.setItem("isLogin", false);
+
       this.user = JSON.parse(localStorage.getItem("user"));
+    } else {
+      this.isLogin = false;
+      localStorage.setItem("isLogin", JSON.stringify(true));
     }
     console.log("isLogin in this case" + this.isLogin);
     console.log(this.user);

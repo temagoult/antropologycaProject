@@ -350,6 +350,13 @@ export default {
               this.loading = false;
               setTimeout(() => {
                 this.passSucces = false;
+                this.$nextTick(() => {
+                  this.managePassword = {
+                    currentPassword: "",
+                    password: "",
+                    passwordConfirm: ""
+                  };
+                });
               }, 3000);
             });
 

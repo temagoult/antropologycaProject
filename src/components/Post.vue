@@ -33,22 +33,30 @@
         class="detailsActionBlog border border-solid border-x-transparent border-y-gray-400 p-2 flex justify-between shrink-0 grow-0"
       >
         <div class="commentsAndLikes flex !shrink-0 grow-0 gap-3">
-          <div class="flex items-center gap-2" @click="getAllComments">
+          <div class="flex items-center gap-2">
             <i
               class="fa-regular fa-comment cursor-pointer lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
             ></i>
             <div
+              @click="scrollToComments"
               class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
             >{{ post.commentsCounter }}</div>
           </div>
 
           <div class="flex items-center gap-2">
-            <i
-              class="fa-regular fa-heart lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500 cursor-pointer"
-            ></i>
-            <div
-              class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
-            >{{ post.likesCounter }}</div>
+            <v-btn icon @click="toggleIsPlaying">
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] cursor-pointer"
+                v-if="isPlaying"
+              >mdi-heart</v-icon>
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] cursor-pointer"
+                v-else
+              >mdi-heart-outline</v-icon>
+              <div
+                class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
+              >{{ post.likesCounter }}</div>
+            </v-btn>
           </div>
         </div>
 
@@ -83,8 +91,8 @@
           </div>
         </div>
       </div>
-      <div class="imgBlog p-2 w-[100%] h-[100px] flex">
-        <v-img src="../assets/images/article3.jpeg" />
+      <div class="imgBlog p-2 w-[100%] h-[400px] flex">
+        <img src="../assets/images/article.jpeg" class="h-[100%] w-[100%]" />
       </div>
       <div class="contentBlog md:text-[25px] p-2">{{ post.body }}</div>
       <div class="relatedBlog p-2">
@@ -129,17 +137,28 @@
               class="fa-regular fa-comment cursor-pointer lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
             ></i>
             <div
+              @click="focusComment"
               class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
             >{{ post.commentsCounter }}</div>
           </div>
 
           <div class="flex items-center gap-2">
-            <i
-              class="fa-regular fa-heart lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
-            ></i>
-            <div
-              class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
-            >{{ post.likesCounter }}</div>
+            <v-btn icon @click="toggleIsPlaying">
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] cursor-pointer"
+                v-if="isPlaying"
+                color="red"
+                @click="Like"
+              >mdi-heart</v-icon>
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] cursor-pointer"
+                v-else
+                @click="unLike"
+              >mdi-heart-outline</v-icon>
+              <div
+                class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
+              >{{ post.likesCounter }}</div>
+            </v-btn>
           </div>
         </div>
 
@@ -178,6 +197,7 @@
       <div class="comments p-2">
         <v-app>
           <v-textarea
+            id="commentField"
             outlined
             reverse
             label=" التعليق على المقال "
@@ -187,16 +207,29 @@
             v-model="comment"
           ></v-textarea>
           <v-btn
-            class="!text-white !w-[30%] lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
-            color="#0d6efd"
+            class="!text-white !w-[30%] lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px] !p-2"
+            :color="success? 'success' : '#0d6efd' "
             type="submit"
             :loading="loading"
             @click="addComment"
-          >التعليق</v-btn>
+          >
+            <slot v-if="!success" />
+            <template v-else>
+              <span>
+                <v-icon>mdi-check</v-icon>
+              </span>
+            </template>
+            <span v-if="!success">التعليق</span>
+          </v-btn>
         </v-app>
-        <v-divider class="my-3"></v-divider>
-        <div class="p-2 text-[25px] font-bold">التعليقات</div>
-        <div v-for="(comment,index) in post.comments" :key="index">
+
+        <div class="p-2 text-[25px] font-bold" id="comments">التعليقات</div>
+        <v-divider class="my-1"></v-divider>
+        <div
+          v-for="(comment,index) in post.comments.slice(0,number)"
+          :key="index"
+          class="flex flex-col"
+        >
           <div class="profileWriter flex gap-3 items-center p-2">
             <div>
               <v-img
@@ -226,8 +259,19 @@
             </div>
           </div>
           <div class="comments text-[12px] sm:text-[16px] md:text-[20px]">{{comment.comment}}</div>
+          <v-divider class="my-2"></v-divider>
         </div>
       </div>
+      <div
+        class="ShowMore underline text-blue-500 text-center cursor-pointer"
+        @click="handleShowMoreComment"
+        v-if="showLess"
+      >عرض المزيد</div>
+      <div
+        v-else
+        @click="handleShowLessComment"
+        class="ShowLess underline text-blue-500 text-center cursor-pointer"
+      >عرض القليل</div>
     </div>
   </div>
   <div class="div text-center" v-else>please LogIn</div>
@@ -244,11 +288,7 @@ export default {
   name: "Post",
   data() {
     return {
-      canComment: false,
-      getComments: {},
-      loading: false,
-      comment: null,
-      numwords2: { type: Number, value: 20 },
+      isPlaying: false,
       newArticles: [
         {
           title: " انتروبولوجيا المدبنة",
@@ -276,13 +316,32 @@ export default {
         }
       ],
 
+      number: 0,
+      showLess: true,
+      success: false,
+      token: "",
+      objectComment: {
+        post: "",
+
+        user: ""
+      },
+      post: {},
+
+      canComment: false,
+      getComments: {},
+      loading: false,
+      comment: null,
+      numwords2: { type: Number, value: 20 },
+
       showAltImage: false,
       title:
-        "أي-جيوب-أدنى-يبق-واستمرت-الفرنسي-بها-كل-هو-قام-الصعداء-والكوري-ببسثبقثثثثثثثثثثثثثثثثثثثثثثثثث",
-      post: {}
+        "أي-جيوب-أدنى-يبق-واستمرت-الفرنسي-بها-كل-هو-قام-الصعداء-والكوري-ببسثبقثثثثثثثثثثثثثثثثثثثثثثثثث"
     };
   },
   methods: {
+    toggleIsPlaying() {
+      this.isPlaying = !this.isPlaying;
+    },
     getFormattedDate(date) {
       return moment(date).format("YYYY-MM-DD");
     },
@@ -290,38 +349,80 @@ export default {
       this.showAltImage = true;
     },
     getAllComments() {},
-    addComment() {
-      console.log(this.user.data.user._id);
-      if (this.comment != null) {
-        axios
-          .post(
-            "https://anthropologyca.onrender.com/api/v1/users/" +
-              this.user.data.user._id +
-              "/posts/" +
-              this.post.id +
-              "/comments/",
+    async addComment() {
+      this.loading = true;
 
-            this.comment,
-            {
-              headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                Authorization: "Bearer " + this.user.token
-              }
-            }
-          )
-          .then(res => {
-            if (res.status === 200) {
-              this.loading = false;
+      await axios
+        .post(
+          "https://anthropologyca.onrender.com/api/v1/posts/" +
+            this.post.id +
+            "/comments/",
+          {
+            objectComment: {
+              post: this.post.id,
+              user: this.user.data.user._id
+            },
+            comment: this.comment
+          },
 
-              console.log(res.data);
+          {
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              Authorization: "Bearer " + this.user.token
             }
-          })
-          .catch(e => console.log(e));
-      }
+          }
+        )
+        .then(res => {
+          if (res.status === 200) {
+            this.loading = false;
+            this.success = true;
+
+            console.log(res.data);
+          }
+        })
+        .catch(e => console.log(e))
+        .finally(() => {
+          console.log("cest fait");
+          this.loading = false;
+          setTimeout(() => {
+            this.success = false;
+            this.$nextTick(() => {
+              this.comment = "";
+            });
+          }, 3000);
+        });
+    },
+    handleShowMoreComment() {
+      this.showLess = false;
+      this.number = this.post.comments.lengh;
+      console.log(this.showLess);
+    },
+    handleShowLessComment() {
+      this.showLess = true;
+      this.number = 5;
+    },
+    scrollToComments() {
+      const element = document.getElementById("comments");
+      element.scrollIntoView({ behavior: "smooth" });
+    },
+    focusComment() {
+      const element = document.getElementById("commentField");
+      element.focus();
+    },
+    Like() {
+      console.log("jaime");
+    },
+    unLike() {
+      console.log("notJaime");
     }
   },
+
   mounted() {
+    console.log("!" + this.isLogin);
+
     this.post = JSON.parse(localStorage.getItem("postSelected"));
+    console.log("down");
+    console.log(this.post);
     axios
       .get(
         "https://anthropologyca.onrender.com/api/v1/posts/" +
@@ -336,13 +437,17 @@ export default {
       .then(response => {
         this.post = response.data.data.data;
         console.log(this.post.comments);
+        this.lenghPost = this.post;
+        if (this.showLess == false) {
+          this.number = this.post.comments.lengh;
+        } else {
+          this.number = 5;
+        }
       })
       .catch(function(error) {
         console.log(error.response);
       })
-      .finally(function() {
-        // always executed
-      });
+      .finally(function() {});
   },
 
   props: {
