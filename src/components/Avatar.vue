@@ -2,9 +2,9 @@
   <v-app class="!h-0 !m-0 !p-0">
     <v-container fluid class="!p-2 md:!p-3">
       <v-row justify="center">
-        <v-menu buttom :min-width="widht" offset-y>
+        <v-menu bottom offset-y :min-width="widht">
           <template v-slot:activator="{ on }">
-            <v-btn icon x-large v-on="on">
+            <v-btn icon x-large v-on="on" clas>
               <v-avatar color="#0d6efd" :size="size">
                 <v-img
                   v-if="showAltImage==false"
@@ -14,7 +14,7 @@
                 <span
                   v-else
                   class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                >{{userAvatar.data.user.name.charAt(0)}}</span>
+                >{{user.data.user.name.charAt(0)}}</span>
               </v-avatar>
             </v-btn>
           </template>
@@ -30,23 +30,23 @@
                   <span
                     v-else
                     class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                  >{{userAvatar.data.user.name.charAt(0)}}</span>
+                  >{{user.data.user.name.charAt(0)}}</span>
                 </v-avatar>
                 <h3
                   class="lg:!text-[20px] md:!text-[25px] sm:!text-[20px] !text-[18px]"
-                >{{ userAvatar.data.user.name}}</h3>
+                >{{ user.data.user.name}}</h3>
 
                 <p
                   class="text-caption mt-1 lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                >{{userAvatar.data.user.email}}</p>
+                >{{user.data.user.email}}</p>
                 <div class="flex justify-center items-center mb-[2px]">
                   <p
                     class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                  >{{userAvatar.data.user.bio}}</p>
+                  >{{user.data.user.bio}}</p>
                 </div>
                 <span
                   class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px] !font-extrabold"
-                  v-if="userAvatar.data.user.verified"
+                  v-if="user.data.user.verified"
                 >الحساب :مفعل</span>
                 <span
                   class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px] !font-extrabold"
@@ -67,13 +67,13 @@
                 <v-divider class="my-3"></v-divider>
 
                 <v-btn
-                  to="/AddPost"
+                  to="/gestionArticles"
                   depressed
                   rounded
                   text
                   class="lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
                 >
-                  اضافة مقالة جدبدة
+                  ادارة مقالاتي
                   <v-icon
                     class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
                   >mdi-text-box-plus</v-icon>
@@ -81,6 +81,7 @@
 
                 <v-divider class="my-3"></v-divider>
                 <v-btn
+                  to="/favouritePost"
                   depressed
                   rounded
                   text
@@ -130,9 +131,8 @@
 </template>
 <script>
 export default {
-  created() {
-    this.userAvatar = this.user;
-    console.log(this.user);
+  mounted() {
+    this.userAvatar = Object.assign({}, this.user);
   },
   data: () => ({
     userAvatar: {},

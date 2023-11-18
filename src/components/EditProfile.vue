@@ -40,7 +40,7 @@
               <span
                 v-else
                 class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-              >{{user.data.user.name.charAt(0)}}</span>
+              >{{userBeforeUpdate.name.charAt(0)}}</span>
             </div>
             <v-label class>{{ userBeforeUpdate.name }}</v-label>
           </div>
@@ -227,11 +227,7 @@ export default {
       loadingPerso: false,
       success: false,
       passSucces: false,
-      userBeforeUpdate: {
-        name: "",
-        email: "",
-        bio: ""
-      },
+      userBeforeUpdate: {},
       managePassword: {
         currentPassword: "",
         password: "",
@@ -350,13 +346,6 @@ export default {
               this.loading = false;
               setTimeout(() => {
                 this.passSucces = false;
-                this.$nextTick(() => {
-                  this.managePassword = {
-                    currentPassword: "",
-                    password: "",
-                    passwordConfirm: ""
-                  };
-                });
               }, 3000);
             });
 

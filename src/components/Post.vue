@@ -1,9 +1,13 @@
-<template>
+<template  >
   <div
     v-if="isLogin==false"
-    class="lg:mb-[30px] md:mb-[25px] sm:mb-[15px] mb-[10px] lg:p-8 md:p-7 sm:p-5 p-4"
+    class="lg:mb-[30px] md:mb-[25px] sm:mb-[15px] mb-[10px] lg:p-8 md:p-7 sm:p-5 p-4 lg:min-h-[67vh] md:min-h-[46vh] min-h-[65vh]"
   >
-    <div class="myContainer flex flex-col gap-4 md:w-[70%] md:mx-auto">
+    <div
+      v-if="loadingPage"
+      class="flex items-center justify-center font-bold lg:text-[22px] md:text-[20px] sm:text-[16px] text-[14px]"
+    >جاري التحميل ...</div>
+    <div v-else class="myContainer flex flex-col gap-4 md:w-[70%] md:mx-auto">
       <h1 class="ttileBlog md:text-[32px] text-[25px] font-extrabold p-2">{{ post.title }}</h1>
       <div class="profileWriter flex gap-3 items-center p-2">
         <div>
@@ -34,22 +38,25 @@
       >
         <div class="commentsAndLikes flex !shrink-0 grow-0 gap-3">
           <div class="flex items-center gap-2">
-            <i
-              class="fa-regular fa-comment cursor-pointer lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
-            ></i>
-            <div
-              @click="scrollToComments"
-              class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
-            >{{ post.commentsCounter }}</div>
+            <v-btn icon @click="scrollToComments">
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] cursor-pointer"
+              >mdi-comment-outline</v-icon>
+              <div
+                class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
+              >{{ post.commentsCounter }}</div>
+            </v-btn>
           </div>
 
           <div class="flex items-center gap-2">
             <v-btn icon @click="toggleIsPlaying">
               <v-icon
+                @click="unLike"
                 class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] cursor-pointer"
-                v-if="isPlaying"
+                v-if="isLiked"
               >mdi-heart</v-icon>
               <v-icon
+                @click="like"
                 class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] cursor-pointer"
                 v-else
               >mdi-heart-outline</v-icon>
@@ -133,27 +140,29 @@
       >
         <div class="commentsAndLikes flex !shrink-0 grow-0 gap-3">
           <div class="flex items-center gap-2">
-            <i
-              class="fa-regular fa-comment cursor-pointer lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
-            ></i>
-            <div
-              @click="focusComment"
-              class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
-            >{{ post.commentsCounter }}</div>
+            <v-btn icon @click="focusComment">
+              <v-icon
+                @click="like"
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] cursor-pointer"
+              >mdi-comment-outline</v-icon>
+              <div
+                class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
+              >{{ post.commentsCounter }}</div>
+            </v-btn>
           </div>
 
           <div class="flex items-center gap-2">
             <v-btn icon @click="toggleIsPlaying">
               <v-icon
                 class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] cursor-pointer"
-                v-if="isPlaying"
+                v-if="isLiked"
                 color="red"
-                @click="Like"
+                @click="unLike"
               >mdi-heart</v-icon>
               <v-icon
                 class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] cursor-pointer"
                 v-else
-                @click="unLike"
+                @click="like"
               >mdi-heart-outline</v-icon>
               <div
                 class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-gray-500"
@@ -258,7 +267,17 @@
               </div>
             </div>
           </div>
-          <div class="comments text-[12px] sm:text-[16px] md:text-[20px]">{{comment.comment}}</div>
+          <div class="flex justify-between items-center">
+            <div class="comments text-[12px] sm:text-[16px] md:text-[20px]">{{comment.comment}}</div>
+            <div class="actionComment" v-if="user.data.user._id==comment.user._id">
+              <v-btn icon @click="editComment(comment)">
+                <v-icon class="px-1 !text-[12px] sm:!text-[16px] md:!text-[20px]">mdi-pencil</v-icon>
+              </v-btn>
+              <v-btn icon @click="dialogDelete=true">
+                <v-icon class="px-1 !text-[12px] sm:!text-[16px] md:!text-[20px]">mdi-delete</v-icon>
+              </v-btn>
+            </div>
+          </div>
           <v-divider class="my-2"></v-divider>
         </div>
       </div>
@@ -273,8 +292,23 @@
         class="ShowLess underline text-blue-500 text-center cursor-pointer"
       >عرض القليل</div>
     </div>
+    <v-dialog v-model="dialogDelete" max-width="500px">
+      <v-card>
+        <v-card-title class="text-h5">هل متاكد من حذف تغليقك</v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn color="blue darken-1" text @click="deleteItemConfirm(comment)">نغم</v-btn>
+          <v-btn color="blue darken-1" text @click="closeDelete">لا</v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
-  <div class="div text-center" v-else>please LogIn</div>
+  <div
+    class="div text-center lg:mb-[30px] md:mb-[25px] sm:mb-[15px] mb-[10px] lg:p-8 md:p-7 sm:p-5 p-4 lg:min-h-[67vh] md:min-h-[46vh] min-h-[65vh]"
+    v-else
+  >please LogIn</div>
 </template>
 <script>
 import axios from "axios";
@@ -288,7 +322,11 @@ export default {
   name: "Post",
   data() {
     return {
-      isPlaying: false,
+      componentKey: 0,
+      dialogDelete: false,
+      favouritePosts: null,
+      isLiked: null,
+      loadingPage: null,
       newArticles: [
         {
           title: " انتروبولوجيا المدبنة",
@@ -326,6 +364,7 @@ export default {
         user: ""
       },
       post: {},
+      userR: { token: "" },
 
       canComment: false,
       getComments: {},
@@ -338,7 +377,41 @@ export default {
         "أي-جيوب-أدنى-يبق-واستمرت-الفرنسي-بها-كل-هو-قام-الصعداء-والكوري-ببسثبقثثثثثثثثثثثثثثثثثثثثثثثثث"
     };
   },
+  computed: {
+    update() {
+      return this.componentKey + 1;
+    }
+  },
   methods: {
+    deleteItemConfirm(comment) {
+      axios
+        .delete(
+          "https://anthropologyca.onrender.com/api/v1/comments/" + comment._id,
+
+          {
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              Authorization: "Bearer " + this.user.token
+            }
+          }
+        )
+        .then(res => {
+          console.log(res.data);
+        })
+        .catch(e => {
+          console.log(e);
+        })
+        .finally(() => {});
+      this.dialogDelete = false;
+    },
+    reRender() {
+      this.componentKey += 1;
+      this.$forceUpdate();
+    },
+
+    closeDelete() {
+      this.dialogDelete = false;
+    },
     toggleIsPlaying() {
       this.isPlaying = !this.isPlaying;
     },
@@ -386,16 +459,46 @@ export default {
           this.loading = false;
           setTimeout(() => {
             this.success = false;
+            this.loadingPage = true;
             this.$nextTick(() => {
               this.comment = "";
             });
+            this.loadingPage = false;
           }, 3000);
         });
+    },
+    editComment(comment) {
+      const element = document.getElementById("commentField");
+      element.scrollIntoView({ behavior: "smooth" });
+      element.focus();
+      this.comment = comment.comment;
+      console.log(comment);
+      axios
+        .patch(
+          "https://anthropologyca.onrender.com/api/v1/comments/" + comment._id,
+          {
+            comment: comment
+          },
+
+          {
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              Authorization: "Bearer " + this.user.token
+            }
+          }
+        )
+        .then(res => {
+          console.log(res.data);
+          console.log(this.post);
+        })
+        .catch(e => {
+          console.log(e);
+        })
+        .finally(() => {});
     },
     handleShowMoreComment() {
       this.showLess = false;
       this.number = this.post.comments.lengh;
-      console.log(this.showLess);
     },
     handleShowLessComment() {
       this.showLess = true;
@@ -409,24 +512,73 @@ export default {
       const element = document.getElementById("commentField");
       element.focus();
     },
-    Like() {
-      console.log("jaime");
+    like() {
+      this.isLiked = true;
+      axios
+        .post(
+          "https://anthropologyca.onrender.com/api/v1/posts/" +
+            this.post.id +
+            "/likes",
+          {
+            objectComment: {
+              post: this.post.id,
+              user: this.user.data.user._id
+            }
+          },
+
+          {
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              Authorization: "Bearer " + this.user.token
+            }
+          }
+        )
+        .then(res => {
+          if (res.status === 200) {
+            console.log(res.data);
+            // console.log(res);
+          }
+        })
+        .catch(e => {
+          console.log(e.response.data.message);
+        })
+        .finally(() => {});
     },
     unLike() {
-      console.log("notJaime");
+      this.isLiked = false;
+      axios
+        .delete(
+          "https://anthropologyca.onrender.com/api/v1/posts/" +
+            this.post.id +
+            "/likes/",
+
+          {
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              Authorization: "Bearer " + this.user.token
+            }
+          }
+        )
+        .then(res => {
+          if (res.status === 200) {
+            console.log(res.data);
+            // console.log(res);
+          }
+        })
+        .catch(e => {
+          console.log(e.response.data.message);
+        })
+        .finally(() => {});
     }
   },
-
-  mounted() {
-    console.log("!" + this.isLogin);
-
+  created() {
     this.post = JSON.parse(localStorage.getItem("postSelected"));
-    console.log("down");
-    console.log(this.post);
+
+    this.loadingPage = true;
+
     axios
       .get(
-        "https://anthropologyca.onrender.com/api/v1/posts/" +
-          this.currentPost.slug,
+        "https://anthropologyca.onrender.com/api/v1/posts/" + this.post.slug,
         {
           headers: {
             "Content-Type": "application/json; charset=utf-8",
@@ -435,9 +587,10 @@ export default {
         }
       )
       .then(response => {
-        this.post = response.data.data.data;
-        console.log(this.post.comments);
-        this.lenghPost = this.post;
+        this.post = Object.assign({}, response.data.data.data);
+        console.log(this.post);
+        this.loadingPage = false;
+
         if (this.showLess == false) {
           this.number = this.post.comments.lengh;
         } else {
@@ -446,8 +599,35 @@ export default {
       })
       .catch(function(error) {
         console.log(error.response);
+        this.loadingPage = false;
       })
-      .finally(function() {});
+      .finally(() => {
+        this.loadingPage = false;
+      });
+
+    axios
+      .get(
+        "https://anthropologyca.onrender.com/api/v1/users/my-favorite-posts",
+        {
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: "Bearer " + this.user.token
+          }
+        }
+      )
+      .then(response => {
+        console.log(response.data);
+        this.favouritePosts = response.data.data;
+        this.favouritePosts.map(postFavourite => {
+          if (postFavourite.id == this.post.id) {
+            this.isLiked = true;
+          }
+        });
+      })
+      .catch(function(error) {
+        console.log(error.response);
+      })
+      .finally(() => {});
   },
 
   props: {

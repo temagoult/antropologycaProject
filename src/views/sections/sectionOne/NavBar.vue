@@ -153,23 +153,23 @@
               <span
                 v-else
                 class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-              >{{userAvatar.data.user.name.charAt(0)}}</span>
+              >{{user.data.user.name.charAt(0)}}</span>
             </v-avatar>
             <h3
               class="lg:!text-[20px] md:!text-[25px] sm:!text-[20px] !text-[18px]"
-            >{{ userAvatar.data.user.name}}</h3>
+            >{{ user.data.user.name}}</h3>
 
             <p
               class="text-caption mt-1 lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-            >{{userAvatar.data.user.email}}</p>
+            >{{user.data.user.email}}</p>
             <div class="flex justify-center items-center mb-[2px]" v-if="isLogin==false">
               <p
                 class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-              >{{userAvatar.data.user.bio}}</p>
+              >{{user.data.user.bio}}</p>
             </div>
 
             <span
-              v-if="userAvatar.verified"
+              v-if="user.verified"
               class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px] !font-extrabold"
             >الحساب :مفعل</span>
             <span
@@ -233,13 +233,13 @@
             <v-divider class="my-3"></v-divider>
 
             <v-btn
-              to="/AddPost"
+              to="/gestionArticles"
               depressed
               rounded
               text
               class="lg:!text-[18px] md:!text-[16px] sm:!text-[20px] !text-[18px]"
             >
-              اضافة مقالة جدبدة
+              ادارة مقالاتي
               <v-icon
                 class="lg:!text-[20px] md:!text-[18px] sm:!text-[20px] !text-[18px] !p-1"
               >mdi-text-box-plus</v-icon>
@@ -248,6 +248,7 @@
             <v-divider class="my-3"></v-divider>
             <v-btn
               depressed
+              to="/favouritPost"
               rounded
               text
               class="lg:!text-[18px] md:!text-[16px] sm:!text-[20px] !text-[18px]"
@@ -321,7 +322,7 @@ import Avatar from "@/components/Avatar.vue";
 
 export default {
   mounted() {
-    this.inisilise();
+    this.userAvatar = Object.assign({}, this.user);
   },
   data() {
     return {
@@ -401,6 +402,7 @@ export default {
         this.actif2 = false;
         this.actif3 = false;
         this.actif4 = false;
+      
       }
     },
     onclick2() {
@@ -421,6 +423,7 @@ export default {
         this.actif2 = false;
         this.actif1 = false;
         this.actif4 = false;
+        this.$emit("scrollToTeamWork");
       }
     },
     onclick4() {
@@ -438,7 +441,8 @@ export default {
     },
     islogedSignUp() {
       this.$emit("islogedSignUp");
-    }
+    },
+    scrollToTeamWork() {}
   },
 
   computed: {

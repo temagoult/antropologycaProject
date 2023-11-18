@@ -4,8 +4,9 @@
     
   /*  font-family: 'Noto Kufi Arabic', sans-serif;*/}
   body{
-    font-family: 'Lateef', serif;
+    font-family: 'Lateef', serif !important;
   }
+
 .myContainer{
     width: 95%;
     margin: auto;
@@ -52,8 +53,8 @@ p{
  .v-messages__message {
         text-align: right;
 }
-.cardArticle,.cardSousArticle,.formAddPost,.editProfile,.h{
-    box-shadow: 0px 0px 9px 2px rgba(0, 0, 0, 0.05); 
+.cardArticle,.cardSousArticle,.formAddPost,.editProfile,.h,.formEditPost{
+    box-shadow: 0px 0px 9px 2px rgba(0, 0, 0, 0.05)  !important; 
 }
 span{
     font-weight: 700;
@@ -148,4 +149,6 @@ height: auto !important;
     color: gray !important;
 }
 
- 
+.navigationDrawer{
+    direction: ltr !important;
+} 

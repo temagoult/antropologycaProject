@@ -1,9 +1,9 @@
 <template>
-  <div class="overflow-x-hidden">
+  <div>
     <MainPage :isLogin="isLogin" @isloged="isloged" @islogedSignUp="islogedSignUp"></MainPage>
     <ArticleSection @postSelected="postSelected" @isloged="isloged" :isLogin="isLogin"></ArticleSection>
     <ArticleAvailaible :isLogin="isLogin" @isloged="isloged"></ArticleAvailaible>
-    <Profile :isLogin="isLogin" @isloged="isloged"></Profile>
+    <Profile id="teamWork" :isLogin="isLogin" @isloged="isloged"></Profile>
     <contactUs :isLogin="isLogin" @isloged="isloged"></contactUs>
   </div>
 </template>
@@ -17,13 +17,16 @@ import Profile from "./views/sections/sectionFive/Profile.vue";
 import contactUs from "./views/sections/sectionSix/contactUs.vue";
 
 export default {
+  mounted() {},
   data() {
     return {};
   },
+
   name: "Home",
   props: {
     isLogin: { type: Boolean },
-    user: { type: Object }
+    user: { type: Object },
+    callBack: { type: Function }
   },
 
   components: {

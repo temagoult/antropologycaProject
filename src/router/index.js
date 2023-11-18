@@ -5,14 +5,35 @@ import Home  from '@/Home.vue'
 import EditProfile  from '../components/EditProfile'
 import AddPost  from '../components/AddPost'
 import Post  from '../components/Post'
-
+import FavouritePost  from '../components/FavouritPost'
+import GestionArticles from "../components/GestionArticles"
+import EditBlog from "../components/EditBlog"
+import userProfile from "@/views/userProfile"
 
 
 
 
 Vue.use(VueRouter)
 
-const routes = [
+const routes = [ {
+  path: '/userProfile',
+  name: 'userProfile',
+  component: userProfile
+},
+  
+  {
+  path: '/favouritPost',
+  name: 'favouritPost',
+  component: FavouritePost
+}, {
+  path: '/EditBlog',
+  name: 'EditBlog',
+  component: EditBlog
+}, {
+  path: '/gestionArticles',
+  name: 'gestionArticles',
+  component: GestionArticles
+},
   {
     path: '/Search',
     name: 'Search',

@@ -44,7 +44,7 @@
       >لا يوجد مقالات متعلقة ببحثك</div>
       <div
         v-if="search.length>0"
-        class="sousArticles flex flex-col gap-1 md:w-[80%] w-[70%] p-2 mt-[-30px]"
+        class="sousArticles flex flex-col gap-1 md:w-[100%] sm:w-[70%] w-[70%] p-2 mt-[-30px]"
       >
         <div
           class="cardSousArticle border border-solid border-gray-300 flex items-start md:p-3 p-2 gap-1 rounded-[25px] hover:bg-slate-100 cursor-pointer"

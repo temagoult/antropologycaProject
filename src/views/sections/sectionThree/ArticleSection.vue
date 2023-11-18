@@ -14,7 +14,6 @@
         >اضيف مؤخرا</div>
         <div class="w-[100%] bg-[#0d6efd] h-[1px] absolute z-[-1]"></div>
       </div>
-      <div></div>
 
       <Swiper
         class="sm:!w-[120%] sm!!w-[115%] !w-[100%] md:!p-0 !p-2"
@@ -69,21 +68,28 @@
               >
                 <div>
                   <span class>اضيف في :</span>
-                  {{getFormattedDate( article.publishedAt )}}
+                  {{getFormattedDate( article.createdAt )}}
                 </div>
               </div>
-              <div class="sousCard flex justify-between py-2 text-[#0d6efd]">
-                <div class="icons flex cursor-pointer !max-w-[50%]">
-                  <div class="comment flex items-center gap-2">
+              <div class="sousCard flex justify-between py-2 text-[#0d6efd] w-[100%]">
+                <div class="icons !flex !justify-between w-[100%] items-center">
+                  <v-btn
+                    disabled
+                    icon
+                    class="!shrink-0 !grow-0 comment !flex !items-center !gap-2 !lg:text-[20px] !md:text-[18px] !sm:text-[16px] !text-[14px] !text-[#0d6efd] !px-4"
+                  >
                     <i
                       class="fa-regular fa-comment cursor-pointer lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
                     ></i>
                     <div
                       class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
                     >{{ article.commentsCounter }}</div>
-                  </div>
-                  <div
-                    class="download flex items-center gap-2 lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    disabled
+                    icon
+                    class="!px-4 !shrink-0 !grow-0 download !flex !items-center !gap-2 !lg:text-[20px] !md:text-[18px] !sm:text-[16px] !text-[14px] !text-[#0d6efd]"
                   >
                     <i
                       class="fa-solid fa-download cursor-pointers lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
@@ -91,29 +97,43 @@
                     <div
                       class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
                     >{{ article.downloadCounter }}</div>
-                  </div>
-                  <div class="view flex items-center gap-2">
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    disabled
+                    icon
+                    class="!px-4 !shrink-0 !grow-0 !view !flex !items-center !gap-2 !lg:text-[20px] !md:text-[18px] !sm:text-[16px] !text-[14px] !text-[#0d6efd]"
+                  >
                     <i
                       class="fa-regular fa-eye lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
                     ></i>
                     <div
                       class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
                     >{{ article.viewsCounter }}</div>
-                  </div>
-                  <div class="like flex items-center gap-2">
-                    <i
-                      class="fa-regular fa-heart lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
-                    ></i>
-                    <div
-                      class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
-                    >{{ article.likesCounter }}</div>
+                  </v-btn>
+                  <div class="flex items-center gap-2">
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      disabled
+                      icon
+                      class="!shrink-0 !grow-0 !px-4 !flex !items-center !gap-2 !lg:text-[20px] !md:text-[18px] !sm:text-[16px] !text-[14px] !text-[#0d6efd]"
+                    >
+                      <i
+                        class="fa-regular fa-heart lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] cursor-pointer !text-[#0d6efd]"
+                      >mdi-heart</i>
+
+                      <div
+                        class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] !text-[#0d6efd]"
+                      >{{ article.likesCounter }}</div>
+                    </v-btn>
+                    <v-spacer></v-spacer>
                   </div>
                 </div>
 
                 <v-btn
                   :disabled="isLogin"
                   @click="action(article)"
-                  class="!text-[#0d6efd] cursor-pointer lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px]"
+                  class="!text-[#0d6efd] cursor-pointer !lg:text-[20px] !md:text-[18px] !sm:text-[16px] !text-[14px] !self-end"
                 >اقرا المزيد</v-btn>
               </div>
             </div>
@@ -174,12 +194,14 @@ import router from "../../../router";
 import moment from "moment";
 SwiperCore.use([Scrollbar, Mousewheel, Navigation, Autoplay]);
 export default {
-  mounted() {
+  created() {
     this.getBlogs();
     console.log(this.posts);
   },
   data() {
     return {
+      favouritePosts: null,
+      isLiked: null,
       posts: [
         {
           title: "",
@@ -265,6 +287,64 @@ export default {
     };
   },
   methods: {
+    like() {
+      this.isLiked = true;
+      axios
+        .post(
+          "https://anthropologyca.onrender.com/api/v1/posts/" +
+            this.post.id +
+            "/likes",
+          {
+            objectComment: {
+              post: this.post.id,
+              user: this.user.data.user._id
+            }
+          },
+
+          {
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              Authorization: "Bearer " + this.user.token
+            }
+          }
+        )
+        .then(res => {
+          if (res.status === 200) {
+            console.log(res.data);
+            // console.log(res);
+          }
+        })
+        .catch(e => {
+          console.log(e.response.data.message);
+        })
+        .finally(() => {});
+    },
+    unLike() {
+      this.isLiked = false;
+      axios
+        .delete(
+          "https://anthropologyca.onrender.com/api/v1/posts/" +
+            this.post.id +
+            "/likes/",
+
+          {
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              Authorization: "Bearer " + this.user.token
+            }
+          }
+        )
+        .then(res => {
+          if (res.status === 200) {
+            console.log(res.data);
+            // console.log(res);
+          }
+        })
+        .catch(e => {
+          console.log(e.response.data.message);
+        })
+        .finally(() => {});
+    },
     getFormattedDate(date) {
       return moment(date).format("YYYY-MM-DD");
     },
@@ -279,7 +359,7 @@ export default {
           console.log(response.data);
           localStorage.clear("allPosts");
 
-          this.posts = response.data.data.docs;
+          this.posts = Object.assign({}, response.data.data.docs);
           console.log(this.posts);
         })
         .catch(function(error) {
@@ -324,6 +404,10 @@ export default {
     },
     islogedSignUp() {
       this.$emit("islogedSignUp");
+    },
+
+    toggleIsPlaying() {
+      this.isPlaying = !this.isPlaying;
     }
   },
   components: {

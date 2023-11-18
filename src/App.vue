@@ -1,7 +1,10 @@
 <template>
-  <div class="overflow-x-hidden">
-    <navBar :isLogin="isLogin" @logOut="logOut" :user="user"></navBar>
+  <div class>
+    <!-- <AdminDashbord :user="user" /> -->
+    <navBar @scrollToTeamWork="scrollToTeamWork" :isLogin="isLogin" @logOut="logOut" :user="user"></navBar>
     <router-view
+      class="lg:min-h-[67vh] md:min-h-[46vh] min-h-[65vh]"
+      :callBack="scrollToTeamWork"
       @postSelected="postSelected"
       :isLogin.sync="isLogin"
       :user="user"
@@ -9,12 +12,15 @@
       @islogedSignUp="islogedSignUp"
       @isloged="isloged"
       @logOut="logOut"
+      @currentEditableBlog="currentEditableBlog"
+      :editableBlog="editableBlog"
     ></router-view>
     <Footer :isLogin.sync="isLogin "></Footer>
   </div>
 </template>
   <script>
 import "./styles/style.css";
+// import AdminDashbord from "./views/AdminDasghbord.vue";
 import Footer from "./views/sections/sectionSeven/Footer.vue";
 import navBar from "./views/sections/sectionOne/NavBar.vue";
 import router from "./router";
@@ -23,34 +29,34 @@ export default {
   data() {
     return {
       currentPost: {},
-      isLogin: false,
-      user: {
-        data: {
-          user: {}
-        }
-      }
+      isLogin: true,
+      user: {},
+      editableBlog: {}
     };
   },
-  mounted() {
-    if ("user" in localStorage) {
+  created() {
+    this.user = JSON.parse(localStorage.getItem("user"));
+    if (JSON.parse(localStorage.getItem("user") != null)) {
       this.isLogin = false;
-      localStorage.setItem("isLogin", false);
-
-      this.user = JSON.parse(localStorage.getItem("user"));
     } else {
-      this.isLogin = false;
-      localStorage.setItem("isLogin", JSON.stringify(true));
+      this.isLogin = true;
     }
-    console.log("isLogin in this case" + this.isLogin);
-    console.log(this.user);
   },
 
   name: "App",
   components: {
     navBar,
     Footer
+    // AdminDashbord
   },
   methods: {
+    scrollToTeamWork() {
+      this.$emit("scrollToTeamWork");
+    },
+    currentEditableBlog(element) {
+      this.editableBlog = Object.assign({}, element);
+    },
+
     postSelected(post) {
       this.currentPost = post;
     },
@@ -61,7 +67,7 @@ export default {
     logOut() {
       this.isLogin = true;
       localStorage.removeItem("user");
-      console.log(this.currentPost);
+
       if (this.$route.name != "Home") {
         router.push({
           path: "/"

@@ -1,41 +1,6 @@
 <template>
-  <div class="lg:mb-[30px] md:mb-[25px] sm:mb-[15px] mb-[10px] lg:p-8 md:p-7 sm:p-5 p-4">
-    <div
-      class="text-[#0d6efd] md:text-start text-center sousTitre flex md:p-2 p-[3px] md:justify-start justify-center gap-2 items-center relative w-[100%]"
-    >
-      <i
-        class="fa-solid fa-paperclip lg:text-[40px] md:text-[35px] sm:text-[25px] text-[20px] bg-white md:mr-[100px] m-0 pr-1"
-      ></i>
-      <div
-        class="lg:text-[40px] md:text-[35px] sm:text-[25px] text-[20px] bg-white p-2 mr-[-8px]"
-      >اضافة مقالة</div>
-      <div class="w-[100%] bg-[#0d6efd] h-[1px] absolute z-[-1]"></div>
-    </div>
-    <!-- <div class="flex items-center justify-between md:hidden">
-      <div class="p-2">
-        <v-list-item class="lg:!text-[18px] md:!text-[21px] sm:!text-[15px] !text-[12px]" to="/">
-          <v-list-item-content>
-            <i class="fa-solid fa-arrow-right md:text-[25px] sm:text-[20px] text-[15px] text-black"></i>
-          </v-list-item-content>
-        </v-list-item>
-      </div>
-      <v-btn icon x-large @click="showDialog=true" class="!p-2">
-        <v-avatar color="#0d6efd" :size="size">
-          <v-img
-            v-if="showAltImage==false"
-            src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"
-            v-on:error="onImgError"
-          ></v-img>
-          <span
-            v-else
-            class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-          >{{userBeforeUpdate.name.charAt(0)}}</span>
-        </v-avatar>
-      </v-btn>
-    </div>-->
-    <!-- Two-way Data-Binding -->
-
-    <div class="formAddPost myContainer">
+  <div>
+    <div class="formEditPost myContainer">
       <div class>
         <v-app class="!min-h-[0px]">
           <v-form
@@ -63,11 +28,11 @@
                 counter
                 reverse
                 class="md:!w-[50%]"
-                v-model="post.coverImage"
+                v-model="post.coverImage.src"
                 @change="onFileChange"
                 required
               ></v-file-input>
-              <v-img :src="imageUrl" class="w-[50px] h-[50px]" v-model="image" />
+              <v-img :src="post.coverImage.src" class="w-[50px] h-[50px]" v-model="image" />
 
               <v-label v-if="validImage">add a valid image</v-label>
             </div>
@@ -102,7 +67,7 @@
               color="#0d6efd"
               name="persoData"
               type="submit"
-            >نشر المقالة</v-btn>
+            >تحدبث المقالة</v-btn>
           </v-form>
         </v-app>
       </div>
@@ -144,12 +109,14 @@ export default {
         body: ""
       },
       editorOption: {
-        // Some Quill options...
+        placeholder: "somthing"
       }
     };
   },
   mounted() {
     this.userBeforeUpdate = Object.assign({}, this.user.data.user);
+    this.post = Object.assign({}, this.editableBlog);
+    console.log(this.post);
   },
   methods: {
     getPost() {
@@ -220,6 +187,9 @@ export default {
 
   props: {
     user: {
+      type: Object
+    },
+    editableBlog: {
       type: Object
     }
   }
