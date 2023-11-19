@@ -2,7 +2,7 @@
   <div>
     <MainPage :isLogin="isLogin" @isloged="isloged" @islogedSignUp="islogedSignUp"></MainPage>
     <ArticleSection @postSelected="postSelected" @isloged="isloged" :isLogin="isLogin"></ArticleSection>
-    <ArticleAvailaible :isLogin="isLogin" @isloged="isloged"></ArticleAvailaible>
+    <ArticleAvailaible @postSelected="postSelected" :isLogin="isLogin" @isloged="isloged"></ArticleAvailaible>
     <Profile id="teamWork" :isLogin="isLogin" @isloged="isloged"></Profile>
     <contactUs :isLogin="isLogin" @isloged="isloged"></contactUs>
   </div>

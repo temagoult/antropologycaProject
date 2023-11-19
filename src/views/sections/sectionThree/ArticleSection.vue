@@ -357,9 +357,8 @@ export default {
         })
         .then(response => {
           console.log(response.data);
-          localStorage.clear("allPosts");
 
-          this.posts = Object.assign({}, response.data.data.docs);
+          this.posts = response.data.data.docs;
           console.log(this.posts);
         })
         .catch(function(error) {

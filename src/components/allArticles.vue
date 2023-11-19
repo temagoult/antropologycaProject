@@ -1,60 +1,24 @@
 <template>
   <div
-    class="overflow-x-hidden relative lg:mb-[30px] md:mb-[25px] sm:mb-[15px] mb-[10px] lg:p-8 md:p-7 sm:p-5 p-4"
+    class="lg:mb-[30px] md:mb-[25px] sm:mb-[15px] mb-[10px] lg:p-8 md:p-7 sm:p-5 p-4 lg:min-h-[67vh] md:min-h-[46vh] min-h-[65vh]"
   >
-    <div class="myContainer flex flex-col justify-start">
-      <div
-        class="text-[#0d6efd] md:text-start text-center sousTitre flex md:p-2 p-[3px] md:justify-start justify-center gap-2 items-center relative w-[100%]"
-      >
-        <i
-          class="fa-solid fa-paperclip lg:text-[40px] md:text-[35px] sm:text-[25px] text-[20px] bg-white md:mr-[100px] m-0 pr-1"
-        ></i>
-        <div
-          class="lg:text-[40px] md:text-[35px] sm:text-[25px] text-[20px] bg-white p-2 mr-[-8px]"
-        >مقالات قد تعجبك</div>
-        <div class="w-[100%] bg-[#0d6efd] h-[1px] absolute z-[-1]"></div>
+    <div class="myContainer">
+      <div class="md:w-[100%] mx-auto placeholder:text-[#0d6efd] p-2">
+        <v-text-field
+          class="!self-center !m-0 !rounded"
+          type="text"
+          clearable
+          outlined
+          append-inner-icon="mdi-magnify"
+          v-model="search"
+          placeholder="  بحث في المدونة   (عنوان المقال)"
+        ></v-text-field>
       </div>
-      <div
-        v-if="loadingPage"
-        class="flex items-center justify-center font-bold lg:text-[22px] md:text-[20px] sm:text-[16px] text-[14px]"
-      >جاري التحميل ...</div>
-      <div class="flex flex-col gap-8 justify-center" v-else>
-        <!-- <div class="sousArticles flex flex-col gap-1 md:col-span-4 md:order-1 order-2 p-2">
-          <div
-            class="cardSousArticle border border-solid border-gray-300 flex items-center md:p-3 p-2 justify-between gap-1 rounded-[25px]"
-            v-for="(e,index) in newArticles.slice(0,number)"
-            :key="index"
-          >
-            <img
-              :src="photoArticle.src"
-              class="w-[140px] lg-h-[00px] md:h-[104px] sm:h-[65px] h-[50px] p-1"
-            />
-            <div class="flex flex-col">
-              <div
-                class="dateP lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
-              >
-                <span>عنوان المقال :</span>
-                {{ e.title.split(" ")
-                .slice(0, numwords2.value)
-                .join(" ") + "..." }}
-              </div>
-              <p
-                class="text-gray-500 self-center lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] leading-4"
-              >
-                {{ e.summary.split(" ")
-                .slice(0, numwords2.value)
-                .join(" ") + "..." }}
-              </p>
-              <a
-                class="underline text-[#0d6efd] leading-3 cursor-pointer lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] self-end md:leading-3"
-                @click="action"
-              >اقرا المزيد</a>
-            </div>
-          </div>
-        </div>-->
+
+      <div class="articles p-2 myContainer flex flex-col">
         <div class="mainArticle p-2 grid md:grid-cols-3 sm:grid-cols-2 gap-4 content-center">
           <div
-            v-for="(blog,index) in records"
+            v-for="(blog,index) in filterBlog"
             :key="index"
             class="cardArticle p-2 rounded-[25px] border border-solid border-gray-300 flex flex-col md:gap-1 sm:gap-[3px] gap-[2px]"
           >
@@ -88,7 +52,7 @@
             >
               <div>
                 <span class>اضيف في :</span>
-                {{ getFormattedDate(blog.createdAt) }}
+                {{getFormattedDate( blog.updatedAt) }}
               </div>
             </div>
             <div class="sousCard flex justify-between py-2 text-[#0d6efd]">
@@ -144,7 +108,7 @@
 
                     <div
                       class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] !text-[#0d6efd]"
-                    >{{ newArticles[index].likesCounter }}</div>
+                    >{{ allArticles[index].likesCounter }}</div>
                   </v-btn>
                   <v-spacer></v-spacer>
                 </div>
@@ -171,50 +135,22 @@
         </v-app>
       </div>
     </div>
-    <Login
-      class="absolute"
-      :showLoginDialog="showLoginDialog"
-      @updatemodelValue="updatemodelValue"
-      @isloged="isloged"
-      @islogedSignUp="islogedSignUp"
-    ></Login>
-    <v-dialog v-model="dialoglogin" max-width="300px">
-      <v-card>
-        <v-spacer></v-spacer>
-        <v-card-title
-          class="!text-center p-2 md:!text-lg sm:!text-base !text-sm m-2 justify-center"
-        >يجب عليك تسجيل الدخول اولا</v-card-title>
-        <v-spacer></v-spacer>
-        <v-card-actions>
-          <v-btn color="blue darken-1" text @click="dialogMustlogin">متفهم</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
-<script>
-import Login from "@/components/Login.vue";
+  <script>
 import axios from "axios";
-
 import moment from "moment";
-import router from "../../../router";
 
 export default {
-  components: {
-    Login
-  },
-  props: {
-    isLogin: { type: Boolean }
-  },
-  created() {
-    this.getBlogs(this.page);
-  },
+  components: {},
   data() {
     return {
+      calcPerPgae: 0,
+      search: "",
       loadingPage: null,
       pageCount: 0,
       page: 1,
-      perPage: 3,
+      perPage: 6,
       records: [],
       recordsLength: 0,
 
@@ -222,48 +158,11 @@ export default {
       dialoglogin: false,
       numwords: { type: Number, value: 20 },
       numwords2: { type: Number, value: 2 },
+      photoArticle: {
+        src: require("../assets/images/article2.jpg")
+      },
 
-      newArticles: [
-        {
-          title: "",
-          summary: "",
-          viewsCounter: "",
-          likesCounter: "",
-          commentsCounter: "",
-          author: {}
-        },
-        {
-          title: "",
-          summary: "",
-          viewsCounter: "",
-          likesCounter: "",
-          commentsCounter: "",
-          author: {}
-        },
-        {
-          title: "",
-          summary: "",
-          viewsCounter: "",
-          likesCounter: "",
-          commentsCounter: "",
-          author: {}
-        },
-        {
-          title: "",
-          summary: "",
-          viewsCounter: "",
-          likesCounter: "",
-          commentsCounter: "",
-          author: {}
-        },
-        {
-          title: "",
-          summary: "",
-          viewsCounter: "",
-          likesCounter: "",
-          commentsCounter: "",
-          author: {}
-        },
+      allArticles: [
         {
           title: "",
           summary: "",
@@ -273,90 +172,75 @@ export default {
           author: {}
         }
       ],
-
-      photoArticle: {
-        src: require("../../../assets/images/mainArticle2.jpeg")
-      }
+      currentEditableBlog: {}
     };
   },
-
+  created() {
+    this.getBlogs(this.page);
+  },
+  computed: {
+    filterBlog() {
+      let Search = this.search;
+      return this.records.filter(function(article) {
+        return article.title.match(Search);
+      });
+    }
+  },
   methods: {
-    async getBlogs(page) {
-      this.loadingPage = true;
-      await axios
+    getBlogs(page) {
+      axios
         .get("https://anthropologyca.onrender.com/api/v1/posts/", {
           headers: {
             "Content-Type": "application/json; charset=utf-8"
           }
         })
         .then(response => {
-          if (this.loadingPage) {
-            this.loadingPage = false;
-          }
+          console.log(response.data);
 
-          this.newArticles = response.data.data.docs;
+          this.allArticles = response.data.data.docs;
           this.records = [];
           const startIndex = this.perPage * (page - 1) + 1;
-          const endIndex = startIndex + this.perPage - 1;
-          for (let i = startIndex; i <= endIndex; i++) {
-            this.records.push(this.newArticles[i]);
-          }
-          if (this.newArticles.length - endIndex < 3) {
-            this.perPage = this.newArticles.length - endIndex;
-          } else {
-            this.perPage = 3;
-          }
+          this.calcPerPgae = this.allArticles.length;
+          this.calcPerPgae = this.calcPerPgae - 1;
+          console.log(this.calcPerPgae);
 
-          this.recordsLength = this.newArticles.length;
-          this.pageCount = Math.floor(this.recordsLength / 3);
-          console.log(this.pageCount);
+          const endIndex = startIndex + this.perPage - 1;
+
+          for (let i = startIndex; i <= endIndex; i++) {
+            this.records.push(this.allArticles[i]);
+          }
+          if (this.allArticles.length - endIndex < 6) {
+            this.perPage = this.allArticles.length - endIndex;
+          } else {
+            this.perPage = 6;
+          }
+          console.log(this.allArticles.length - endIndex);
+
+          this.recordsLength = this.allArticles.length;
+
+          this.pageCount = Math.ceil(this.recordsLength / 6);
         })
         .catch(function(error) {
           console.log(error.response);
-          if (this.loadingPage) {
-            this.loadingPage = false;
-          }
         })
         .finally(function() {
           // always executed
-          // if (this.loadingPage) {
-          //   this.loadingPage = false;
-          // }
         });
-      this.loadingPage = false;
     },
 
-    callback: function(page) {
-      console.log(`Page ${page} was selected. Do something about it`);
-    },
-
-    dialogMustlogin() {
-      this.dialoglogin = false;
-      this.showLoginDialog = true;
-    },
-    updatemodelValue(val) {
-      this.showLoginDialog = val;
+    deletMyBlog() {},
+    getFormattedDate(date) {
+      return moment(date).format("YYYY-MM-DD");
     },
     action(article) {
       if (this.isLogin == true) {
         this.dialoglogin = true;
         console.log("hello" + this.showLoginDialog);
       } else {
-        router.push({ path: "/Post" });
+        this.$router.push({ path: "/Post" });
         this.$emit("postSelected", article);
-        localStorage.setItem("postSelected", JSON.stringify(article));
       }
-    },
-    isloged() {
-      this.$emit("isloged");
-    },
-    islogedSignUp() {
-      this.$emit("islogedSignUp");
-    },
-    getFormattedDate(date) {
-      return moment(date).format("YYYY-MM-DD");
     }
   }
 };
 </script>
-

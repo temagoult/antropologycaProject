@@ -119,7 +119,6 @@ export default {
       })
       .then(response => {
         this.allArticles = response.data.data.docs;
-        console.log(this.user.data.user._id);
       })
       .catch(function(error) {
         console.log(error.response);

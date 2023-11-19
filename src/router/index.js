@@ -9,6 +9,8 @@ import FavouritePost  from '../components/FavouritPost'
 import GestionArticles from "../components/GestionArticles"
 import EditBlog from "../components/EditBlog"
 import userProfile from "@/views/userProfile"
+import allArticles from "../components/allArticles"
+
 
 
 
@@ -20,7 +22,11 @@ const routes = [ {
   name: 'userProfile',
   component: userProfile
 },
-  
+  {
+    path: '/allArticles',
+    name: 'allArticles',
+    component: allArticles
+  },
   {
   path: '/favouritPost',
   name: 'favouritPost',
