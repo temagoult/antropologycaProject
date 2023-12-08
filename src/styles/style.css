@@ -1,154 +1,149 @@
-*{
-    direction: rtl;
-    box-sizing: border-box;
-    
-  /*  font-family: 'Noto Kufi Arabic', sans-serif;*/}
-  body{
-    font-family: 'Lateef', serif !important;
-  }
+* {
+  direction: rtl;
+  box-sizing: border-box;
 
-.myContainer{
-    width: 95%;
-    margin: auto;
-    padding-right: 8px;
-    padding-left: 8px;
- 
+  /*  font-family: 'Noto Kufi Arabic', sans-serif;*/
+}
+body {
+  font-family: "Lateef", serif !important;
 }
 
-.mainColor{
-    background-color: #0d6efd;
-    color: white
+.myContainer {
+  width: 95%;
+  margin: auto;
+  padding-right: 8px;
+  padding-left: 8px;
 }
-.logo{
-    font-weight: 400;
+
+.mainColor {
+  background-color: #0d6efd;
+  color: white;
 }
-input:focus{
-    outline: none;
+.logo {
+  font-weight: 400;
 }
-li{
-    cursor: pointer;
+input:focus {
+  outline: none;
 }
-.activ{
-    font-weight: 400;
-    color: black;
-    
+li {
+  cursor: pointer;
 }
-.navBar{
-    box-shadow: 0px 0px 9px 2px rgba(0, 0, 0, 0.05);
+.activ {
+  font-weight: 400;
+  color: black;
 }
-.search{
-    box-shadow: 0px 0px 9px 2px rgba(0, 0, 0, 0.05);
+.navBar {
+  box-shadow: 0px 0px 9px 2px rgba(0, 0, 0, 0.05);
 }
-.actif{
+.search {
+  box-shadow: 0px 0px 9px 2px rgba(0, 0, 0, 0.05);
+}
+.actif {
   background-color: #b2b9c3;
-   
 }
-p{
-    font-size: 17px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 146.3%;
-    letter-spacing: 0.34px;
-      }
- .v-messages__message {
-        text-align: right;
+p {
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 146.3%;
+  letter-spacing: 0.34px;
 }
-.cardArticle,.cardSousArticle,.formAddPost,.editProfile,.h,.formEditPost{
-    box-shadow: 0px 0px 9px 2px rgba(0, 0, 0, 0.05)  !important; 
+.v-messages__message {
+  text-align: right;
 }
-span{
-    font-weight: 700;
+.cardArticle,
+.cardSousArticle,
+.formAddPost,
+.editProfile,
+.h,
+.formEditPost {
+  box-shadow: 0px 0px 9px 2px rgba(0, 0, 0, 0.05) !important;
 }
-.photoSectionProfile{
-    box-shadow: 0px 0px 9px 2px rgba(0, 0, 0, 0.05);
-    border: solid 1px #0d6efd; 
+span {
+  font-weight: 700;
 }
- .v-label,.photoProfileEdit .v-label {
- color: #0d6efd !important;
+.photoSectionProfile {
+  box-shadow: 0px 0px 9px 2px rgba(0, 0, 0, 0.05);
+  border: solid 1px #0d6efd;
+}
+.v-label,
+.photoProfileEdit .v-label {
+  color: #0d6efd !important;
+  font-size: 18px !important;
+}
+@media screen and (max-width: 768px) {
+  .v-label {
+    font-size: 16px !important;
+  }
+  .v-form .i input,
+  .v-form .i textarea {
+    color: gray !important;
+    font-size: 14px !important;
+  }
+  .v-form .i .v-label,
+  .photoProfileEdit .v-label {
     font-size: 18px !important;
   }
-  @media screen and (max-width: 768px){
-    .v-label{
-        font-size: 16px !important;
-    
-    }
-    .v-form .i input ,.v-form .i textarea{
-        color: gray !important;
-        font-size: 14px !important;
-        
-    }
-    .v-form  .i .v-label ,.photoProfileEdit .v-label{
-        font-size: 18px !important;
-    }
-  
- 
-
- 
-  }
-
-    @media (min-width :768px )and (max-width: 1060px){
-        .v-label{
-            font-size: 16px !important;
-   
-    }
-    .v-form  .i .v-label,.photoProfileEdit .v-label{
-        font-size: 20px !important;
-    }
-  
- 
-
-   
 }
-    .v-list-item,.v-list{
-        padding: 0 !important;
-        
-        color: white !important;
-        background-color: transparent !important;
-        font-size: 18px !important;
-      
-    }
 
-    .v-list-item{
-        cursor: pointer;
-    }
-    .v-icon{
-        cursor: pointer !important;
-    }
-    .infoPerso input {
-        color: blue !important;
-        font-weight: 400 !important;
-        background-color: white ;
-      
-       
-    
-    }
-   
-    .fieldReadOnly input  ,.fieldReadOnly .v-icon{
-        color: #0d6efd !important;
-      ;
-        
-    }
-    .v-form .fieldReadOnly input, .infoPerso input {
-        font-size: 25px !important;
-    }
-    .v-form .i input ,.v-form .i textarea{
-        color: gray !important;
-        font-size: 18px !important;
+@media (min-width: 768px) and (max-width: 1060px) {
+  .v-label {
+    font-size: 16px !important;
+  }
+  .v-form .i .v-label,
+  .photoProfileEdit .v-label {
+    font-size: 20px !important;
+  }
+}
+.v-list-item,
+.v-list {
+  padding: 0 !important;
 
-        
-    }
-    .ql-editor {
-height: 300px !important;
+  color: white !important;
+  background-color: transparent !important;
+  font-size: 18px !important;
+}
+
+.v-list-item {
+  cursor: pointer;
+}
+.v-icon {
+  cursor: pointer !important;
+}
+.infoPerso input {
+  color: blue !important;
+  font-weight: 400 !important;
+  background-color: white;
+}
+
+.fieldReadOnly input,
+.fieldReadOnly .v-icon {
+  color: #0d6efd !important;
+}
+.v-form .fieldReadOnly input,
+.infoPerso input {
+  font-size: 25px !important;
+}
+.v-form .i input,
+.v-form .i textarea {
+  color: gray !important;
+  font-size: 18px !important;
+}
+.ql-editor {
+  height: 300px !important;
 }
 
 .ql-container {
-height: auto !important;
+  height: auto !important;
 }
-.photoProfileEdit .v-label{
-    font-size: 12px !important;
-    color: gray !important;
+.photoProfileEdit .v-label {
+  font-size: 12px !important;
+  color: gray !important;
 }
 
-.navigationDrawer{
-    direction: ltr !important;
-} 
+.navigationDrawer {
+  direction: ltr !important;
+}
+.tiptap-vuetify-editor__content {
+  min-height: 200px;
+}

@@ -8,7 +8,8 @@
           to="/addPost"
           class="!p-2 md:!text-[25px] !text-[15px] !text-white"
           color="#0d6efd"
-        >اضافة مقالة جديدة +</v-btn>
+          >اضافة مقالة جديدة +</v-btn
+        >
       </div>
       <div
         class="text-[#0d6efd] md:text-start text-center sousTitre flex md:p-2 p-[3px] md:justify-start justify-center gap-2 items-center relative w-[100%]"
@@ -18,40 +19,66 @@
         ></i>
         <div
           class="lg:text-[40px] md:text-[35px] sm:text-[25px] text-[20px] bg-white p-2 mr-[-8px]"
-        >مقالاتي</div>
+        >
+          مقالاتي
+        </div>
         <div class="w-[100%] bg-[#0d6efd] h-[1px] absolute z-[-1]"></div>
       </div>
+
       <div class="articles p-2 myContainer">
-        <div class="article grid md:grid-cols-3 grid-cols-1 md:gap-4 gap-2">
+        <div
+          v-if="loadingPage"
+          class="flex items-center justify-center font-bold lg:text-[22px] md:text-[20px] sm:text-[16px] text-[14px]"
+        >
+          جاري التحميل ...
+        </div>
+        <div
+          class="article grid md:grid-cols-3 grid-cols-1 md:gap-4 gap-2"
+          v-else
+        >
           <div
-            class="cardSousArticle border border-solid border-gray-300 flex md:flex-col items-center md:p-3 p-2 justify-between gap-1 rounded-[25px]"
-            v-for="(e,index) in newArticles "
+            class="cardSousArticle border border-solid border-gray-300 flex md:flex-col md:p-3 p-2 justify-between gap-1 rounded-[25px]"
+            v-for="(e, index) in newArticles"
             :key="index"
           >
             <img
-              :src="e.coverImage.src"
+              crossorigin="anonymous"
+              :src="
+                'https://anthropologyca.onrender.com/api/v1/posts/post-image/' +
+                e.coverImage
+              "
               class="w-[140px] md:w-[100%] lg-h-[250px] md:h-[200px] sm:h-[150px] h-[140px] p-1"
             />
             <div class="flex flex-col">
               <div
-                class="dateP lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
+                class="dateP lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd] overflow-hidden"
               >
                 <span>عنوان المقال :</span>
                 {{ e.title }}
               </div>
               <p
-                class="text-gray-500 self-center lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] leading-4"
+                class="text-gray-500 lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] leading-4 overflow-hidden"
               >
-                {{ e.summary.split(" ")
-                .slice(0, numwords2.value)
-                .join(" ") + "..." }}
+                {{
+                  e.summary.split(" ").slice(0, numwords2.value).join(" ") +
+                  "..."
+                }}
               </p>
               <div class="actionArticle self-end !p-2">
+                <v-btn icon @click="getBlog(e)">
+                  <v-icon class="!text-[12px] sm:!text-[16px] md:!text-[20px]"
+                    >mdi-pencil</v-icon
+                  >
+                </v-btn>
                 <v-btn icon @click="editMyBlog(e)">
-                  <v-icon class="!text-[12px] sm:!text-[16px] md:!text-[20px]">mdi-pencil</v-icon>
+                  <v-icon class="!text-[12px] sm:!text-[16px] md:!text-[20px]"
+                    >mdi-pencil</v-icon
+                  >
                 </v-btn>
                 <v-btn icon @click="deletMyBlog(e)">
-                  <v-icon class="!text-[12px] sm:!text-[16px] md:!text-[20px]">mdi-delete</v-icon>
+                  <v-icon class="!text-[12px] sm:!text-[16px] md:!text-[20px]"
+                    >mdi-delete</v-icon
+                  >
                 </v-btn>
               </div>
             </div>
@@ -62,63 +89,18 @@
   </div>
 </template>
 <script>
+import axios from "axios";
+import router from "../router";
 export default {
+  mounted() {
+    this.getMyBlogs();
+  },
   data() {
     return {
+      loadingPage: null,
       numwords2: { type: Number, value: 20 },
-      newArticles: [
-        {
-          title: " انتروبولوجيا المدبنة",
-          coverImage: {
-            src: require("../assets/images/sousArticle1.jpeg")
-          },
-          body:
-            "hhhhhhhhhhhhhhdqksldqskldhqs:chsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsdchsqklcnsd,;cvdfbnvnvd;nvdnv;:;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;vdfvd,",
-          summary:
-            "  تصفحها تصفحهاذا الموقع  فحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحهافحها وتصفحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقالات وتصفيحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقصفحهامختص في نشر المقالات  ا تصفحها"
-        },
-        {
-          title: " انتروبولوجيا المدبنة",
-          coverImage: {
-            src: require("../assets/images/sousArticle2.webp")
-          },
-          summary:
-            "  تصفحها تصفحهاذا الموقع  فحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحهافحها وتصفحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقالات وتصفيحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقصفحهامختص في نشر المقالات  ا تصفحها"
-        },
-        {
-          title: " انتروبولوجيا المدبنة",
-          coverImage: {
-            src: require("../assets/images/sousArticle3.jpeg")
-          },
-          summary:
-            "  تصفحها تصفحهاذا الموقع  فحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحهافحها وتصفحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقالات وتصفيحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقصفحهامختص في نشر المقالات  ا تصفحها"
-        },
-        {
-          title: " انتروبولوجيا المدبنة",
-          coverImage: {
-            src: require("../assets/images/sousArticle1.jpeg")
-          },
-          summary:
-            "  تصفحها تصفحهاذا الموقع  فحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحهافحها وتصفحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقالات وتصفيحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقصفحهامختص في نشر المقالات  ا تصفحها"
-        },
-        {
-          title: " انتروبولوجيا المدبنة",
-          coverImage: {
-            src: require("../assets/images/sousArticle1.jpeg")
-          },
-          summary:
-            "  تصفحها تصفحهاذا الموقع  فحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحهافحها وتصفحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقالات وتصفيحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقصفحهامختص في نشر المقالات  ا تصفحها"
-        },
-        {
-          title: " انتروبولوجيا المدبنة",
-          coverImage: {
-            src: require("../assets/images/sousArticle1.jpeg")
-          },
-          summary:
-            "  تصفحها تصفحهاذا الموقع  فحها وتصفحها تصفحهالموقع مختص في نشر المقالات وتصفحها تصفحهافحها وتصفحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقالات وتصفيحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقحها تصفحهالموقع مختص في نشر المقصفحهامختص في نشر المقالات  ا تصفحها"
-        }
-      ],
-      currentEditableBlog: {}
+      newArticles: [],
+      currentEditableBlog: {},
     };
   },
   methods: {
@@ -130,7 +112,49 @@ export default {
       this.$emit("currentEditableBlog", this.currentEditableBlog);
       this.$router.push({ path: "/EditBlog" });
     },
-    deletMyBlog() {}
-  }
+    deletMyBlog() {},
+    getBlog(article) {
+      localStorage.setItem("postSelected", JSON.stringify(article));
+      this.$emit("postSelected", article);
+      router.push({ path: "/Post" });
+    },
+    getMyBlogs() {
+      this.loadingPage = true;
+      axios
+        .get("https://anthropologyca.onrender.com/api/v1/users/my-posts", {
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: "Bearer " + this.user.token,
+          },
+        })
+        .then((response) => {
+          this.newArticles = response.data.data;
+          console.log(response);
+          this.loadingPage = false;
+        })
+        .catch(function (error) {
+          console.log(error.response);
+          this.loadingpage = false;
+        })
+        .finally(function () {
+          // always executed
+          this.loadingPage = false;
+        });
+    },
+  },
+  computed: {
+    returnFlowValue() {
+      if (this.newArticles.lenght == 2 || this.newArticles.length == 1) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
+  props: {
+    user: {
+      type: Object,
+    },
+  },
 };
 </script>

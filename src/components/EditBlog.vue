@@ -32,7 +32,11 @@
                 @change="onFileChange"
                 required
               ></v-file-input>
-              <v-img :src="post.coverImage.src" class="w-[50px] h-[50px]" v-model="image" />
+              <v-img
+                :src="post.coverImage.src"
+                class="w-[50px] h-[50px]"
+                v-model="image"
+              />
 
               <v-label v-if="validImage">add a valid image</v-label>
             </div>
@@ -52,22 +56,20 @@
             ></v-textarea>
             <div>
               <v-label>موضوع المقال</v-label>
-              <quill-editor
-                ref="myQuillEditor"
-                class="min-h-[50px] !relative addPost !py-2"
+              <ckeditor
+                :editor="editor"
+                :config="editorConfig"
+                class="!min-h-[46vh]"
                 v-model="post.body"
-                :options="editorOption"
-                @blur="onEditorBlur($event)"
-                @focus="onEditorFocus($event)"
-                @ready="onEditorReady($event)"
-              />
+              ></ckeditor>
             </div>
             <v-btn
               class="!mb-7 !text-white md:!w-[30%] !w-[50%]"
               color="#0d6efd"
               name="persoData"
               type="submit"
-            >تحدبث المقالة</v-btn>
+              >تحدبث المقالة</v-btn
+            >
           </v-form>
         </v-app>
       </div>
@@ -76,18 +78,36 @@
 
   <!-- Or manually control the data synchronization -->
 </template>
-  
-  <script>
+
+<script>
 import { ref } from "vue";
 
 const content = ref("");
 console.log(content);
 // You can also register Quill modules in the component
-import "quill/dist/quill.core.css";
-import "quill/dist/quill.snow.css";
-import "quill/dist/quill.bubble.css";
+import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor";
+import { Essentials } from "@ckeditor/ckeditor5-essentials";
+import { Bold, Italic } from "@ckeditor/ckeditor5-basic-styles";
+import { Link } from "@ckeditor/ckeditor5-link";
+import { Paragraph } from "@ckeditor/ckeditor5-paragraph";
+import { Alignment } from "@ckeditor/ckeditor5-alignment";
+import { Table, TableToolbar } from "@ckeditor/ckeditor5-table";
+import { Font } from "@ckeditor/ckeditor5-font";
+import { Heading } from "@ckeditor/ckeditor5-heading";
+import { Indent } from "@ckeditor/ckeditor5-indent";
+import { List } from "@ckeditor/ckeditor5-list";
+import { PasteFromOffice } from "@ckeditor/ckeditor5-paste-from-office";
+import { MediaEmbed } from "@ckeditor/ckeditor5-media-embed";
+import { TextTransformation } from "@ckeditor/ckeditor5-typing";
+import SimpleUploadAdapter from "@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter";
 
-import { quillEditor } from "vue-quill-editor";
+import {
+  Image,
+  ImageCaption,
+  ImageStyle,
+  ImageToolbar,
+  ImageUpload,
+} from "@ckeditor/ckeditor5-image";
 
 // import someModule from "../yourModulePath/someQuillModule.js";
 // quillEditor.register("modules/someModule", someModule);
@@ -95,6 +115,88 @@ import { quillEditor } from "vue-quill-editor";
 export default {
   data() {
     return {
+      editor: ClassicEditor,
+      editorData: "<p>Content of the editor.</p>",
+      editorConfig: {
+        plugins: [
+          Essentials,
+          SimpleUploadAdapter,
+          Bold,
+          Italic,
+          Link,
+          Paragraph,
+          Alignment,
+          Table,
+          TableToolbar,
+          Font,
+          Heading,
+          Image,
+          ImageCaption,
+          ImageStyle,
+          ImageToolbar,
+          ImageUpload,
+          Indent,
+          List,
+          PasteFromOffice,
+          MediaEmbed,
+          TextTransformation,
+        ],
+
+        toolbar: {
+          language: {
+            ui: "ar",
+            content: "ar",
+          },
+          items: [
+            "heading",
+
+            "|",
+            "fontSize",
+            "fontFamily",
+            "fontColor",
+            "|",
+            "bold",
+            "italic",
+            "underline",
+            "strikethrough",
+            "highlight",
+            "|",
+            "alignment",
+            "|",
+            "numberedList",
+            "bulletedList",
+            "|",
+            "indent",
+            "outdent",
+            "|",
+            "todoList",
+            "link",
+            "blockQuote",
+            "imageUpload",
+
+            "imageCaption",
+            "mediaEmbed",
+            "insertTable",
+            "paste-from-office",
+            "|",
+            "undo",
+            "redo",
+            "SimpleUploadAdapter",
+          ],
+          image: {
+            toolbar: [
+              "imageTextAlternative",
+              "toggleImageCaption",
+              "imageStyle:inline",
+              "imageStyle:block",
+              "imageStyle:side",
+            ],
+          },
+          table: {
+            contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
+          },
+        },
+      },
       validImage: false,
       image: undefined,
       // to save image url
@@ -106,11 +208,11 @@ export default {
         title: "",
         coverImage: null,
         summary: "",
-        body: ""
+        body: "",
       },
       editorOption: {
-        placeholder: "somthing"
-      }
+        placeholder: "somthing",
+      },
     };
   },
   mounted() {
@@ -120,7 +222,7 @@ export default {
   },
   methods: {
     getPost() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           console.log(this.post);
         }
@@ -137,27 +239,15 @@ export default {
     createImage(file) {
       const reader = new FileReader();
 
-      reader.onload = e => {
+      reader.onload = (e) => {
         this.imageUrl = e.target.result;
       };
       reader.readAsDataURL(file);
     },
-    onEditorBlur(quill) {
-      console.log("editor blur!", quill);
-    },
-    onEditorFocus(quill) {
-      console.log("editor focus!", quill);
-    },
-    onEditorReady(quill) {
-      console.log("editor ready!", quill);
-    },
-    onEditorChange({ quill, html, text }) {
-      console.log("editor change!", quill, html, text);
-      this.content = html;
-    },
+
     onImgError() {
       this.showAltImage = true;
-    }
+    },
   },
 
   computed: {
@@ -176,22 +266,15 @@ export default {
           return 40;
       }
     },
-    editor() {
-      return this.$refs.myQuillEditor.quill;
-    }
-  },
-
-  components: {
-    quillEditor
   },
 
   props: {
     user: {
-      type: Object
+      type: Object,
     },
     editableBlog: {
-      type: Object
-    }
-  }
+      type: Object,
+    },
+  },
 };
 </script>

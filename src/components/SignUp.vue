@@ -1,7 +1,16 @@
 <template>
   <div>
-    <v-dialog v-model="subsvalue" class="p-2" width="auto" @click:outside="close">
-      <v-sheet class="mx-auto pa-8 pb-8 md:w-[600px] sm:w-[400px]" elevation="8" rounded="lg">
+    <v-dialog
+      v-model="subsvalue"
+      class="p-2"
+      width="auto"
+      @click:outside="close"
+    >
+      <v-sheet
+        class="mx-auto pa-8 pb-8 md:w-[600px] sm:w-[400px]"
+        elevation="8"
+        rounded="lg"
+      >
         <div class="flex items-center justify-end">
           <v-btn color="#0d6efd" icon @click="close">
             <v-icon>mdi-close</v-icon>
@@ -15,7 +24,9 @@
             variant="tonal"
           >
             <div class="p-2">التسجيل باستخدام غوغل</div>
-            <i class="fa-brands fa-google p-2 md:text-[23px] sm:text-[20px] text-[18px]"></i>
+            <i
+              class="fa-brands fa-google p-2 md:text-[23px] sm:text-[20px] text-[18px]"
+            ></i>
           </v-btn>
           <!-- <v-text-field
             v-model="newProfile.id"
@@ -57,7 +68,7 @@
           ></v-text-field>
           <v-text-field
             v-model="newUser.password"
-            :error-messages="errors.first('password')||this.errorMessages"
+            :error-messages="errors.first('password') || this.errorMessages"
             label="كلمة السر"
             reverse
             v-validate="'required'"
@@ -82,7 +93,7 @@
             @click:prepend-inner="visible = !visible"
             v-model="newUser.passwordConfirm"
           ></v-text-field>
-
+          <v-file-input @change="onFileChange"></v-file-input>
           <!-- <v-file-input
             :counter="1"
             type="file"
@@ -110,12 +121,14 @@
             color="#0d6efd"
             type="submit"
             :loading="loading"
-          >انشاء حساب</v-btn>
+            >انشاء حساب</v-btn
+          >
 
           <v-btn
             @click="reset"
             class="me-4 !w-[30%] lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
-          >اعادة التعيين</v-btn>
+            >اعادة التعيين</v-btn
+          >
         </form>
       </v-sheet>
     </v-dialog>
@@ -124,10 +137,13 @@
       <v-card>
         <v-card-title
           class="text-center p-2 md:!text-lg sm:!text-base !text-sm m-2"
-        >يجب ملا الاستمارة بطريقة صحيحة</v-card-title>
+          >يجب ملا الاستمارة بطريقة صحيحة</v-card-title
+        >
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="dialogError=false">متفهم</v-btn>
+          <v-btn color="blue darken-1" text @click="dialogError = false"
+            >متفهم</v-btn
+          >
           <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
@@ -140,6 +156,7 @@ import axios from "axios";
 export default {
   data() {
     return {
+      imageUrl: "",
       error: "",
       loading: false,
       errorMessages: "",
@@ -155,40 +172,62 @@ export default {
         email: "mohamed@gmail.com",
         password: "aaaaaaaaa",
         bio: "say Somethings",
-
-        passwordConfirm: ""
-      }
+        photo: null,
+        passwordConfirm: "",
+      },
     };
   },
   props: {
-    showDialogSubs: { type: Boolean }
+    showDialogSubs: { type: Boolean },
   },
   methods: {
     close() {
       this.subsvalue = false;
     },
-    getFile(file) {
-      console.log(file);
+    onFileChange(file) {
+      if (!file) {
+        return;
+      }
       this.newUser.photo = file;
+      console.log(file);
+
+      this.createImage(file);
+    },
+    createImage(file) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        this.imageUrl = e.target.result;
+      };
+
+      reader.readAsDataURL(file);
     },
     submit() {
       this.loading = true;
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         this.errorMessages = "";
         if (result) {
+          console.log(this.newUser);
           axios
             .post(
               "https://anthropologyca.onrender.com/api/v1/users/signup",
 
-              this.newUser,
+              {
+                name: this.newUser.name,
+                email: this.newUser.email,
+                bio: this.newUser.bio,
+                photo: this.newUser.photo,
+                password: this.newUser.password,
+                passwordConfirm: this.newUser.passwordConfirm,
+              },
 
               {
                 headers: {
-                  "Content-Type": "application/json; charset=utf-8"
-                }
+                  "Content-Type": "application/json; harset=utf-8",
+                },
               }
             )
-            .then(res => {
+            .then((res) => {
               if (res.status === 200) {
                 this.loading = false;
                 localStorage.setItem("user", JSON.stringify(res.data));
@@ -198,7 +237,7 @@ export default {
                 this.subsvalue = false;
               }
             })
-            .catch(e => {
+            .catch((e) => {
               this.loading = false;
               this.error = e;
               console.log(e.response.data.message);
@@ -224,15 +263,13 @@ export default {
           phone: "",
           email: "",
           password: "",
-          photo: {
-            src: ""
-          }
+          photo: "",
         };
       });
     },
     confirm() {
       this.dialogDelete = false;
-    }
+    },
   },
   computed: {
     subsvalue: {
@@ -242,8 +279,8 @@ export default {
       },
       set(newValue) {
         this.$emit("updatedSubslValue", newValue);
-      }
-    }
-  }
+      },
+    },
+  },
 };
 </script>

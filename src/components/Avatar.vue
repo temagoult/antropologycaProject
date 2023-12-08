@@ -7,14 +7,18 @@
             <v-btn icon x-large v-on="on" clas>
               <v-avatar color="#0d6efd" :size="size">
                 <v-img
-                  v-if="showAltImage==false"
-                  src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"
+                  v-if="showAltImage == false"
+                  :src="
+                    'https://anthropologyca.onrender.com/api/v1/usersuser-photo/' +
+                    user.data.user.photo
+                  "
                   v-on:error="onImgError"
                 ></v-img>
                 <span
                   v-else
                   class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                >{{user.data.user.name.charAt(0)}}</span>
+                  >{{ user.data.user.name.charAt(0) }}</span
+                >
               </v-avatar>
             </v-btn>
           </template>
@@ -23,35 +27,48 @@
               <div class="mx-auto text-center">
                 <v-avatar color="#0d6efd">
                   <v-img
-                    v-if="showAltImage==false"
-                    src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"
+                    v-if="showAltImage == false"
+                    crossorigin="anonymous"
+                    :src="
+                      'https://anthropologyca.onrender.com/api/v1/users/user-photo/' +
+                      user.data.user.photo
+                    "
                     v-on:error="onImgError"
                   ></v-img>
                   <span
                     v-else
                     class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                  >{{user.data.user.name.charAt(0)}}</span>
+                    >{{ user.data.user.name.charAt(0) }}</span
+                  >
                 </v-avatar>
                 <h3
                   class="lg:!text-[20px] md:!text-[25px] sm:!text-[20px] !text-[18px]"
-                >{{ user.data.user.name}}</h3>
+                >
+                  {{ user.data.user.name }}
+                </h3>
 
                 <p
                   class="text-caption mt-1 lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                >{{user.data.user.email}}</p>
+                >
+                  {{ user.data.user.email }}
+                </p>
                 <div class="flex justify-center items-center mb-[2px]">
                   <p
                     class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                  >{{user.data.user.bio}}</p>
+                  >
+                    {{ user.data.user.bio }}
+                  </p>
                 </div>
                 <span
                   class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px] !font-extrabold"
                   v-if="user.data.user.verified"
-                >الحساب :مفعل</span>
+                  >الحساب :مفعل</span
+                >
                 <span
                   class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px] !font-extrabold"
                   v-else
-                >الحساب : غير مفعل</span>
+                  >الحساب : غير مفعل</span
+                >
                 <v-divider class="my-3"></v-divider>
                 <v-btn
                   depressed
@@ -62,7 +79,8 @@
                   تفعييل الحساب
                   <v-icon
                     class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
-                  >mdi-arrow-up-bold</v-icon>
+                    >mdi-arrow-up-bold</v-icon
+                  >
                 </v-btn>
                 <v-divider class="my-3"></v-divider>
 
@@ -76,7 +94,8 @@
                   ادارة مقالاتي
                   <v-icon
                     class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
-                  >mdi-text-box-plus</v-icon>
+                    >mdi-text-box-plus</v-icon
+                  >
                 </v-btn>
 
                 <v-divider class="my-3"></v-divider>
@@ -90,7 +109,8 @@
                   مقالاتي المفضلة
                   <v-icon
                     class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
-                  >mdi-star</v-icon>
+                    >mdi-star</v-icon
+                  >
                 </v-btn>
 
                 <v-divider class="my-3"></v-divider>
@@ -105,7 +125,8 @@
                   معلومات الحساب
                   <v-icon
                     class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
-                  >mdi-account-cog</v-icon>
+                    >mdi-account-cog</v-icon
+                  >
                 </v-btn>
 
                 <v-divider class="my-3"></v-divider>
@@ -119,7 +140,8 @@
                   تسجيل الخروج
                   <v-icon
                     class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
-                  >mdi-logout</v-icon>
+                    >mdi-logout</v-icon
+                  >
                 </v-btn>
               </div>
             </v-list-item-content>
@@ -136,7 +158,7 @@ export default {
   },
   data: () => ({
     userAvatar: {},
-    showAltImage: false
+    showAltImage: false,
   }),
   methods: {
     logOut() {
@@ -144,12 +166,12 @@ export default {
     },
     onImgError() {
       this.showAltImage = true;
-    }
+    },
   },
   props: {
     user: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   components: {},
 
@@ -183,7 +205,7 @@ export default {
         case "xl":
           return 48;
       }
-    }
-  }
+    },
+  },
 };
 </script>

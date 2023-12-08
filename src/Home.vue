@@ -1,13 +1,26 @@
 <template>
   <div>
-    <MainPage :isLogin="isLogin" @isloged="isloged" @islogedSignUp="islogedSignUp"></MainPage>
-    <ArticleSection @postSelected="postSelected" @isloged="isloged" :isLogin="isLogin"></ArticleSection>
-    <ArticleAvailaible @postSelected="postSelected" :isLogin="isLogin" @isloged="isloged"></ArticleAvailaible>
+    <MainPage
+      :isLogin="isLogin"
+      @isloged="isloged"
+      @islogedSignUp="islogedSignUp"
+    ></MainPage>
+    <ArticleSection
+      @postSelected="postSelected"
+      @isloged="isloged"
+      :isLogin="isLogin"
+      :user="user"
+    ></ArticleSection>
+    <ArticleAvailaible
+      @postSelected="postSelected"
+      :isLogin="isLogin"
+      @isloged="isloged"
+    ></ArticleAvailaible>
     <Profile id="teamWork" :isLogin="isLogin" @isloged="isloged"></Profile>
     <contactUs :isLogin="isLogin" @isloged="isloged"></contactUs>
   </div>
 </template>
-  <script>
+<script>
 import "./styles/style.css";
 
 import MainPage from "./views/sections/sectionTwo/MainPage.vue";
@@ -26,7 +39,7 @@ export default {
   props: {
     isLogin: { type: Boolean },
     user: { type: Object },
-    callBack: { type: Function }
+    callBack: { type: Function },
   },
 
   components: {
@@ -34,7 +47,7 @@ export default {
     ArticleSection,
     ArticleAvailaible,
     Profile,
-    contactUs
+    contactUs,
   },
   methods: {
     postSelected(post) {
@@ -50,7 +63,7 @@ export default {
     },
     islogedSignUp() {
       this.$emit("islogedSignUp");
-    }
-  }
+    },
+  },
 };
 </script>

@@ -26,21 +26,43 @@
     </div>-->
     <div class="editProfile">
       <v-app class="!min-h-[0px]">
-        <v-card class="!p-2 md:gap-5 gap-2 grid md:grid-cols-3 grid-cols-1 grid-rows-1">
-          <div class="photoProfileEdit flex items-center justify-center flex-col gap-3">
-            <div class="imgPart">
-              <v-img
-                class="md:!w-[200px] w-[150px] h-[150px] md:!h-[200px] rounded-[50%]"
-                v-if="showAltImage==false"
-                :src="'https://cdn.vuetifyjs.com/images/profiles/marcus.jpg'"
-                v-on:error="onImgError"
-                :prepend-inner-icon="visible ? 'mdi-eye' : 'mdi-eye-off'"
-              ></v-img>
-
-              <span
-                v-else
-                class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-              >{{userBeforeUpdate.name.charAt(0)}}</span>
+        <v-card
+          class="!p-2 md:gap-5 gap-2 grid md:grid-cols-3 grid-cols-1 grid-rows-1"
+        >
+          <div
+            class="photoProfileEdit flex items-center justify-center flex-col gap-3"
+          >
+            <div class="imgPart cursor-pointer">
+              <v-hover>
+                <div v-if="hover" slot-scope="{ hover }" class="relative">
+                  <v-img
+                    crossorigin="anonymous"
+                    class="md:!w-[200px] w-[150px] h-[150px] md:!h-[200px] rounded-[50%] md:opacity-[0.5]"
+                    :src="'https://cdn.vuetifyjs.com/images/profiles/marcus.jpg'"
+                    v-on:error="onImgError"
+                  ></v-img>
+                  <v-file-input
+                    prepend-icon="mdi-camera"
+                    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 md:block hidden"
+                    multiple
+                    hide-input
+                  ></v-file-input>
+                </div>
+                <div v-else class="relative md:block hidden">
+                  <v-img
+                    crossorigin="anonymous"
+                    class="md:!w-[200px] w-[150px] h-[150px] md:!h-[200px] rounded-[50%]"
+                    :src="'https://cdn.vuetifyjs.com/images/profiles/marcus.jpg'"
+                    v-on:error="onImgError"
+                  ></v-img>
+                  <v-file-input
+                    prepend-icon="mdi-camera"
+                    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 md:hidden block"
+                    multiple
+                    hide-input
+                  ></v-file-input>
+                </div>
+              </v-hover>
             </div>
             <v-label class>{{ userBeforeUpdate.name }}</v-label>
           </div>
@@ -92,7 +114,7 @@
               <v-btn
                 :disabled="isReallyUpdated"
                 class="!mb-7 !text-white"
-                :color="success? 'success' : '#0d6efd' "
+                :color="success ? 'success' : '#0d6efd'"
                 :loading="loadingPerso"
                 name="persoData"
                 type="submit"
@@ -183,7 +205,7 @@
                 class="!mb-7 !text-white"
                 type="submit"
                 :loading="loading"
-                :color="passSucces? 'success' : '#0d6efd'"
+                :color="passSucces ? 'success' : '#0d6efd'"
               >
                 <slot v-if="!passSucces" />
                 <template v-else>
@@ -199,24 +221,29 @@
         </v-card>
       </v-app>
       <v-app v-if="showDialog">
-        <v-dialog v-model="showDialog" width="auto" content-class="elevation-0 ">
+        <v-dialog
+          v-model="showDialog"
+          width="auto"
+          content-class="elevation-0 "
+        >
           <v-avatar color="#0d6efd" size="200">
             <v-img
-              v-if="showAltImage==false"
+              v-if="showAltImage == false"
               :src="'https://cdn.vuetifyjs.com/images/profiles/marcus.jpg'"
               v-on:error="onImgError"
             ></v-img>
             <span
               v-else
               class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-            >{{user.data.user.name.charAt(0)}}</span>
+              >{{ user.data.user.name.charAt(0) }}</span
+            >
           </v-avatar>
         </v-dialog>
       </v-app>
     </div>
   </div>
 </template>
-<script >
+<script>
 import axios from "axios";
 export default {
   created() {
@@ -224,6 +251,7 @@ export default {
   },
   data() {
     return {
+      imageUrl: null,
       loadingPerso: false,
       success: false,
       passSucces: false,
@@ -231,7 +259,7 @@ export default {
       managePassword: {
         currentPassword: "",
         password: "",
-        passwordConfirm: ""
+        passwordConfirm: "",
       },
 
       loading: false,
@@ -239,14 +267,14 @@ export default {
       currentEdit: "",
       showDialog: false,
       showAltImage: false,
-      yesForChange: false
+      yesForChange: false,
     };
   },
   components: {},
   props: {
     user: {
-      type: Object
-    }
+      type: Object,
+    },
   },
 
   methods: {
@@ -263,7 +291,7 @@ export default {
     updatePersoData() {
       this.loadingPerso = true;
       console.log(this.user.token);
-      this.$validator.validateAll("form1").then(result => {
+      this.$validator.validateAll("form1").then((result) => {
         if (result) {
           axios
             .patch(
@@ -274,11 +302,11 @@ export default {
               {
                 headers: {
                   "Content-Type": "application/json; charset=utf-8",
-                  Authorization: "Bearer " + this.user.token
-                }
+                  Authorization: "Bearer " + this.user.token,
+                },
               }
             )
-            .then(res => {
+            .then((res) => {
               if (res.status === 200) {
                 this.success = true;
                 this.loadingPerso = false;
@@ -288,7 +316,7 @@ export default {
                 // console.log(res);
               }
             })
-            .catch(e => {
+            .catch((e) => {
               this.loadingPerso = false;
               this.error = e;
               console.log(e.response.data.message);
@@ -308,10 +336,28 @@ export default {
         }
       });
     },
+    onFileChange(file) {
+      if (!file) {
+        return;
+      }
+      this.userBeforeUpdate.coverImage = file;
+
+      console.log(this.userBeforeUpdate.photo);
+      this.createImage(file);
+    },
+    createImage(file) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        this.imageUrl = e.target.result;
+      };
+
+      reader.readAsDataURL(file);
+    },
     updatePassword() {
       this.loading = true;
       console.log(this.user.token);
-      this.$validator.validateAll("form2").then(result => {
+      this.$validator.validateAll("form2").then((result) => {
         if (result) {
           axios
             .post(
@@ -323,12 +369,12 @@ export default {
                 headers: {
                   "Content-Type":
                     "application/json; multipart/form-data; harset=utf-8",
-                  Authorization: "Bearer " + this.user.token
-                }
+                  Authorization: "Bearer " + this.user.token,
+                },
               }
             )
 
-            .then(res => {
+            .then((res) => {
               if (res.status === 200) {
                 this.loading = false;
                 this.passSucces = true;
@@ -337,7 +383,7 @@ export default {
                 // console.log(res);
               }
             })
-            .catch(e => {
+            .catch((e) => {
               this.loading = false;
               this.error = e;
               console.log(e.response.data.message);
@@ -355,7 +401,7 @@ export default {
           this.loading = false;
         }
       });
-    }
+    },
   },
 
   computed: {
@@ -387,8 +433,7 @@ export default {
       } else {
         return false;
       }
-    }
-  }
+    },
+  },
 };
 </script>
-

@@ -14,7 +14,9 @@
           </v-list-item>
         </div>-->
 
-        <div class="mt-[-90px] md:w-[100%] sm:w-[70%] w-[70%] placeholder:text-[#0d6efd]">
+        <div
+          class="mt-[-90px] md:w-[100%] sm:w-[70%] w-[70%] placeholder:text-[#0d6efd]"
+        >
           <v-text-field
             class="!self-center !m-0"
             type="text"
@@ -39,21 +41,27 @@
       </div>
 
       <div
-        v-if="search.length>0&&filterBlog.length==0"
+        v-if="search.length > 0 && filterBlog.length == 0"
         class="text-[#0d6efd] lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px]"
-      >لا يوجد مقالات متعلقة ببحثك</div>
+      >
+        لا يوجد مقالات متعلقة ببحثك
+      </div>
       <div
-        v-if="search.length>0"
+        v-if="search.length > 0"
         class="sousArticles flex flex-col gap-1 md:w-[100%] sm:w-[70%] w-[70%] p-2 mt-[-30px]"
       >
         <div
           class="cardSousArticle border border-solid border-gray-300 flex items-start md:p-3 p-2 gap-1 rounded-[25px] hover:bg-slate-100 cursor-pointer"
-          v-for="(e,index) in filterBlog "
+          v-for="(e, index) in filterBlog"
           :key="index"
           @click="action(e)"
         >
           <img
             crossorigin="anonymous"
+            :src="
+              'https://anthropologyca.onrender.com/api/v1/posts/post-image/' +
+              e.coverImage
+            "
             alt="img"
             class="w-[140px] lg-h-[100px] md:h-[84px] sm:h-[65px] h-[60px] p-1"
           />
@@ -67,22 +75,29 @@
             <p
               class="text-gray-500 lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] leading-4"
             >
-              {{ e.summary.split(" ")
-              .slice(0, numwords.value)
-              .join(" ") + "..." }}
+              {{
+                e.summary.split(" ").slice(0, numwords.value).join(" ") + "..."
+              }}
             </p>
           </div>
         </div>
       </div>
     </div>
-    <Login class="absolute" :showLoginDialog="showLoginDialog" @updatemodelValue="updatemodelValue"></Login>
+    <Login
+      class="absolute"
+      :showLoginDialog="showLoginDialog"
+      @updatemodelValue="updatemodelValue"
+    ></Login>
     <v-dialog v-model="dialoglogin" max-width="300px">
       <v-card>
         <v-card-title
           class="!text-center p-2 md:!text-lg sm:!text-base !text-sm m-2 justify-center"
-        >يجب عليك تسجيل الدخول اولا</v-card-title>
+          >يجب عليك تسجيل الدخول اولا</v-card-title
+        >
         <v-card-actions>
-          <v-btn color="blue darken-1" text @click="dialogMustlogin">متفهم</v-btn>
+          <v-btn color="blue darken-1" text @click="dialogMustlogin"
+            >متفهم</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -100,37 +115,37 @@ export default {
       allArticles: [],
       search: "",
       data: "",
-      showAltImage: false
+      showAltImage: false,
     };
   },
   components: {
-    Login
+    Login,
   },
   props: {
     isLogin: { type: Boolean },
-    user: { type: Object }
+    user: { type: Object },
   },
   created() {
     axios
       .get("https://anthropologyca.onrender.com/api/v1/posts/", {
         headers: {
-          "Content-Type": "application/json; charset=utf-8"
-        }
+          "Content-Type": "application/json; charset=utf-8",
+        },
       })
-      .then(response => {
+      .then((response) => {
         this.allArticles = response.data.data.docs;
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error.response);
       })
-      .finally(function() {
+      .finally(function () {
         // always executed
       });
   },
   computed: {
     filterBlog() {
       let Search = this.search;
-      return this.allArticles.filter(function(article) {
+      return this.allArticles.filter(function (article) {
         return article.title.match(Search);
       });
     },
@@ -148,7 +163,7 @@ export default {
         case "xl":
           return 40;
       }
-    }
+    },
   },
 
   methods: {
@@ -172,7 +187,7 @@ export default {
         this.$emit("postSelected", article);
         this.$router.push({ path: "/Post" });
       }
-    }
-  }
+    },
+  },
 };
 </script>

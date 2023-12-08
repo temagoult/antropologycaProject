@@ -11,13 +11,17 @@
         ></i>
         <div
           class="lg:text-[40px] md:text-[35px] sm:text-[25px] text-[20px] bg-white p-2 mr-[-8px]"
-        >مقالات قد تعجبك</div>
+        >
+          مقالات قد تعجبك
+        </div>
         <div class="w-[100%] bg-[#0d6efd] h-[1px] absolute z-[-1]"></div>
       </div>
       <div
         v-if="loadingPage"
         class="flex items-center justify-center font-bold lg:text-[22px] md:text-[20px] sm:text-[16px] text-[14px]"
-      >جاري التحميل ...</div>
+      >
+        جاري التحميل ...
+      </div>
       <div class="flex flex-col gap-8 justify-center" v-else>
         <!-- <div class="sousArticles flex flex-col gap-1 md:col-span-4 md:order-1 order-2 p-2">
           <div
@@ -52,30 +56,43 @@
             </div>
           </div>
         </div>-->
-        <div class="mainArticle p-2 grid md:grid-cols-3 sm:grid-cols-2 gap-4 content-center">
+        <div
+          :class="
+            allowFlowGrid
+              ? 'mainArticle p-2 grid grid-flow-col gap-4 justify-items-center items-center'
+              : 'mainArticle p-2 grid md:grid-cols-3 grid-cols-1 gap-4'
+          "
+        >
           <div
-            v-for="(blog,index) in records"
+            v-for="(blog, index) in newArticles"
             :key="index"
             class="cardArticle p-2 rounded-[25px] border border-solid border-gray-300 flex flex-col md:gap-1 sm:gap-[3px] gap-[2px]"
           >
             <img
-              :src="photoArticle.src"
+              crossorigin="anonymous"
+              :src="
+                'https://anthropologyca.onrender.com/api/v1/posts/post-image/' +
+                blog.coverImage
+              "
               class="md:w-[100%] w-fit h-fit lg:h-[300px] md:h-[250px] sm:h-[200px] rounded-t-[12px] cursor-pointer"
             />
             <div
               class="dateP lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
             >
               <span>عنوان المقال :</span>
-              {{ blog.title.split(" ")
-              .slice(0, numwords2.value)
-              .join(" ") + "..." }} }}
+              {{
+                blog.title.split(" ").slice(0, numwords2.value).join(" ") +
+                "..."
+              }}
+              }}
             </div>
             <p
               class="text-gray-500 leading-4 lg:text-[20px] md:text-[18px] sm:text-[16px] text-[12px] py-[7px]"
             >
-              {{ blog.summary.split(" ")
-              .slice(0, numwords.value)
-              .join(" ") + "..." }}
+              {{
+                blog.summary.split(" ").slice(0, numwords.value).join(" ") +
+                "..."
+              }}
             </p>
             <div
               class="dateP lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
@@ -88,7 +105,7 @@
             >
               <div>
                 <span class>اضيف في :</span>
-                {{ getFormattedDate(blog.createdAt) }}
+                {{ getFormattedDate(blog.publishedAt) }}
               </div>
             </div>
             <div class="sousCard flex justify-between py-2 text-[#0d6efd]">
@@ -103,7 +120,9 @@
                   ></i>
                   <div
                     class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
-                  >{{ blog.commentsCounter }}</div>
+                  >
+                    {{ blog.commentsCounter }}
+                  </div>
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
@@ -116,7 +135,9 @@
                   ></i>
                   <div
                     class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
-                  >{{ blog.downloadCounter }}</div>
+                  >
+                    {{ blog.downloadCounter }}
+                  </div>
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
@@ -129,7 +150,9 @@
                   ></i>
                   <div
                     class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
-                  >{{ blog.viewsCounter }}</div>
+                  >
+                    {{ blog.viewsCounter }}
+                  </div>
                 </v-btn>
                 <div class="flex items-center gap-2">
                   <v-spacer></v-spacer>
@@ -140,11 +163,14 @@
                   >
                     <i
                       class="fa-regular fa-heart lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] cursor-pointer !text-[#0d6efd]"
-                    >mdi-heart</i>
+                      >mdi-heart</i
+                    >
 
                     <div
                       class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] !text-[#0d6efd]"
-                    >{{ newArticles[index].likesCounter }}</div>
+                    >
+                      {{ newArticles[index].likesCounter }}
+                    </div>
                   </v-btn>
                   <v-spacer></v-spacer>
                 </div>
@@ -153,11 +179,12 @@
               <v-btn
                 class="!text-[#0d6efd] !cursor-pointer !lg:text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !self-end"
                 @click="action(blog)"
-              >اقرا المزيد</v-btn>
+                >اقرا المزيد</v-btn
+              >
             </div>
           </div>
         </div>
-        <v-app>
+        <v-app v-if="newArticles.length > 3">
           <v-pagination
             v-model="page"
             active-color="red"
@@ -183,10 +210,13 @@
         <v-spacer></v-spacer>
         <v-card-title
           class="!text-center p-2 md:!text-lg sm:!text-base !text-sm m-2 justify-center"
-        >يجب عليك تسجيل الدخول اولا</v-card-title>
+          >يجب عليك تسجيل الدخول اولا</v-card-title
+        >
         <v-spacer></v-spacer>
         <v-card-actions>
-          <v-btn color="blue darken-1" text @click="dialogMustlogin">متفهم</v-btn>
+          <v-btn color="blue darken-1" text @click="dialogMustlogin"
+            >متفهم</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -201,17 +231,18 @@ import router from "../../../router";
 
 export default {
   components: {
-    Login
+    Login,
   },
   props: {
-    isLogin: { type: Boolean }
+    isLogin: { type: Boolean },
   },
-  created() {
-    this.getBlogs(this.page);
+  mounted() {
+    this.getBlogs();
   },
   data() {
     return {
-      loadingPage: null,
+      allowFlowGrid: null,
+      loadingPage: true,
       pageCount: 0,
       page: 1,
       perPage: 3,
@@ -223,101 +254,40 @@ export default {
       numwords: { type: Number, value: 20 },
       numwords2: { type: Number, value: 2 },
 
-      newArticles: [
-        {
-          title: "",
-          summary: "",
-          viewsCounter: "",
-          likesCounter: "",
-          commentsCounter: "",
-          author: {}
-        },
-        {
-          title: "",
-          summary: "",
-          viewsCounter: "",
-          likesCounter: "",
-          commentsCounter: "",
-          author: {}
-        },
-        {
-          title: "",
-          summary: "",
-          viewsCounter: "",
-          likesCounter: "",
-          commentsCounter: "",
-          author: {}
-        },
-        {
-          title: "",
-          summary: "",
-          viewsCounter: "",
-          likesCounter: "",
-          commentsCounter: "",
-          author: {}
-        },
-        {
-          title: "",
-          summary: "",
-          viewsCounter: "",
-          likesCounter: "",
-          commentsCounter: "",
-          author: {}
-        },
-        {
-          title: "",
-          summary: "",
-          viewsCounter: "",
-          likesCounter: "",
-          commentsCounter: "",
-          author: {}
-        }
-      ],
-
-      photoArticle: {
-        src: require("../../../assets/images/mainArticle2.jpeg")
-      }
+      newArticles: [],
     };
   },
 
   methods: {
-    async getBlogs(page) {
+    getBlogs() {
       this.loadingPage = true;
-      await axios
+      axios
         .get("https://anthropologyca.onrender.com/api/v1/posts/", {
           headers: {
-            "Content-Type": "application/json; charset=utf-8"
-          }
+            "Content-Type": "application/json; charset=utf-8",
+          },
         })
-        .then(response => {
-          if (this.loadingPage) {
+        .then((response) => {
+          if (this.loadingPage != undefined) {
             this.loadingPage = false;
           }
 
           this.newArticles = response.data.data.docs;
-          this.records = [];
-          const startIndex = this.perPage * (page - 1) + 1;
-          const endIndex = startIndex + this.perPage - 1;
-          for (let i = startIndex; i <= endIndex; i++) {
-            this.records.push(this.newArticles[i]);
-          }
-          if (this.newArticles.length - endIndex < 3) {
-            this.perPage = this.newArticles.length - endIndex;
+          if (this.newArticles.length == 1) {
+            this.allowFlowGrid = true;
           } else {
-            this.perPage = 3;
+            this.allowFlowGrid = false;
           }
 
           this.recordsLength = this.newArticles.length;
+
           this.pageCount = Math.floor(this.recordsLength / 3);
           console.log(this.pageCount);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error.response);
-          if (this.loadingPage) {
-            this.loadingPage = false;
-          }
         })
-        .finally(function() {
+        .finally(function () {
           // always executed
           // if (this.loadingPage) {
           //   this.loadingPage = false;
@@ -326,7 +296,7 @@ export default {
       this.loadingPage = false;
     },
 
-    callback: function(page) {
+    callback: function (page) {
       console.log(`Page ${page} was selected. Do something about it`);
     },
 
@@ -355,8 +325,7 @@ export default {
     },
     getFormattedDate(date) {
       return moment(date).format("YYYY-MM-DD");
-    }
-  }
+    },
+  },
 };
 </script>
-
