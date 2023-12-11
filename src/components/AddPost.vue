@@ -10,6 +10,7 @@
       ></i>
       <div
         class="lg:text-[40px] md:text-[35px] sm:text-[25px] text-[20px] bg-white p-2 mr-[-8px]"
+        @click="getData"
       >
         اضافة مقالة
       </div>
@@ -136,6 +137,7 @@
 </template>
 <script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>
 <script>
+import router from "../router";
 const { htmlToText } = require("html-to-text");
 import { ref } from "vue";
 import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor";
@@ -353,10 +355,12 @@ export default {
       showDialog: false,
       userBeforeUpdate: {},
       post: {
-        title: "",
+        title: "علم الإنسان",
         coverImage: null,
-        summary: "",
-        body: "",
+        summary:
+          "يُمكننا أن نعتبرَ الأنثروبولوجيا علماً حديثاً يقرب عمرهُ من قرن وربع القرن تقريباً، كما نستطيع. بعين الوقت، أن نعتبرها من أقدم علوم البشر. فالجامعات لم تبدأ بتدريس الأنثروبولوجيا إلا حديثاً 9جداً. فلقد عيّن أول أستاذٍ لها في جامعة أوكسفورد، وهو «السير أدورد تايلور» عام 1884، وفي جامعة كمبرج، وهو الأستاذ «هادن» في عام 1900، وفي جامعة لفربول، وهو «السير جيمس فريزر» في عام 1907. وعيّن أول أستاذٍ لها في جامعة لندن في عام 1908، وفي الجامعات الأمريكية في عام 1886",
+
+        body: '<p style="text-align:right;">يُمكننا أن نعتبرَ الأنثروبولوجيا علماً حديثاً يقرب عمرهُ من قرن وربع القرن تقريباً، كما نستطيع. بعين الوقت، أن نعتبرها من أقدم علوم البشر. فالجامعات لم تبدأ بتدريس الأنثروبولوجيا إلا حديثاً جداً. فلقد عيّن أول أستاذٍ لها في جامعة <a href="https://ar.wikipedia.org/wiki/%D8%A3%D9%83%D8%B3%D9%81%D9%88%D8%B1%D8%AF">أوكسفورد</a>، وهو «السير أدورد تايلور» عام <a href="https://ar.wikipedia.org/wiki/1884">1884</a>، وفي جامعة <a href="https://ar.wikipedia.org/wiki/%D9%83%D8%A7%D9%85%D8%A8%D8%B1%D9%8A%D8%AF%D8%AC">كمبرج</a>، وهو الأستاذ «هادن» في عام <a href="https://ar.wikipedia.org/wiki/1900">1900</a>، وفي جامعة <a href="https://ar.wikipedia.org/wiki/%D9%84%D9%8A%D9%81%D8%B1%D8%A8%D9%88%D9%84">لفربول</a>، وهو «السير جيمس فريزر» في عام <a href="https://ar.wikipedia.org/wiki/1907">1907</a>. وعيّن أول أستاذٍ لها في <a href="https://ar.wikipedia.org/wiki/%D8%AC%D8%A7%D9%85%D8%B9%D8%A9_%D9%84%D9%86%D8%AF%D9%86">جامعة لندن</a> في عام 1908، وفي الجامعات الأمريكية في عام <a href="https://ar.wikipedia.org/wiki/1886">1886</a>.</p><p style="text-align:right;">ولأن الأنثروبولوجيا تعنى بدراسة <a href="https://ar.wikipedia.org/wiki/%D9%86%D8%B8%D8%B1%D9%8A%D8%A9">النظريات</a> التي تتعلق بطبيعة المُجتمعات البشرية، فإننا نستطيع أن نعتبرها، من جهة أخرى، من أقدم العلوم. إذ هي بدأت مع أقدم تأمّلات الإنسان حول تلكَ الموضوعات. فلقد قالوا مثلاً: إن المؤرّخ الإغريقي (<a href="https://ar.wikipedia.org/wiki/%D9%87%D9%8A%D8%B1%D9%88%D8%AF%D9%88%D8%AA">هيرودوتس</a>) «أبو الانثروبولوجيا» كما هو أبو التاريخ، لأنهُ وصفَ لنا بإسهاب، التكوين الجسمي لأقوام قديمة كـ (السيثيين) وقدماءَ المصريين وغيرهم من الشعوب القديمة، وصوّر <a href="https://ar.wikipedia.org/wiki/%D8%A3%D8%AE%D9%84%D8%A7%D9%82">أخلاقهم</a> <a href="https://ar.wikipedia.org/wiki/%D8%B9%D8%A7%D8%AF%D8%A9_(%D8%B9%D9%84%D9%85_%D8%A7%D9%84%D8%A7%D8%AC%D8%AA%D9%85%D8%A7%D8%B9)">وعاداتهم</a>. كما كتب المؤرخ الروماني (تاكيتس) دراستهُ المشهورة عن <a href="https://ar.wikipedia.org/wiki/%D8%AC%D8%B1%D9%85%D8%A7%D9%86">القبائل الجرمانية</a>.</p><p style="text-align:right;">حتى <a href="https://ar.wikipedia.org/wiki/%D8%A8%D9%84%D8%A7%D8%AF_%D8%A8%D8%A7%D8%A8%D9%84">البابليون</a> قبل «هيرودوتس» بزمن طويل، جمعوا في متاحفَ خاصة بعض ما تركهُ <a href="https://ar.wikipedia.org/wiki/%D8%B3%D9%88%D9%85%D8%B1">السومريون</a> من أدواتٍ ومخلفات.</p><p style="text-align:right;">إننا نستطيع أن نعتبرَ <a href="https://ar.wikipedia.org/wiki/%D8%A7%D9%84%D9%82%D8%B1%D9%86_18">القرن الثامن عشر</a> نقطة بدءٍ مناسبة للأنثروبولوجيا. نشهد بعدها ظهور العناصر المكونة لهذا العلم. فآراء <a href="https://ar.wikipedia.org/wiki/%D9%85%D9%88%D9%86%D8%AA%D8%B3%D9%83%D9%8A%D9%88">مونتسكيو</a> في كتابهِ الشهير (<a href="https://ar.wikipedia.org/wiki/%D8%B1%D9%88%D8%AD_%D8%A7%D9%84%D9%82%D9%88%D8%A7%D9%86%D9%8A%D9%86">روح القوانين</a>) عن المجتمع وأسسه وطبيعته. وكتابات (سان سيمون) وإدعاؤه وجود علم للمجتمع، وآراء (<a href="https://ar.wikipedia.org/wiki/%D8%AF%D9%8A%D9%81%D9%8A%D8%AF_%D9%87%D9%8A%D9%88%D9%85">ديفيد هيوم</a>) و (<a href="https://ar.wikipedia.org/wiki/%D8%A2%D8%AF%D9%85_%D8%B3%D9%85%D9%8A%D8%AB">آدم سمث</a>) ونظرتهما إلى المجتمعات باعتبارها تتكون من أنساق طبيعية، واعتقادهما بالتطور غير المحدود، وبوجود قوانين لذلكَ التطور، كل تلكَ التأمّلات والآراء حوت بلا شك البذرات الصالحة والمكونات الأساسية التي نمت في القرن التاسع عشر، فكونت المدراس الانثروبولوجيّة الكبيرة.</p><p style="text-align:right;">وبعدَ مُنتصف القرن التاسع عشر بدأت الكتب القديمة في الأنثروبولوجيا بالظهور في <a href="https://ar.wikipedia.org/wiki/%D8%A3%D9%88%D8%B1%D9%88%D8%A8%D8%A7">أوروبا</a> <a href="https://ar.wikipedia.org/wiki/%D8%A7%D9%84%D9%88%D9%84%D8%A7%D9%8A%D8%A7%D8%AA_%D8%A7%D9%84%D9%85%D8%AA%D8%AD%D8%AF%D8%A9">وأمريكا</a>. وكانَ أبرز تلكَ الكتب كتاب (السير هنرى مين) «القانون القديم» عام 1861 وكتابه عن (المجتمعات القروية في الشرق والغرب) (1861)، وكتاب (باخوفن) عن (حق ألام) عام 1861 وكتاب (فوستل دو كولانج) عن (المدينة القديمة) 1864 وكتاب (ماكلينان) عن «الزواج البدائي» عام 1865 وكتاب (السر أدورد تايلور) المُسمى «أبحاث في التأريخ القديم للجنس البشري» عام 1865 وكتابه الآخر عن «الحضارة البدائية» عام 1871، ومن ثم (لوس موركن) عن «أنساق روابط الدم والمصاهرة في العائلة الإنسانية» عام 1870.</p><p style="text-align:right;">كما ظهرت «بعين الوقت» مدرستان كبيرتان من مدراس هذا العلم، هما «مدرسة القانون المقارن» و «المدرسة التطورية». فأفاد رجال المدرسة الأولى الأنثروبولوجيا كثيراً حين انصرفوا إلى دراسة <a href="https://ar.wikipedia.org/wiki/%D9%82%D8%A7%D9%86%D9%88%D9%86_%D9%85%D9%82%D8%A7%D8%B1%D9%86">القانون المقارن</a>. حيث اهتموا بصورة خاصة بالقانون القديم وقوانيين الشعوب البدائية. كما تأثرَ رجال المدرسة الثانية «التطورية» بنظريات (<a href="https://ar.wikipedia.org/wiki/%D8%AC%D8%A7%D9%86_%D8%A8%D8%A7%D8%AA%D9%8A%D8%B3%D8%AA_%D9%84%D8%A7%D9%85%D8%A7%D8%B1%D9%83">لامارك</a>) و (<a href="https://ar.wikipedia.org/wiki/%D8%AA%D8%B4%D8%A7%D8%B1%D9%84%D8%B2_%D8%AF%D8%A7%D8%B1%D9%88%D9%8A%D9%86">دارون</a>) في التطور الحياتي. فأقاموا نظرياتهم في التطور الاجتماعي على عين الأسس.</p><p style="text-align:right;">وفي مطلع <a href="https://ar.wikipedia.org/wiki/%D8%A7%D9%84%D9%82%D8%B1%D9%86_20">القرن العشرين</a> برزت في الأنثروبولوجيا أسماء ضخمة مثل «السر جيمس فريزر»، و"<a href="https://ar.wikipedia.org/wiki/%D8%A5%D9%85%D9%8A%D9%84_%D8%AF%D9%88%D8%B1%D9%83%D8%A7%D9%8A%D9%85">إميل دوركايم</a>"، و«راد كلف براون»، و"<a href="https://ar.wikipedia.org/wiki/%D9%85%D8%A7%D9%84%D9%8A%D9%86%D9%88%D9%81%D8%B3%D9%83%D9%8A_(%D8%AA%D9%88%D8%B6%D9%8A%D8%AD)">مالينوفسكي</a>"، و«ألبوث سميث»، و«رفرز». كما ظهرت مدارس أنثروبولوجية هامّة مثل (مدرسة الانتشار الحضاري) و (<a href="https://ar.wikipedia.org/wiki/%D9%85%D8%AF%D8%B1%D8%B3%D8%A9_%D9%88%D8%B8%D9%8A%D9%81%D9%8A%D8%A9_(%D8%B9%D9%84%D9%85_%D8%A7%D9%84%D9%86%D9%81%D8%B3)">المدرسة الوظيفية</a>). وكلاهما هاجمتا ودحضتا «المدرسة التطورية»، هذا إلى جانب «المدرسة البيئية»، وهي مدرسة قديمة مستمرة الوجود.</p><p style="text-align:right;">إننا نستطيع أن نعتبرَ نقطة البدء الحقيقية للأنثروبولوجيا هي القرن العشرين، التي تمثلت بظهور أسماء ضخمة من عباقرة الأنثروبولوجيا، إضافة إلى مؤلفاتهم في ذلك الشأن. ناهيكَ عن المدارس الانثروبولوجية المهمة التي ساعدت في نمو وتطوير هذا العلم.</p><p style="text-align:right;">ثمة قضية معينة هنا، وهي أن علم الاجتماع والأنثروبولوجيا علمان متقاربان متشابهان، بحيث لا يمكن للباحث الفصل أو التمييز بين هذين العلمين. لدرجة تقاربهما، لذلكَ فإن من الأنسب تعيين نقاط الاختلاف بين هذين العلمين لمعرفة اتجاه كل من هذين العلمين في الدراسات الاجتماعية.</p><h2 style="text-align:right;">علاقة علم الاجتماع بالأنثروبولوجيا (علم الإنسان)<span style="color:rgb(84,89,93);">[</span><a href="https://ar.wikipedia.org/w/index.php?title=%D8%B9%D9%84%D9%85_%D8%A7%D9%84%D8%A5%D9%86%D8%B3%D8%A7%D9%86&amp;action=edit&amp;section=11">عدل</a><span style="color:rgb(84,89,93);">]</span></h2><p style="text-align:right;">علمُ الاجتماع هو علمٌ قريبٌ جداً من الأنثروبولوجيا لأنهُ يدرس العلاقات الاجتماعية بين المجموعات البشرية، ولكنهُ يختلفُ عن الأنثروبولوجيا من بعض النواح: إن علمَ الاجتماع يركز في دراساتهِ على موضوعاتٍ مختارة مثل السحر أو الدين أو البطالة أو الزواج أو ما يشبه ذلك، ولا يدرس مجتمعات كاملة دراسة شاملة كما تدرسها الأنثروبولوجيا.</p><h2 style="text-align:right;">فروع علم الإنسان<span style="color:rgb(84,89,93);">[</span><a href="https://ar.wikipedia.org/w/index.php?title=%D8%B9%D9%84%D9%85_%D8%A7%D9%84%D8%A5%D9%86%D8%B3%D8%A7%D9%86&amp;action=edit&amp;section=12">عدل</a><span style="color:rgb(84,89,93);">]</span></h2><ul><li style="text-align:right;"><a href="https://ar.wikipedia.org/wiki/%D8%B9%D9%84%D9%85_%D8%A7%D9%84%D8%A5%D9%86%D8%B3%D8%A7%D9%86_%D8%A7%D9%84%D8%AB%D9%82%D8%A7%D9%81%D9%8A">علم الإنسان الثقافي</a></li><li style="text-align:right;"><a href="https://ar.wikipedia.org/wiki/%D8%B9%D9%84%D9%85_%D8%A7%D9%84%D8%A5%D9%86%D8%B3%D8%A7%D9%86_%D8%A7%D9%84%D8%AD%D9%8A%D9%88%D9%8A">علم الإنسان الحيوي</a></li><li style="text-align:right;"><a href="https://ar.wikipedia.org/wiki/%D8%B9%D9%84%D9%85_%D8%A7%D9%84%D8%A5%D9%86%D8%B3%D8%A7%D9%86_%D8%A7%D9%84%D8%A7%D8%AC%D8%AA%D9%85%D8%A7%D8%B9%D9%8A">علم الإنسان الاجتماعي</a></li><li style="text-align:right;"><a href="https://ar.wikipedia.org/wiki/%D9%84%D8%B3%D8%A7%D9%86%D9%8A%D8%A7%D8%AA">علم الإنسان اللغوي</a></li><li style="text-align:right;"><a href="https://ar.wikipedia.org/wiki/%D8%B9%D9%84%D9%85_%D8%A7%D9%84%D8%A2%D8%AB%D8%A7%D8%B1">علم الآثار</a></li></ul><figure class="image"><img style="aspect-ratio:600/400;" src="https://anthropologyca.onrender.com/api/v1/posts/post-image/b181b918c5932af7c613ebbbb36072981702309049865.jpg" width="600" height="400"></figure>',
       },
       editorOption: {
         // Some Quill options...
@@ -368,6 +372,21 @@ export default {
     };
   },
   mounted() {
+    ClassicEditor.create(document.querySelector("#editor"), {
+      language: {
+        // The UI will be English.
+        ui: "ar",
+
+        // But the content will be edited in Arabic.
+        content: "ar",
+      },
+    })
+      .then((editor) => {
+        window.editor = editor;
+      })
+      .catch((err) => {
+        console.error(err.stack);
+      });
     this.userBeforeUpdate = Object.assign({}, this.user.data.user);
   },
   methods: {
@@ -400,6 +419,11 @@ export default {
                 this.passSucces = true;
 
                 console.log(res);
+                setTimeout(() => {
+                  router.push({
+                    path: "/gestionArticles",
+                  });
+                }, 5000);
               }
             })
             .catch((e) => {
@@ -422,6 +446,9 @@ export default {
 
       console.log(this.post.coverImage);
       this.createImage(file);
+    },
+    getData() {
+      console.log(this.post);
     },
     createImage(file) {
       const reader = new FileReader();
@@ -471,5 +498,9 @@ export default {
 .ck.ck-content .image {
   width: 50%;
   height: 100px;
+}
+.ck.ck-editor__editable_inline {
+  direction: rtl;
+  text-align: right;
 }
 </style>

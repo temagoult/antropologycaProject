@@ -93,7 +93,7 @@
             @click:prepend-inner="visible = !visible"
             v-model="newUser.passwordConfirm"
           ></v-text-field>
-          <v-file-input @change="onFileChange"></v-file-input>
+
           <!-- <v-file-input
             :counter="1"
             type="file"

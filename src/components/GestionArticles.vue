@@ -37,11 +37,12 @@
           v-else
         >
           <div
-            class="cardSousArticle border border-solid border-gray-300 flex md:flex-col md:p-3 p-2 justify-between gap-1 rounded-[25px]"
+            class="cursor-pointer cardSousArticle border border-solid border-gray-300 flex md:flex-col md:p-3 p-2 justify-between gap-1 rounded-[25px]"
             v-for="(e, index) in newArticles"
             :key="index"
           >
             <img
+              @click="getBlog(e)"
               crossorigin="anonymous"
               :src="
                 'https://anthropologyca.onrender.com/api/v1/posts/post-image/' +
@@ -51,12 +52,14 @@
             />
             <div class="flex flex-col">
               <div
+                @click="getBlog(e)"
                 class="dateP lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd] overflow-hidden"
               >
                 <span>عنوان المقال :</span>
                 {{ e.title }}
               </div>
               <p
+                @click="getBlog(e)"
                 class="text-gray-500 lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] leading-4 overflow-hidden"
               >
                 {{
@@ -65,11 +68,6 @@
                 }}
               </p>
               <div class="actionArticle self-end !p-2">
-                <v-btn icon @click="getBlog(e)">
-                  <v-icon class="!text-[12px] sm:!text-[16px] md:!text-[20px]"
-                    >mdi-pencil</v-icon
-                  >
-                </v-btn>
                 <v-btn icon @click="editMyBlog(e)">
                   <v-icon class="!text-[12px] sm:!text-[16px] md:!text-[20px]"
                     >mdi-pencil</v-icon
@@ -119,7 +117,6 @@ export default {
       router.push({ path: "/Post" });
     },
     getMyBlogs() {
-      this.loadingPage = true;
       axios
         .get("https://anthropologyca.onrender.com/api/v1/users/my-posts", {
           headers: {
@@ -130,15 +127,12 @@ export default {
         .then((response) => {
           this.newArticles = response.data.data;
           console.log(response);
-          this.loadingPage = false;
         })
         .catch(function (error) {
           console.log(error.response);
-          this.loadingpage = false;
         })
         .finally(function () {
           // always executed
-          this.loadingPage = false;
         });
     },
   },

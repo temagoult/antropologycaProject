@@ -9,6 +9,7 @@ import VueLodash from "vue-lodash";
 import lodash from "lodash";
 import Vueditor from "vueditor";
 import Vuex from "vuex";
+import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor";
 import { TiptapVuetifyPlugin } from "tiptap-vuetify";
 // don't forget to import CSS styles
 import "tiptap-vuetify/dist/main.css";
@@ -36,6 +37,21 @@ import "quill/dist/quill.bubble.css"; // for bubble theme
 // Vue.use(BootstrapVueIcons)
 
 Vue.config.devtools = true;
+ClassicEditor.create(document.querySelector("#editor"), {
+  language: {
+    // The UI will be English.
+    ui: "ar",
+
+    // But the content will be edited in Arabic.
+    content: "ar",
+  },
+})
+  .then((editor) => {
+    window.editor = editor;
+  })
+  .catch((err) => {
+    console.error(err.stack);
+  });
 
 Vue.use(VueQuillEditor /* { default global options } */);
 
