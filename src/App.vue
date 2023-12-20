@@ -1,9 +1,11 @@
 <template>
-  <div class>
+  <div>
     <!-- <AdminDashbord :user="user" /> -->
-    <navBar @scrollToTeamWork="scrollToTeamWork" :isLogin="isLogin" @logOut="logOut" :user="user"></navBar>
+    <navBar :isLogin="isLogin" @logOut="logOut" :user="user"></navBar>
     <router-view
       class="lg:min-h-[67vh] md:min-h-[46vh] min-h-[65vh]"
+      @forceUpdate="forceUpdate"
+      :key="updatingKey"
       :callBack="scrollToTeamWork"
       @postSelected="postSelected"
       :isLogin.sync="isLogin"
@@ -15,15 +17,17 @@
       @currentEditableBlog="currentEditableBlog"
       :editableBlog="editableBlog"
     ></router-view>
-    <Footer :isLogin.sync="isLogin "></Footer>
+    <Footer :isLogin.sync="isLogin"></Footer>
   </div>
 </template>
-  <script>
+<script>
 import "./styles/style.css";
 // import AdminDashbord from "./views/AdminDasghbord.vue";
 import Footer from "./views/sections/sectionSeven/Footer.vue";
 import navBar from "./views/sections/sectionOne/NavBar.vue";
 import router from "./router";
+import axios from "axios";
+// import axios from "axios";
 
 export default {
   data() {
@@ -31,7 +35,8 @@ export default {
       currentPost: {},
       isLogin: true,
       user: {},
-      editableBlog: {}
+      editableBlog: {},
+      updatingKey: null,
     };
   },
   created() {
@@ -46,10 +51,14 @@ export default {
   name: "App",
   components: {
     navBar,
-    Footer
+    Footer,
     // AdminDashbord
   },
   methods: {
+    forceUpdate() {
+      this.$forceUpdate();
+      this.updatingKey += 1;
+    },
     scrollToTeamWork() {
       this.$emit("scrollToTeamWork");
     },
@@ -65,23 +74,37 @@ export default {
       this.user = JSON.parse(localStorage.getItem("user"));
     },
     logOut() {
-      this.isLogin = true;
-      localStorage.removeItem("user");
+      axios
+        .get("users/logout", {
+          headers: {
+            Authorization: "Bearer " + this.user.token,
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          this.isLogin = true;
+          localStorage.removeItem("user");
 
-      if (this.$route.name != "Home") {
-        router.push({
-          path: "/"
-        });
-      }
+          if (this.$route.name != "Home") {
+            router.push({
+              path: "/",
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finaly(() => {});
+      //
     },
     isloged() {
       this.user = JSON.parse(localStorage.getItem("user"));
       if (this.user !== undefined) this.isLogin = false;
-    }
-  }
+    },
+  },
 };
 </script>
-  <style >
+<style>
 @import url("https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css");
 @import url("https://fonts.googleapis.com/css2?family=Hind+Vadodara:wght@300;400;500;600;700&family=Lateef:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap");
 </style>

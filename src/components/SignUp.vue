@@ -210,7 +210,7 @@ export default {
           console.log(this.newUser);
           axios
             .post(
-              "https://anthropologyca.onrender.com/api/v1/users/signup",
+              "users/signup",
 
               {
                 name: this.newUser.name,

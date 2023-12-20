@@ -531,6 +531,7 @@ export default {
               this.comment = "";
             });
             this.loadingPage = false;
+            this.$emit("forceUpdate");
           }, 3000);
         });
     },
@@ -561,7 +562,9 @@ export default {
         .catch((e) => {
           console.log(e);
         })
-        .finally(() => {});
+        .finally(() => {
+          this.$emit("forceUpdate");
+        });
     },
     handleShowMoreComment() {
       this.showLess = false;
@@ -609,7 +612,9 @@ export default {
         .catch((e) => {
           console.log(e.response.data.message);
         })
-        .finally(() => {});
+        .finally(() => {
+          this.$emit("forceUpdate");
+        });
     },
     unLike() {
       this.isLiked = false;
@@ -635,7 +640,9 @@ export default {
         .catch((e) => {
           console.log(e.response.data.message);
         })
-        .finally(() => {});
+        .finally(() => {
+          this.$emit("forceUpdate");
+        });
     },
   },
   wacth: {
@@ -646,23 +653,21 @@ export default {
   },
   created() {
     this.post = JSON.parse(localStorage.getItem("postSelected"));
+    let $vm = this;
 
-    this.loadingPage = true;
+    $vm.loadingPage = true;
 
     axios
-      .get(
-        "https://anthropologyca.onrender.com/api/v1/posts/" + this.post.slug,
-        {
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            Authorization: "Bearer " + this.user.token,
-          },
-        }
-      )
+      .get("posts/" + this.post.slug, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: "Bearer " + this.user.token,
+        },
+      })
       .then((response) => {
         this.post = Object.assign({}, response.data.data.data);
         console.log(this.post);
-        this.loadingPage = false;
+        $vm.loadingPage = false;
 
         if (this.showLess == false) {
           this.number = this.post.comments.lengh;
@@ -672,22 +677,19 @@ export default {
       })
       .catch(function (error) {
         console.log(error.response);
-        this.loadingPage = false;
+        $vm.loadingPage = false;
       })
       .finally(() => {
-        this.loadingPage = false;
+        $vm.loadingPage = false;
       });
 
     axios
-      .get(
-        "https://anthropologyca.onrender.com/api/v1/users/my-favorite-posts",
-        {
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            Authorization: "Bearer " + this.user.token,
-          },
-        }
-      )
+      .get("users/my-favorite-posts", {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: "Bearer " + this.user.token,
+        },
+      })
       .then((response) => {
         console.log(response.data);
         this.favouritePosts = response.data.data;

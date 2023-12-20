@@ -333,9 +333,9 @@ export default {
       return moment(date).format("YYYY-MM-DD");
     },
 
-    getBlogs() {
-      axios
-        .get("https://anthropologyca.onrender.com/api/v1/posts/", {
+    async getBlogs() {
+      await axios
+        .get("posts/", {
           headers: {
             "Content-Type": "application/json; charset=utf-8",
           },

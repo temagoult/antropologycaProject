@@ -104,6 +104,7 @@ import VueI18n from "vue-i18n";
 import "./index.css";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "@fortawesome/fontawesome-free/js/all.js";
+import "./axios";
 
 // const Vuetify = createVuetify({
 //   locale: {

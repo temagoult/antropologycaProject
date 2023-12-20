@@ -10,7 +10,6 @@
       ></i>
       <div
         class="lg:text-[40px] md:text-[35px] sm:text-[25px] text-[20px] bg-white p-2 mr-[-8px]"
-        @click="getData"
       >
         اضافة مقالة
       </div>
@@ -98,6 +97,8 @@
               class="addPost"
               v-model="post.summary"
             ></v-textarea>
+            +
+
             <div>
               <v-label>موضوع المقال</v-label>
               <div required>
@@ -180,10 +181,7 @@ function uploadAdapter(loader) {
           body.append("image", file);
 
           try {
-            const response = await axios.post(
-              "https://anthropologyca.onrender.com/api/v1/posts/post-image/",
-              body
-            );
+            const response = await axios.post("posts/post-image/", body);
             const imageUrl = `https://anthropologyca.onrender.com/api/v1/posts/post-image/${response.data.data.filename}`;
 
             // CKEditor expects a specific format for the resolved promisejuijjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj
@@ -396,7 +394,7 @@ export default {
           this.loading = true;
           axios
             .post(
-              "https://anthropologyca.onrender.com/api/v1/posts/",
+              "posts/",
 
               {
                 title: this.post.title,
@@ -447,9 +445,7 @@ export default {
       console.log(this.post.coverImage);
       this.createImage(file);
     },
-    getData() {
-      console.log(this.post);
-    },
+
     createImage(file) {
       const reader = new FileReader();
 

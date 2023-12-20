@@ -15,7 +15,7 @@
         </div>-->
 
         <div
-          class="mt-[-90px] md:w-[100%] sm:w-[70%] w-[70%] placeholder:text-[#0d6efd]"
+          class="-mt-[50px] md:w-[100%] sm:w-[70%] w-[70%] placeholder:text-[#0d6efd]"
         >
           <v-text-field
             class="!self-center !m-0"

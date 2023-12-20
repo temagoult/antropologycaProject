@@ -1,166 +1,192 @@
 <template>
-  <v-app class="!h-0 !m-0 !p-0">
-    <v-container fluid class="!p-2 md:!p-3">
-      <v-row justify="center">
-        <v-menu bottom offset-y :min-width="widht">
-          <template v-slot:activator="{ on }">
-            <v-btn icon x-large v-on="on" clas>
-              <v-avatar color="#0d6efd" :size="size">
-                <v-img
-                  v-if="showAltImage == false"
-                  :src="
-                    'https://anthropologyca.onrender.com/api/v1/usersuser-photo/' +
-                    user.data.user.photo
-                  "
-                  v-on:error="onImgError"
-                ></v-img>
-                <span
-                  v-else
-                  class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                  >{{ user.data.user.name.charAt(0) }}</span
-                >
-              </v-avatar>
+  <v-row justify="center">
+    <v-menu offset-y :min-width="widht">
+      <template v-slot:activator="{ on }">
+        <v-btn icon x-large v-on="on">
+          <v-avatar color="#0d6efd" :size="size">
+            <v-img
+              v-if="showAltImage == false"
+              :src="imgUrl"
+              v-on:error="onImgError"
+            ></v-img>
+            <span
+              v-else
+              class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
+              >{{ user.data.user.name.charAt(0) }}</span
+            >
+          </v-avatar>
+        </v-btn>
+      </template>
+      <v-card>
+        <v-list-item-content class="justify-center">
+          <div class="mx-auto text-center">
+            <v-avatar color="#0d6efd" @click="toMyProfile">
+              <v-img
+                v-if="showAltImage == false"
+                crossorigin="anonymous"
+                :src="imgUrl"
+                v-on:error="onImgError"
+              ></v-img>
+              <span
+                v-else
+                class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
+                >{{ user.data.user.name.charAt(0) }}</span
+              >
+            </v-avatar>
+            <h3
+              @click="toMyProfile"
+              class="lg:!text-[20px] md:!text-[25px] sm:!text-[20px] !text-[18px]"
+            >
+              {{ user.data.user.name }}
+            </h3>
+
+            <p
+              class="text-caption mt-1 lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
+            >
+              {{ user.data.user.email }}
+            </p>
+            <div class="flex justify-center items-center mb-[2px]">
+              <p
+                class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
+              >
+                {{ user.data.user.bio }}
+              </p>
+            </div>
+            <span
+              class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px] !font-extrabold"
+              v-if="user.data.user.verified"
+              >الحساب :مفعل</span
+            >
+            <span
+              class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px] !font-extrabold"
+              v-else
+              >الحساب : غير مفعل</span
+            >
+            <v-divider class="my-3"></v-divider>
+            <v-btn
+              depressed
+              rounded
+              text
+              class="lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
+            >
+              تفعييل الحساب
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
+                >mdi-arrow-up-bold</v-icon
+              >
             </v-btn>
-          </template>
-          <v-card>
-            <v-list-item-content class="justify-center">
-              <div class="mx-auto text-center">
-                <v-avatar color="#0d6efd">
-                  <v-img
-                    v-if="showAltImage == false"
-                    crossorigin="anonymous"
-                    :src="
-                      'https://anthropologyca.onrender.com/api/v1/users/user-photo/' +
-                      user.data.user.photo
-                    "
-                    v-on:error="onImgError"
-                  ></v-img>
-                  <span
-                    v-else
-                    class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                    >{{ user.data.user.name.charAt(0) }}</span
-                  >
-                </v-avatar>
-                <h3
-                  class="lg:!text-[20px] md:!text-[25px] sm:!text-[20px] !text-[18px]"
-                >
-                  {{ user.data.user.name }}
-                </h3>
+            <v-divider class="my-3"></v-divider>
 
-                <p
-                  class="text-caption mt-1 lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                >
-                  {{ user.data.user.email }}
-                </p>
-                <div class="flex justify-center items-center mb-[2px]">
-                  <p
-                    class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                  >
-                    {{ user.data.user.bio }}
-                  </p>
-                </div>
-                <span
-                  class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px] !font-extrabold"
-                  v-if="user.data.user.verified"
-                  >الحساب :مفعل</span
-                >
-                <span
-                  class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px] !font-extrabold"
-                  v-else
-                  >الحساب : غير مفعل</span
-                >
-                <v-divider class="my-3"></v-divider>
-                <v-btn
-                  depressed
-                  rounded
-                  text
-                  class="lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
-                >
-                  تفعييل الحساب
-                  <v-icon
-                    class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
-                    >mdi-arrow-up-bold</v-icon
-                  >
-                </v-btn>
-                <v-divider class="my-3"></v-divider>
+            <v-btn
+              to="/gestionArticles"
+              depressed
+              rounded
+              text
+              class="lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
+            >
+              ادارة مقالاتي
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
+                >mdi-text-box-plus</v-icon
+              >
+            </v-btn>
 
-                <v-btn
-                  to="/gestionArticles"
-                  depressed
-                  rounded
-                  text
-                  class="lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
-                >
-                  ادارة مقالاتي
-                  <v-icon
-                    class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
-                    >mdi-text-box-plus</v-icon
-                  >
-                </v-btn>
+            <v-divider class="my-3"></v-divider>
+            <v-btn
+              to="/favouritPost"
+              depressed
+              rounded
+              text
+              class="lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
+            >
+              مقالاتي المفضلة
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
+                >mdi-star</v-icon
+              >
+            </v-btn>
 
-                <v-divider class="my-3"></v-divider>
-                <v-btn
-                  to="/favouritePost"
-                  depressed
-                  rounded
-                  text
-                  class="lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
-                >
-                  مقالاتي المفضلة
-                  <v-icon
-                    class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
-                    >mdi-star</v-icon
-                  >
-                </v-btn>
+            <v-divider class="my-3"></v-divider>
 
-                <v-divider class="my-3"></v-divider>
+            <v-btn
+              to="/EditProfile"
+              depressed
+              rounded
+              text
+              class="lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
+            >
+              معلومات الحساب
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
+                >mdi-account-cog</v-icon
+              >
+            </v-btn>
 
-                <v-btn
-                  to="/EditProfile"
-                  depressed
-                  rounded
-                  text
-                  class="lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
-                >
-                  معلومات الحساب
-                  <v-icon
-                    class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
-                    >mdi-account-cog</v-icon
-                  >
-                </v-btn>
-
-                <v-divider class="my-3"></v-divider>
-                <v-btn
-                  depressed
-                  rounded
-                  text
-                  class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px]"
-                  @click="logOut"
-                >
-                  تسجيل الخروج
-                  <v-icon
-                    class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
-                    >mdi-logout</v-icon
-                  >
-                </v-btn>
-              </div>
-            </v-list-item-content>
-          </v-card>
-        </v-menu>
-      </v-row>
-    </v-container>
-  </v-app>
+            <v-divider class="my-3"></v-divider>
+            <v-btn
+              depressed
+              rounded
+              text
+              class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px]"
+              @click="logOut"
+            >
+              تسجيل الخروج
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
+                >mdi-logout</v-icon
+              >
+            </v-btn>
+          </div>
+        </v-list-item-content>
+      </v-card>
+    </v-menu>
+  </v-row>
 </template>
 <script>
+import axios from "axios";
+import router from "../router";
 export default {
   mounted() {
     this.userAvatar = Object.assign({}, this.user);
+    this.getImage();
   },
   data: () => ({
     userAvatar: {},
     showAltImage: false,
+    imgUrl: null,
   }),
   methods: {
+    toMyProfile() {
+      if (this.$route.name != "me") {
+        router.push({
+          path: "/me",
+        });
+      }
+    },
+    getImage() {
+      axios
+        .get(
+          "users/user-photo/" + this.user.data.user.photo,
+          { responseType: "arraybuffer" },
+
+          {
+            headers: {
+              Authorization: "Bearer " + this.user.token,
+            },
+          }
+        )
+        .then((res) => {
+          this.imgUrl = URL.createObjectURL(
+            new Blob([res.data], { tyoe: "image/jpg" })
+          );
+          console.log(this.imgUrl);
+
+          console.log(new Blob([this.userAvatar.image], { type: "image/jpg" }));
+        })
+        .catch((e) => {
+          console.log(e.data);
+        });
+    },
     logOut() {
       this.$emit("logOut");
     },

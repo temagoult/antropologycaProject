@@ -2,13 +2,22 @@
   <div>
     <v-app>
       <v-dialog v-model="localModelValue" class="p-2" width="auto" reverse>
-        <v-card class="mx-auto pa-12 pb-8 md:w-[600px] sm:w-[400px]" elevation="8" rounded="lg">
+        <v-card
+          class="mx-auto pa-12 pb-8 md:w-[600px] sm:w-[400px]"
+          elevation="8"
+          rounded="lg"
+        >
           <div class="flex items-center justify-end">
             <v-btn color="#0d6efd" icon @click="close">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </div>
-          <v-form fast-fail class="text-right" autocomplete="on" @submit.prevent="login">
+          <v-form
+            fast-fail
+            class="text-right"
+            autocomplete="on"
+            @submit.prevent="login"
+          >
             <v-btn
               class="signWithgoogle text-center justify-center gap-2 items-center flex !bg-[#0d6efd] p-2 !text-white mx-auto !my-3 lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
               block
@@ -16,7 +25,9 @@
               variant="tonal"
             >
               <div class="p-2">الدخول باستخدام غوغل</div>
-              <i class="fa-brands fa-google p-2 md:text-[23px] sm:text-[20px] text-[18px]"></i>
+              <i
+                class="fa-brands fa-google p-2 md:text-[23px] sm:text-[20px] text-[18px]"
+              ></i>
             </v-btn>
             <v-text-field
               class="textfield"
@@ -41,11 +52,13 @@
               reverse
               v-validate="'required'"
               name="password"
-              :class="{'is-danger': errors.has('password')}"
+              :class="{ 'is-danger': errors.has('password') }"
               ref="password"
               autocomplete="on"
             ></v-text-field>
-            <v-btn to="#" class="text-body-2 font-weight-regular">نسيت كلمة السر</v-btn>
+            <v-btn to="/forgotPassword" class="text-body-2 font-weight-regular"
+              >نسيت كلمة السر</v-btn
+            >
 
             <v-btn
               type="submit"
@@ -55,7 +68,8 @@
               size="large"
               variant="tonal"
               :loading="loading"
-            >تسجيل الدخول</v-btn>
+              >تسجيل الدخول</v-btn
+            >
           </v-form>
           <v-card-text class="text-center">
             <a
@@ -75,10 +89,13 @@
       <v-card>
         <v-card-title
           class="text-center p-2 md:!text-lg sm:!text-base !text-sm m-2"
-        >مستخدم غير موحود</v-card-title>
+          >مستخدم غير موحود</v-card-title
+        >
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="dialogtrue=false">اعادة المحاولة</v-btn>
+          <v-btn color="blue darken-1" text @click="dialogtrue = false"
+            >اعادة المحاولة</v-btn
+          >
           <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
@@ -88,10 +105,13 @@
       <v-card>
         <v-card-title
           class="text-center p-2 md:!text-lg sm:!text-base !text-sm m-2"
-        >يجب ملا الاستمارة بطريقة صحيحة</v-card-title>
+          >يجب ملا الاستمارة بطريقة صحيحة</v-card-title
+        >
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="dialogErro=false">متفهم</v-btn>
+          <v-btn color="blue darken-1" text @click="dialogErro = false"
+            >متفهم</v-btn
+          >
           <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
@@ -123,17 +143,17 @@ export default {
       visible: false,
       user: {
         email: "mohamed@gmail.com",
-        password: "aaaaaaaaa"
-      }
+        password: "aaaaaaaaa",
+      },
     };
   },
 
   components: {
-    SignUp
+    SignUp,
   },
   props: {
     showLoginDialog: { value: true, type: Boolean },
-    isLogin: { type: Boolean }
+    isLogin: { type: Boolean },
   },
   computed: {
     localModelValue: {
@@ -142,8 +162,8 @@ export default {
       },
       set(newValue) {
         this.$emit("updatemodelValue", newValue);
-      }
-    }
+      },
+    },
   },
   methods: {
     close() {
@@ -167,20 +187,16 @@ export default {
     },
 
     async login() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           this.loading = true;
           axios
-            .post(
-              "https://anthropologyca.onrender.com/api/v1/users/login/",
-              this.user,
-              {
-                headers: {
-                  "Content-Type": "application/json "
-                }
-              }
-            )
-            .then(res => {
+            .post("users/login/", this.user, {
+              headers: {
+                "Content-Type": "application/json ",
+              },
+            })
+            .then((res) => {
               this.loading = false;
               if (res.status === 200) {
                 localStorage.setItem("user", JSON.stringify(res.data));
@@ -191,7 +207,7 @@ export default {
                 this.localModelValue = false;
               }
             })
-            .catch(e => {
+            .catch((e) => {
               this.loading = false;
               this.error = e;
 
@@ -203,7 +219,7 @@ export default {
           this.dialogErro = true;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>

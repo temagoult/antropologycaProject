@@ -1,6 +1,7 @@
 <template>
   <div
     class="lg:mb-[30px] md:mb-[25px] sm:mb-[15px] mb-[10px] lg:p-8 md:p-7 sm:p-5 p-4 myContainer"
+    :key="inputKey"
   >
     <!-- <div class="flex items-center justify-between md:hidden">
       <div class="p-2">
@@ -38,29 +39,24 @@
                   <v-img
                     crossorigin="anonymous"
                     class="md:!w-[200px] w-[150px] h-[150px] md:!h-[200px] rounded-[50%] md:opacity-[0.5]"
-                    :src="'https://cdn.vuetifyjs.com/images/profiles/marcus.jpg'"
+                    :src="imgUrl"
                     v-on:error="onImgError"
                   ></v-img>
                   <v-file-input
                     prepend-icon="mdi-camera"
-                    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 md:block hidden"
-                    multiple
+                    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                    @change="onFileChange"
                     hide-input
                   ></v-file-input>
                 </div>
-                <div v-else class="relative md:block hidden">
+                <div v-else class="relative">
                   <v-img
                     crossorigin="anonymous"
                     class="md:!w-[200px] w-[150px] h-[150px] md:!h-[200px] rounded-[50%]"
-                    :src="'https://cdn.vuetifyjs.com/images/profiles/marcus.jpg'"
+                    :src="imgUrl"
                     v-on:error="onImgError"
+                    v-model="imgUrl"
                   ></v-img>
-                  <v-file-input
-                    prepend-icon="mdi-camera"
-                    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 md:hidden block"
-                    multiple
-                    hide-input
-                  ></v-file-input>
                 </div>
               </v-hover>
             </div>
@@ -68,7 +64,7 @@
           </div>
 
           <div class="px-5 md:h p-2">
-            <v-form @submit.prevent="updatePersoData" data-vv-scope="form1">
+            <v-form @submit.prevent="updatePersoData">
               <v-text-field
                 class="lg:!text-[40px] md:!text-[35px] sm:!text-[30px] !text-[25px] infoPerso"
                 background-color="white"
@@ -130,11 +126,10 @@
               </v-btn>
             </v-form>
           </div>
-
           <div class="px-5 md:h p-2">
             <v-form @submit.prevent="updatePassword">
               <v-text-field
-                class="lg:!text-[23px] md:!text-[21px] sm:!text-[19px] !text-[17px] !text-white fieldReadOnly !cursor-pointer"
+                class="lg:!text-[23px] md:!text-[21px] sm:!text-[19px] !text-[17px] !text-white fieldReadOnly !cursor-pointer passChange"
                 value=" تغيير كلمة السر"
                 reverse
                 solo
@@ -246,8 +241,9 @@
 <script>
 import axios from "axios";
 export default {
-  created() {
+  mounted() {
     this.userBeforeUpdate = Object.assign({}, this.user.data.user);
+    this.getImage();
   },
   data() {
     return {
@@ -255,6 +251,7 @@ export default {
       loadingPerso: false,
       success: false,
       passSucces: false,
+      inputKey: null,
       userBeforeUpdate: {},
       managePassword: {
         currentPassword: "",
@@ -268,6 +265,7 @@ export default {
       showDialog: false,
       showAltImage: false,
       yesForChange: false,
+      imgUrl: null,
     };
   },
   components: {},
@@ -278,6 +276,28 @@ export default {
   },
 
   methods: {
+    getImage() {
+      axios
+        .get(
+          "users/user-photo/" + this.user.data.user.photo,
+          { responseType: "arraybuffer" },
+
+          {
+            headers: {
+              Authorization: "Bearer " + this.user.token,
+            },
+          }
+        )
+        .then((res) => {
+          this.imgUrl = URL.createObjectURL(
+            new Blob([res.data], { type: "image/png" })
+          );
+          console.log(this.imgUrl);
+        })
+        .catch((e) => {
+          console.log(e.data);
+        });
+    },
     close() {
       this.editOpenDial = false;
     },
@@ -291,17 +311,18 @@ export default {
     updatePersoData() {
       this.loadingPerso = true;
       console.log(this.user.token);
-      this.$validator.validateAll("form1").then((result) => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           axios
             .patch(
-              "https://anthropologyca.onrender.com/api/v1/users/updateMe",
+              "users/updateMe",
 
               this.userBeforeUpdate,
 
               {
                 headers: {
-                  "Content-Type": "application/json; charset=utf-8",
+                  "Content-Type":
+                    "application/json; multipart/form-data; harset=utf-8",
                   Authorization: "Bearer " + this.user.token,
                 },
               }
@@ -323,16 +344,15 @@ export default {
             })
             .finally(() => {
               this.loadingPerso = false;
+              console.log(this.userBeforeUpdate);
               setTimeout(() => {
-                location.reload();
                 this.success = false;
+                location.reload();
               }, 3000);
             });
 
           // this.subsvalue = false;
           // this.dialogDelete = true;
-        } else {
-          this.loading = false;
         }
       });
     },
@@ -340,8 +360,7 @@ export default {
       if (!file) {
         return;
       }
-      this.userBeforeUpdate.coverImage = file;
-
+      this.userBeforeUpdate.photo = file;
       console.log(this.userBeforeUpdate.photo);
       this.createImage(file);
     },
@@ -349,7 +368,7 @@ export default {
       const reader = new FileReader();
 
       reader.onload = (e) => {
-        this.imageUrl = e.target.result;
+        this.imgUrl = e.target.result;
       };
 
       reader.readAsDataURL(file);
@@ -357,18 +376,17 @@ export default {
     updatePassword() {
       this.loading = true;
       console.log(this.user.token);
-      this.$validator.validateAll("form2").then((result) => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           axios
-            .post(
-              "https://anthropologyca.onrender.com/api/v1/users/updateMyPassword",
+            .patch(
+              "users/updateMyPassword",
 
               this.managePassword,
 
               {
                 headers: {
-                  "Content-Type":
-                    "application/json; multipart/form-data; harset=utf-8",
+                  "Content-Type": "application/json;",
                   Authorization: "Bearer " + this.user.token,
                 },
               }
@@ -386,7 +404,7 @@ export default {
             .catch((e) => {
               this.loading = false;
               this.error = e;
-              console.log(e.response.data.message);
+              console.log(e);
             })
             .finally(() => {
               this.loading = false;

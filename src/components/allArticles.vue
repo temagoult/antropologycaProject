@@ -16,9 +16,11 @@
       </div>
 
       <div class="articles p-2 myContainer flex flex-col">
-        <div class="mainArticle p-2 grid md:grid-cols-3 sm:grid-cols-2 gap-4 content-center">
+        <div
+          class="mainArticle p-2 grid md:grid-cols-3 sm:grid-cols-2 gap-4 content-center"
+        >
           <div
-            v-for="(blog,index) in filterBlog"
+            v-for="(blog, index) in filterBlog"
             :key="index"
             class="cardArticle p-2 rounded-[25px] border border-solid border-gray-300 flex flex-col md:gap-1 sm:gap-[3px] gap-[2px]"
           >
@@ -30,16 +32,19 @@
               class="dateP lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
             >
               <span>عنوان المقال :</span>
-              {{ blog.title.split(" ")
-              .slice(0, numwords2.value)
-              .join(" ") + "..." }} }}
+              {{
+                blog.title.split(" ").slice(0, numwords2.value).join(" ") +
+                "..."
+              }}
+              }}
             </div>
             <p
               class="text-gray-500 leading-4 lg:text-[20px] md:text-[18px] sm:text-[16px] text-[12px] py-[7px]"
             >
-              {{ blog.summary.split(" ")
-              .slice(0, numwords.value)
-              .join(" ") + "..." }}
+              {{
+                blog.summary.split(" ").slice(0, numwords.value).join(" ") +
+                "..."
+              }}
             </p>
             <div
               class="dateP lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
@@ -52,7 +57,7 @@
             >
               <div>
                 <span class>اضيف في :</span>
-                {{getFormattedDate( blog.updatedAt) }}
+                {{ getFormattedDate(blog.updatedAt) }}
               </div>
             </div>
             <div class="sousCard flex justify-between py-2 text-[#0d6efd]">
@@ -67,7 +72,9 @@
                   ></i>
                   <div
                     class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
-                  >{{ blog.commentsCounter }}</div>
+                  >
+                    {{ blog.commentsCounter }}
+                  </div>
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
@@ -80,7 +87,9 @@
                   ></i>
                   <div
                     class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
-                  >{{ blog.downloadCounter }}</div>
+                  >
+                    {{ blog.downloadCounter }}
+                  </div>
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
@@ -93,7 +102,9 @@
                   ></i>
                   <div
                     class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] text-[#0d6efd]"
-                  >{{ blog.viewsCounter }}</div>
+                  >
+                    {{ blog.viewsCounter }}
+                  </div>
                 </v-btn>
                 <div class="flex items-center gap-2">
                   <v-spacer></v-spacer>
@@ -104,11 +115,14 @@
                   >
                     <i
                       class="fa-regular fa-heart lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] cursor-pointer !text-[#0d6efd]"
-                    >mdi-heart</i>
+                      >mdi-heart</i
+                    >
 
                     <div
                       class="number lg:text-[20px] md:text-[18px] sm:text-[16px] text-[14px] !text-[#0d6efd]"
-                    >{{ allArticles[index].likesCounter }}</div>
+                    >
+                      {{ allArticles[index].likesCounter }}
+                    </div>
                   </v-btn>
                   <v-spacer></v-spacer>
                 </div>
@@ -117,7 +131,8 @@
               <v-btn
                 class="!text-[#0d6efd] !cursor-pointer !lg:text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !self-end"
                 @click="action(blog)"
-              >اقرا المزيد</v-btn>
+                >اقرا المزيد</v-btn
+              >
             </div>
           </div>
         </div>
@@ -137,7 +152,7 @@
     </div>
   </div>
 </template>
-  <script>
+<script>
 import axios from "axios";
 import moment from "moment";
 
@@ -159,7 +174,7 @@ export default {
       numwords: { type: Number, value: 20 },
       numwords2: { type: Number, value: 2 },
       photoArticle: {
-        src: require("../assets/images/article2.jpg")
+        src: require("../assets/images/article2.jpg"),
       },
 
       allArticles: [
@@ -169,10 +184,10 @@ export default {
           viewsCounter: "",
           likesCounter: "",
           commentsCounter: "",
-          author: {}
-        }
+          author: {},
+        },
       ],
-      currentEditableBlog: {}
+      currentEditableBlog: {},
     };
   },
   created() {
@@ -181,20 +196,20 @@ export default {
   computed: {
     filterBlog() {
       let Search = this.search;
-      return this.records.filter(function(article) {
+      return this.records.filter(function (article) {
         return article.title.match(Search);
       });
-    }
+    },
   },
   methods: {
     getBlogs(page) {
       axios
-        .get("https://anthropologyca.onrender.com/api/v1/posts/", {
+        .get("posts/", {
           headers: {
-            "Content-Type": "application/json; charset=utf-8"
-          }
+            "Content-Type": "application/json; charset=utf-8",
+          },
         })
-        .then(response => {
+        .then((response) => {
           console.log(response.data);
 
           this.allArticles = response.data.data.docs;
@@ -220,10 +235,10 @@ export default {
 
           this.pageCount = Math.ceil(this.recordsLength / 6);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error.response);
         })
-        .finally(function() {
+        .finally(function () {
           // always executed
         });
     },
@@ -240,7 +255,7 @@ export default {
         this.$router.push({ path: "/Post" });
         this.$emit("postSelected", article);
       }
-    }
-  }
+    },
+  },
 };
 </script>

@@ -237,7 +237,8 @@ export default {
     isLogin: { type: Boolean },
   },
   mounted() {
-    this.getBlogs();
+    let $vm = this;
+    $vm.getBlogs();
   },
   data() {
     return {
@@ -259,8 +260,8 @@ export default {
   },
 
   methods: {
-    getBlogs() {
-      this.loadingPage = true;
+    async getBlogs() {
+      let $vm = this;
       axios
         .get("https://anthropologyca.onrender.com/api/v1/posts/", {
           headers: {
@@ -268,10 +269,7 @@ export default {
           },
         })
         .then((response) => {
-          if (this.loadingPage != undefined) {
-            this.loadingPage = false;
-          }
-
+          $vm.loadingPage = false;
           this.newArticles = response.data.data.docs;
           if (this.newArticles.length == 1) {
             this.allowFlowGrid = true;
@@ -285,15 +283,16 @@ export default {
           console.log(this.pageCount);
         })
         .catch(function (error) {
+          $vm.loadingPage = false;
           console.log(error.response);
         })
         .finally(function () {
+          $vm.loadingPage = false;
           // always executed
           // if (this.loadingPage) {
           //   this.loadingPage = false;
           // }
         });
-      this.loadingPage = false;
     },
 
     callback: function (page) {

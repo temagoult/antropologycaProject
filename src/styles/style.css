@@ -110,8 +110,9 @@ span {
 .v-icon {
   cursor: pointer !important;
 }
-.infoPerso input {
-  color: blue !important;
+.infoPerso input,
+.passChange {
+  color: #0d6efd !important;
   font-weight: 400 !important;
   background-color: white;
 }
