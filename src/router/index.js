@@ -11,9 +11,15 @@ import EditBlog from "../components/EditBlog";
 import me from "@/views/me";
 import allArticles from "../components/allArticles";
 import forgotPassword from "../components/forgotPassword";
+import getAllUserAdmin from "../components/getAllUserAdmin";
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: "/getAllUserAdmin",
+    name: "getAllUserAdmin",
+    component: getAllUserAdmin,
+  },
   {
     path: "/forgotPassword",
     name: "forgotPassword",

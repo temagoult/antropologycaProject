@@ -527,9 +527,7 @@ export default {
           setTimeout(() => {
             this.success = false;
             this.loadingPage = true;
-            this.$nextTick(() => {
-              this.comment = "";
-            });
+        
             this.loadingPage = false;
             this.$emit("forceUpdate");
           }, 3000);

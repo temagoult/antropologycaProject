@@ -50,9 +50,8 @@ export default {
 
   name: "App",
   components: {
-    navBar,
     Footer,
-    // AdminDashbord
+    navBar,
   },
   methods: {
     forceUpdate() {

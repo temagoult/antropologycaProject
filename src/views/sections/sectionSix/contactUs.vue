@@ -11,7 +11,9 @@
         ></i>
         <div
           class="lg:text-[40px] md:text-[35px] animate-bounce sm:text-[25px] text-[20px] bg-white p-2 mr-[-8px]"
-        >تواصل معنا</div>
+        >
+          تواصل معنا
+        </div>
         <div class="w-[100%] bg-[#0d6efd] h-[1px] absolute z-[-1]"></div>
       </div>
       <div class="p-2">
@@ -23,9 +25,9 @@
               v-model="newMessage.fullName"
               :counter="15"
               label=" الاسم و اللقب"
-              name="fullName"
+              name=" الاسم و اللقب"
               v-validate="'required|alpha'"
-              :error-messages="errors.first('fullName')"
+              :error-messages="errors.first(' الاسم و اللقب')"
               reverse
             ></v-text-field>
             <v-text-field
@@ -34,9 +36,9 @@
               v-model="newMessage.email"
               reverse
               label="الايميل"
-              name="email"
+              name="الايميل"
               v-validate="'required|email'"
-              :error-messages="errors.first('email')"
+              :error-messages="errors.first('الايميل')"
             ></v-text-field>
             <v-textarea
               v-model="newMessage.messsage"
@@ -47,9 +49,9 @@
               label="الرسالة"
               reverse
               rows="4"
-              name="area"
+              name="الرسالة"
               v-validate="'required'"
-              :error-messages="errors.first('area')"
+              :error-messages="errors.first('الرسالة')"
             ></v-textarea>
 
             <v-card-actions>
@@ -58,13 +60,15 @@
                 :disabled="enable"
                 class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px]"
                 color="deep-purple-accent-4"
-              >ارسال</v-btn>
+                >ارسال</v-btn
+              >
               <v-spacer></v-spacer>
               <v-btn
                 variant="text"
                 class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px]"
                 @click="reset"
-              >اعادة التعيين</v-btn>
+                >اعادة التعيين</v-btn
+              >
             </v-card-actions>
           </form>
         </v-card>
@@ -81,14 +85,14 @@ export default {
       newMessage: {
         fullName: "",
         email: "",
-        messsage: ""
-      }
+        messsage: "",
+      },
     };
   },
 
   methods: {
     submit() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           console.log(this.newMessage);
           this.subsvalue = false;
@@ -107,11 +111,11 @@ export default {
           email: "",
           password: "",
           photo: {
-            src: ""
-          }
+            src: "",
+          },
         };
       });
-    }
+    },
   },
   computed: {
     enable() {
@@ -124,7 +128,7 @@ export default {
       } else {
         return false;
       }
-    }
-  }
+    },
+  },
 };
 </script>

@@ -42,9 +42,9 @@
             v-model="newUser.name"
             :counter="20"
             label=" الاسم و اللقب"
-            name="fullName"
+            name=" الاسم و اللقب"
             v-validate="'required|alpha_spaces'"
-            :error-messages="errors.first('fullName')"
+            :error-messages="errors.first(' الاسم و اللقب')"
             reverse
           ></v-text-field>
 
@@ -62,17 +62,17 @@
             v-model="newUser.email"
             reverse
             label="الايميل"
-            name="email"
+            name="الايميل"
             v-validate="'required|email'"
-            :error-messages="errors.first('email')"
+            :error-messages="errors.first('الايميل')"
           ></v-text-field>
           <v-text-field
             v-model="newUser.password"
-            :error-messages="errors.first('password') || this.errorMessages"
+            :error-messages="errors.first('كلمة السر') || this.errorMessages"
             label="كلمة السر"
             reverse
             v-validate="'required'"
-            name="password"
+            name="كلمة السر"
             ref="$password"
             :prepend-inner-icon="visible ? 'mdi-eye' : 'mdi-eye-off'"
             :type="visible ? 'text' : 'password'"
@@ -81,11 +81,11 @@
             @click:prepend-inner="visible = !visible"
           ></v-text-field>
           <v-text-field
-            :error-messages="errors.first('password_confirmation')"
+            :error-messages="errors.first(' تاكيد كلمة السر')"
             label=" تاكيد كلمة السر"
             reverse
             v-validate="'required|confirmed:$password'"
-            name="password_confirmation"
+            name=" تاكيد كلمة السر"
             :prepend-inner-icon="visible ? 'mdi-eye' : 'mdi-eye-off'"
             :type="visible ? 'text' : 'password'"
             density="compact"
@@ -152,8 +152,12 @@
 </template>
 
 <script>
+import ar from "vee-validate/dist/locale/ar";
 import axios from "axios";
 export default {
+  mounted() {
+    this.$validator.localize("ar", ar);
+  },
   data() {
     return {
       imageUrl: "",

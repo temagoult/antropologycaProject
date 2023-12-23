@@ -37,6 +37,7 @@
     "@ocrv/vue-tailwind-pagination": "^0.0.4",
     "@tiptap/extension-color": "^2.1.12",
     "@tiptap/extension-text-style": "^2.1.12",
+    "@vee-validate/i18n": "^4.12.3",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",

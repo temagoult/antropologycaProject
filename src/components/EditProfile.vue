@@ -80,9 +80,9 @@
                 :counter="20"
                 v-model="userBeforeUpdate.name"
                 label=" الاسم و اللقب"
-                name="fullName"
+                name="الاسم و اللقب"
                 v-validate="'required|alpha_spaces'"
-                :error-messages="errors.first('fullName')"
+                :error-messages="errors.first(' الاسم و اللقب')"
                 reverse
               ></v-text-field>
 
@@ -91,9 +91,9 @@
                 reverse
                 label="الايميل"
                 v-model="userBeforeUpdate.email"
-                name="email"
+                name="الايميل"
                 v-validate="'required|email'"
-                :error-messages="errors.first('email')"
+                :error-messages="errors.first('الايميل')"
               ></v-text-field>
 
               <v-textarea
@@ -138,13 +138,12 @@
 
               <v-text-field
                 class="lg:!text-[25px] md:!text-[23px] sm:!text-[30px] !text-[18px] !px-2 i"
-                :error-messages="errors.first('passwordOld')"
-                label="
-             كلمة السر السابقة"
+                :error-messages="errors.first('كلمة السر السابقة')"
+                label="كلمة السر السابقة"
                 reverse
                 v-model="managePassword.currentPassword"
                 v-validate="'required'"
-                name="passwordOld"
+                name="كلمة السر السابقة"
                 :prepend-inner-icon="visible ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="visible ? 'text' : 'password'"
                 density="compact"
@@ -155,12 +154,11 @@
 
               <v-text-field
                 class="lg:!text-[25px] md:!text-[23px] sm:!text-[30px] !text-[18px] !px-2 i"
-                :error-messages="errors.first('password')"
-                label=" 
-           كلمة السر الجديدة"
+                :error-messages="errors.first(' كلمة السر الجديدة')"
+                label=" كلمة السر الجديدة"
                 reverse
                 v-validate="'required|'"
-                name="password"
+                name="كلمة السر الجديدة"
                 :prepend-inner-icon="visible ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="visible ? 'text' : 'password'"
                 density="compact"
@@ -172,12 +170,12 @@
               ></v-text-field>
 
               <v-text-field
-                :error-messages="errors.first('password_confirmation')"
+                :error-messages="errors.first(' تاكيد كلمة السر')"
                 class="lg:!text-[25px] md:!text-[23px] sm:!text-[30px] !text-[18px] !px-2 i"
                 label=" تاكيد كلمة السر"
                 reverse
                 v-validate="'required|confirmed:$password'"
-                name="password_confirmation"
+                name=" تاكيد كلمة السر"
                 :prepend-inner-icon="visible ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="visible ? 'text' : 'password'"
                 density="compact"

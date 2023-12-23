@@ -50,10 +50,10 @@
             <div class="md:flex">
               <v-text-field
                 label="   عنوان المقال"
-                name="title"
+                name="عنوان المقال"
                 focusColor="red"
                 v-validate="'required|alpha_spaces'"
-                :error-messages="errors.first('title')"
+                :error-messages="errors.first('عنوان المقال')"
                 persistent-placeholder
                 v-model="post.title"
                 persistent-hint
@@ -91,9 +91,9 @@
               label="ملخص المقال"
               reverse
               rows="4"
-              name="area"
+              name="ملخص المقال"
               v-validate="'required'"
-              :error-messages="errors.first('area')"
+              :error-messages="errors.first('ملخص المقال')"
               class="addPost"
               v-model="post.summary"
             ></v-textarea>

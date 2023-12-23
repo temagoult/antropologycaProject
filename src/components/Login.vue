@@ -34,9 +34,9 @@
               v-model="user.email"
               label="الايميل"
               reverse
-              name="email"
+              name="الايميل"
               v-validate="'required|email'"
-              :error-messages="errors.first('email')"
+              :error-messages="errors.first('الايميل')"
               autocomplete="on"
             ></v-text-field>
 
@@ -127,9 +127,16 @@
   </div>
 </template>
 <script>
+import ar from "vee-validate/dist/locale/ar";
+
+// Install and Activate the Arabic locale.
+
 import SignUp from "./SignUp.vue";
 import axios from "axios";
 export default {
+  mounted() {
+    this.$validator.localize("ar", ar);
+  },
   data() {
     return {
       loading: false,

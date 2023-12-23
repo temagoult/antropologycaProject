@@ -45,7 +45,9 @@
           >
             <slot v-if="!succes" />
             <template v-else>
-              <span>
+              <span
+                class="lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[8px]"
+              >
                 تم ارسال الايميل بنجاح يمكنك تفحص الايميل الخاص بك
                 <v-icon>mdi-check</v-icon>
               </span>

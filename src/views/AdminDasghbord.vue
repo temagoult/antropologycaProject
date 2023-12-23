@@ -1,34 +1,36 @@
 <template>
-  <div class="adminDasbord grid grid-cols-3 lg:min-h-[67vh] md:min-h-[46vh] min-h-[65vh]">
+  <div
+    class="adminDasbord grid grid-cols-3 lg:min-h-[67vh] md:min-h-[46vh] min-h-[65vh]"
+  >
     <div class="navDrawer">
-      <v-app-bar app dark flat clipped-right class="!bg-stone-100">
-        <v-app-bar-title class="!text-center !flex justify-center !w-[17%]">
-          <v-btn
-            depressed
-            rounded
-            text
-            class="lg:!text-[25px] md:!text-[23px] sm:!text-[22px] !text-[20px] !font-extrabold !text-black !p-2"
-          >انتروبولوجيكا</v-btn>
-        </v-app-bar-title>
-
+      <v-app-bar app dark flat class="!bg-stone-100">
         <v-spacer></v-spacer>
 
         <v-btn icon class="!text-black">
           <v-icon>mdi-magnify</v-icon>
-        </v-btn>
-        <v-btn icon class="!bg-transparent !text-black">
-          <v-icon>mdi-gmail</v-icon>
         </v-btn>
 
         <v-btn icon>
           <v-app class="!bg-transparent">
             <v-menu bottom :min-width="widht" offset-y>
               <template v-slot:activator="{ on }">
-                <v-btn class="!text-black font-semibold" icon plain stacked v-on="on" depressed>
+                <v-btn
+                  class="!text-black font-semibold"
+                  icon
+                  plain
+                  stacked
+                  v-on="on"
+                  depressed
+                >
                   <div class="flex flex-shrink-0">
                     <span
-                      :class="notifications.length>0?'font-bold text-red-500 text-[15px]':'font-bold text-black text-[15px]'"
-                    >{{ notifications.length }}</span>
+                      :class="
+                        notifications.length > 0
+                          ? 'font-bold text-red-500 text-[15px]'
+                          : 'font-bold text-black text-[15px]'
+                      "
+                      >{{ notifications.length }}</span
+                    >
 
                     <v-icon>mdi-bell-outline</v-icon>
                   </div>
@@ -37,9 +39,7 @@
               <v-card>
                 <v-list-item-content
                   class="justify-center"
-                  v-for="(e,index)
-                  in
-                  notifications"
+                  v-for="(e, index) in notifications"
                   :key="index"
                 >
                   <div class="mx-auto text-center">
@@ -49,10 +49,11 @@
                       text
                       class="lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
                     >
-                      {{e}}
+                      {{ e }}
                       <v-icon
                         class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
-                      >mdi-bell-outline</v-icon>
+                        >mdi-bell-outline</v-icon
+                      >
                     </v-btn>
                     <v-divider class="my-3"></v-divider>
                   </div>
@@ -69,14 +70,15 @@
                   <v-btn icon x-large v-on="on" clas>
                     <v-avatar color="#0d6efd" :size="size">
                       <v-img
-                        v-if="showAltImage==false"
+                        v-if="showAltImage == false"
                         src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"
                         v-on:error="onImgError"
                       ></v-img>
                       <span
                         v-else
                         class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                      >{{user.data.user.name.charAt(0)}}</span>
+                        >{{ user.data.user.name.charAt(0) }}</span
+                      >
                     </v-avatar>
                   </v-btn>
                 </template>
@@ -85,30 +87,38 @@
                     <div class="mx-auto text-center">
                       <v-avatar color="#0d6efd">
                         <v-img
-                          v-if="showAltImage==false"
+                          v-if="showAltImage == false"
                           src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"
                           v-on:error="onImgError"
                         ></v-img>
                         <span
                           v-else
                           class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                        >{{user.data.user.name.charAt(0)}}</span>
+                          >{{ user.data.user.name.charAt(0) }}</span
+                        >
                       </v-avatar>
                       <h3
                         class="lg:!text-[20px] md:!text-[25px] sm:!text-[20px] !text-[18px]"
-                      >{{ user.data.user.name}}</h3>
+                      >
+                        {{ user.data.user.name }}
+                      </h3>
 
                       <p
                         class="text-caption mt-1 lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                      >{{user.data.user.email}}</p>
+                      >
+                        {{ user.data.user.email }}
+                      </p>
                       <div class="flex justify-center items-center mb-[2px]">
                         <p
                           class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                        >{{user.data.user.bio}}</p>
+                        >
+                          {{ user.data.user.bio }}
+                        </p>
                       </div>
                       <span
                         class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px] !font-extrabold"
-                      >admin</span>
+                        >admin</span
+                      >
                     </div>
                   </v-list-item-content>
                 </v-card>
@@ -121,43 +131,69 @@
         app
         reverse
         right
-        isLtR
-        clipped
         class="!bg-stone-100 navigationDrawer reverse"
       >
         <v-list-item-content class="justify-center">
           <div class="mx-auto text-center">
+            <v-btn
+              depressed
+              text
+              plain
+              class="lg:!text-[25px] md:!text-[23px] sm:!text-[22px] !text-[20px] !font-extrabold !text-black !p-2"
+              >انتروبولوجيكا</v-btn
+            >
             <div>
               <h3
                 class="lg:!text-[20px] md:!text-[25px] sm:!text-[20px] !text-[18px]"
-              >{{ user.data.user.name}}</h3>
+              >
+                {{ user.data.user.name }}
+              </h3>
 
               <span
                 class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px] !font-extrabold"
-              >admin</span>
+                >admin</span
+              >
             </div>
 
             <v-divider class="my-3"></v-divider>
-
-            <div class="flex justify-center">
+            <v-btn class="!flex !justify-start p-2 !w-[100%]" depressed>
               <v-icon
                 class="lg:!text-[20px] md:!text-[18px] sm:!text-[20px] !text-[18px] !p-1"
-              >mdi-logout</v-icon>
-
+                >mdi-account-cog</v-icon
+              >
               <v-btn
                 depressed
                 rounded
                 text
                 class="lg:!text-[20px] md:!text-[18px] sm:!text-[20px] !text-[18px]"
-              >تسجيل الخروج</v-btn>
-            </div>
+              >
+                معلومات الحساب
+              </v-btn>
+            </v-btn>
+
+            <v-btn
+              class="p-2 !w-[100%] !flex !justify-start !text-black"
+              depressed
+            >
+              <v-icon
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[20px] !text-[18px] !p-1"
+                >mdi-logout</v-icon
+              >
+              <v-btn
+                depressed
+                rounded
+                text
+                class="lg:!text-[20px] md:!text-[18px] sm:!text-[20px] !text-[18px]"
+                >تسجيل الخروج
+              </v-btn>
+            </v-btn>
           </div>
         </v-list-item-content>
       </v-navigation-drawer>
     </div>
+    <div class="text-center">hello iam AdminDashbord</div>
   </div>
 </template>
-
 
 <script>
 export default {
@@ -170,13 +206,13 @@ export default {
           user: {
             name: "mohamed Temagoult",
             email: "a@gmail.com",
-            bio: "hello"
-          }
-        }
+            bio: "hello",
+          },
+        },
       },
       showAltImage: false,
       drawer: true,
-      rail: true
+      rail: true,
     };
   },
   computed: {
@@ -194,14 +230,14 @@ export default {
         case "xl":
           return 280;
       }
-    }
+    },
   },
 
   methods: {
     onImgError() {
       this.showAltImage = true;
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
