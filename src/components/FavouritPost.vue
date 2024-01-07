@@ -23,6 +23,12 @@
     </div>
     <div v-else class="article grid md:grid-cols-3 grid-cols-1 md:gap-4 gap-2">
       <div
+        v-if="myFaouritePosts.length == 0"
+        class="font-bold lg:text-[22px] md:text-[20px] sm:text-[16px] text-[14px]"
+      >
+        لا يوجد مقالات
+      </div>
+      <div
         class="cursor-pointer cardSousArticle border border-solid border-gray-300 flex md:flex-col md:p-3 p-2 justify-between gap-1 rounded-[25px]"
         v-for="(e, index) in myFaouritePosts"
         :key="index"
@@ -59,6 +65,7 @@
 </template>
 <script>
 import axios from "axios";
+import router from "@/router";
 export default {
   name: "favouritePost",
   mounted() {
@@ -74,6 +81,11 @@ export default {
     };
   },
   methods: {
+    getBlog(article) {
+      localStorage.setItem("postSelected", JSON.stringify(article));
+      this.$emit("postSelected", article);
+      router.push({ path: "/Post" });
+    },
     async getFavorite() {
       let $vm = this;
       axios

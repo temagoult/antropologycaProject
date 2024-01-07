@@ -30,7 +30,7 @@
               <span
                 v-else
                 class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                >{{ user.data.user.name.charAt(0) }}</span
+                >{{ user.data.user.name.charAt(0).toUpperCase() }}</span
               >
             </v-avatar>
             <h3
@@ -54,7 +54,7 @@
             </div>
             <span
               class="text-caption mt-1 md:w-[60%] w-[40%] !mx-auto lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px] !font-extrabold"
-              v-if="user.data.user.verified"
+              v-if="user.data.user.active"
               >الحساب :مفعل</span
             >
             <span
@@ -63,7 +63,8 @@
               >الحساب : غير مفعل</span
             >
             <v-divider class="my-3"></v-divider>
-            <v-btn
+            <v-
+              v-if="user.data.user.role == 'user'"
               depressed
               rounded
               text
@@ -74,8 +75,11 @@
                 class="lg:!text-[20px] md:!text-[18px] sm:!text-[16px] !text-[14px] !p-1"
                 >mdi-arrow-up-bold</v-icon
               >
-            </v-btn>
-            <v-divider class="my-3"></v-divider>
+            </v->
+            <v-divider
+              v-if="user.data.user.role == 'user'"
+              class="my-3"
+            ></v-divider>
 
             <v-btn
               to="/gestionArticles"
@@ -83,6 +87,7 @@
               rounded
               text
               class="lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
+              v-if="user.data.user.role == 'moderator'"
             >
               ادارة مقالاتي
               <v-icon
@@ -91,12 +96,16 @@
               >
             </v-btn>
 
-            <v-divider class="my-3"></v-divider>
+            <v-divider
+              v-if="user.data.user.role == 'moderator'"
+              class="my-3"
+            ></v-divider>
             <v-btn
               to="/favouritPost"
               depressed
               rounded
               text
+              v-if="user.data.user.role != 'admin'"
               class="lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
             >
               مقالاتي المفضلة
@@ -106,7 +115,10 @@
               >
             </v-btn>
 
-            <v-divider class="my-3"></v-divider>
+            <v-divider
+              v-if="user.data.user.role != 'admin'"
+              class="my-3"
+            ></v-divider>
 
             <v-btn
               to="/EditProfile"
@@ -114,6 +126,7 @@
               rounded
               text
               class="lg:!text-[18px] md:!text-[16px] sm:!text-[14px] !text-[12px]"
+              v-if="user.data.user.role != 'admin'"
             >
               معلومات الحساب
               <v-icon
@@ -122,7 +135,10 @@
               >
             </v-btn>
 
-            <v-divider class="my-3"></v-divider>
+            <v-divider
+              v-if="user.data.user.role != 'admin'"
+              class="my-3"
+            ></v-divider>
             <v-btn
               depressed
               rounded
@@ -148,7 +164,11 @@ import router from "../router";
 export default {
   mounted() {
     this.userAvatar = Object.assign({}, this.user);
-    this.getImage();
+    if (this.user.data.user.photo != null) {
+      this.getImage();
+    } else {
+      this.showAltImage = true;
+    }
   },
   data: () => ({
     userAvatar: {},
@@ -182,9 +202,11 @@ export default {
           console.log(this.imgUrl);
 
           console.log(new Blob([this.userAvatar.image], { type: "image/jpg" }));
+          this.showAltImage = false;
         })
         .catch((e) => {
           console.log(e.data);
+          this.showAltImage = true;
         });
     },
     logOut() {

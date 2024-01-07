@@ -1,68 +1,122 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="desserts"
-    :sort-by="[{ key: 'calories', order: 'asc' }]"
+  <div
+    class="lg:mb-[30px] md:mb-[25px] sm:mb-[15px] mb-[10px] lg:p-8 md:p-7 sm:p-5 p-4 myContainer"
   >
-    <template v-slot:top>
+    <v-data-table
+      :headers="headers"
+      :items="allUsers"
+      sort-by="posts"
+      class="elevation-1"
+      sort-desc
+    >
       <v-toolbar flat>
-        <v-toolbar-title>قائمة المستخدمين</v-toolbar-title>
-        <v-divider class="mx-4" inset vertical></v-divider>
+        <v-app>
+          <v-select
+            :items="items"
+            single-line
+            item-value="value"
+            item-text="text"
+          ></v-select>
+        </v-app>
+
         <v-spacer></v-spacer>
       </v-toolbar>
-    </template>
-    <template v-slot:[`item.actions`]="{ item }">
-      <v-icon size="small" class="me-2" @click="editItem(item)">
-        mdi-pencil
-      </v-icon>
-      <v-icon size="small" @click="deleteItem(item)"> mdi-delete </v-icon>
-    </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize"> Reset </v-btn>
-    </template>
-  </v-data-table>
+
+      <template v-slot:[`item.num`]="{ index }">
+        {{ index + 1 }}
+      </template>
+      <template v-slot:[`item.img`]="{ item }">
+        <v-img
+          :src="item.photo"
+          v-if="showAltImage == false"
+          :lazy-src="item.photo"
+          class="md:!w-[40px] w-[30px] h-[30px] md:!h-[40px] rounded-[50%]"
+        >
+        </v-img>
+        <span
+          v-else
+          class="p-2 white--text lg:text-[18px] md:text-[16px] sm:text-[14px] text-[8px] rounded-[50%] border border-solid border-gray-500 w-[20px] h-[20px]"
+          >{{ item.name.charAt(0) }}</span
+        >
+      </template>
+    </v-data-table>
+  </div>
 </template>
 <script>
+import moment from "moment";
+import axios from "axios";
 export default {
   data: () => ({
-    dialog: false,
-    dialogDelete: false,
-    headers: [
-      {
-        title: "Dessert (100g serving)",
-        align: "start",
-        sortable: false,
-        key: "name",
-      },
-      { title: "Calories", key: "calories" },
-      { title: "Fat (g)", key: "fat" },
-      { title: "Carbs (g)", key: "carbs" },
-      { title: "Protein (g)", key: "protein" },
-      { title: "Actions", key: "actions", sortable: false },
+    showAltImage: false,
+    select: "Florida",
+    items: [
+      { text: "Foo", value: "foo" },
+      { text: "bar", value: "bar" },
+      { text: "ss", value: "ss" },
+      { text: "aa", value: "aa" },
     ],
-    desserts: [],
-    editedIndex: -1,
-    editedItem: {
-      name: "",
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
-    },
-    defaultItem: {
-      name: "",
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
-    },
-  }),
+    counter: 0,
 
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+    headers: [
+      { text: "الرقم ", value: "num", class: "header", sortable: false },
+      { text: "photo ", value: "img", class: "header", sortable: false },
+      { text: "اسم المستخدم", value: "name", class: "header", sortable: false },
+      { text: "الايميل", value: "email", class: "header", sortable: false },
+      { text: "نوع الحساب", value: "role", class: "header", sortable: false },
+      {
+        text: "تاريخ انشاء الخساب",
+        value: "createdAt",
+        class: "header",
+        sortable: false,
+      },
+
+      {
+        text: "عدد المقالات المنشورة",
+        value: "posts.length",
+
+        class: "header",
+        sortable: false,
+      },
+    ],
+    allUsers: [],
+    imgUrl: null,
+    listImageUsers: [],
+  }),
+  methods: {
+    onImgError() {
+      this.showAltImage = true;
+    },
+    getImage() {
+      axios
+        .get(
+          "users/user-photo/" + this.user.data.user.photo,
+          { responseType: "arraybuffer" },
+
+          {
+            headers: {
+              Authorization: "Bearer " + this.user.token,
+            },
+          }
+        )
+        .then((res) => {
+          this.imgUrl = URL.createObjectURL(
+            new Blob([res.data], { tyoe: "image/jpg" })
+          );
+          console.log(this.imgUrl);
+
+          console.log(new Blob([this.userAvatar.image], { type: "image/jpg" }));
+        })
+        .catch((e) => {
+          console.log(e.data);
+        })
+        .finally(() => {});
+    },
+    getFormattedDate(date) {
+      return moment(date).format("YYYY-MM-DD");
     },
   },
+
+  computed: {},
 
   watch: {
     dialog(val) {
@@ -74,126 +128,60 @@ export default {
   },
 
   mounted() {
-    this.initialize();
+    axios
+      .get("users", {
+        headers: {
+          Authorization: "Bearer " + this.user.token,
+        },
+      })
+      .then((res) => {
+        this.allUsers = res.data.data.docs;
+        console.log(this.allUsers.length);
+        this.allUsers.map((e) => {
+          e.createdAt = this.getFormattedDate(e.createdAt);
+          if (e.photo != null) {
+            axios
+              .get(
+                "users/user-photo/" + e.photo,
+                { responseType: "arraybuffer" },
+
+                {
+                  headers: {
+                    Authorization: "Bearer " + this.user.token,
+                  },
+                }
+              )
+              .then((res) => {
+                e.photo = URL.createObjectURL(
+                  new Blob([res.data], { tyoe: "image/jpg" })
+                );
+                console.log(this.imgUrl);
+
+                console.log(
+                  new Blob([this.userAvatar.image], { type: "image/jpg" })
+                );
+              })
+              .catch((e) => {
+                console.log(e.data);
+              })
+              .finally(() => {});
+          }
+        });
+        console.log(this.allUsers);
+      })
+      .catch((e) => {
+        console.log(e.data);
+      })
+      .finally(() => {});
+    this.getImage();
   },
-
-  methods: {
-    initialize() {
-      this.desserts = [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-        },
-        {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-        },
-        {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-        },
-        {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-        },
-        {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-        },
-      ];
-    },
-
-    editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-    },
-
-    deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true;
-    },
-
-    deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
-      this.closeDelete();
-    },
-
-    close() {
-      this.dialog = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-
-    closeDelete() {
-      this.dialogDelete = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
-      } else {
-        this.desserts.push(this.editedItem);
-      }
-      this.close();
-    },
+  props: {
+    user: { type: Object },
   },
 };
 </script>
+<style>
+::v-deep .v-data-table-header {
+  font-size: 25px !important;
+}
+</style>

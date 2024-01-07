@@ -32,7 +32,7 @@
         observeParents
       >
         <Swiper-slide
-          v-for="(article, index) in posts"
+          v-for="(article, index) in posts.slice(0, 5)"
           :key="index"
           class="md:!w-[25%] sm:!w-[35%] !w-[100%]"
         >

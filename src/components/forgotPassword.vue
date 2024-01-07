@@ -51,7 +51,7 @@
                 تم ارسال الايميل بنجاح يمكنك تفحص الايميل الخاص بك
                 <v-icon>mdi-check</v-icon>
               </span>
-            </template>
+            </template> 
             <span v-if="!succes"> ارسال الايميل </span></v-btn
           >
         </v-form>

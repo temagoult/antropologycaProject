@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="overflow-hidden">
     <!-- <AdminDashbord :user="user" /> -->
     <navBar :isLogin="isLogin" @logOut="logOut" :user="user"></navBar>
     <router-view

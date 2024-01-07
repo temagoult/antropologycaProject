@@ -42,9 +42,9 @@
             v-model="newUser.name"
             :counter="20"
             label=" الاسم و اللقب"
-            name=" الاسم و اللقب"
+            name="الاسم و اللقب"
             v-validate="'required|alpha_spaces'"
-            :error-messages="errors.first(' الاسم و اللقب')"
+            :error-messages="errors.first('الاسم و اللقب')"
             reverse
           ></v-text-field>
 
@@ -207,10 +207,10 @@ export default {
       reader.readAsDataURL(file);
     },
     submit() {
-      this.loading = true;
       this.$validator.validateAll().then((result) => {
         this.errorMessages = "";
         if (result) {
+          this.loading = true;
           console.log(this.newUser);
           axios
             .post(

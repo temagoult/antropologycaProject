@@ -64,7 +64,7 @@
           </div>
 
           <div class="px-5 md:h p-2">
-            <v-form @submit.prevent="updatePersoData">
+            <v-form @submit.prevent="updatePersoData" name="form1">
               <v-text-field
                 class="lg:!text-[40px] md:!text-[35px] sm:!text-[30px] !text-[25px] infoPerso"
                 background-color="white"
@@ -79,10 +79,10 @@
                 class="lg:!text-[25px] md:!text-[23px] sm:!text-[30px] !text-[14px] !px-2 i"
                 :counter="20"
                 v-model="userBeforeUpdate.name"
-                label=" الاسم و اللقب"
+                label="الاسم و اللقب"
                 name="الاسم و اللقب"
                 v-validate="'required|alpha_spaces'"
-                :error-messages="errors.first(' الاسم و اللقب')"
+                :error-messages="errors.first('الاسم و اللقب')"
                 reverse
               ></v-text-field>
 
@@ -127,7 +127,7 @@
             </v-form>
           </div>
           <div class="px-5 md:h p-2">
-            <v-form @submit.prevent="updatePassword">
+            <v-form @submit.prevent="updatePassword" name="form2">
               <v-text-field
                 class="lg:!text-[23px] md:!text-[21px] sm:!text-[19px] !text-[17px] !text-white fieldReadOnly !cursor-pointer passChange"
                 value=" تغيير كلمة السر"
@@ -154,8 +154,8 @@
 
               <v-text-field
                 class="lg:!text-[25px] md:!text-[23px] sm:!text-[30px] !text-[18px] !px-2 i"
-                :error-messages="errors.first(' كلمة السر الجديدة')"
-                label=" كلمة السر الجديدة"
+                :error-messages="errors.first('كلمة السر الجديدة')"
+                label="كلمة السر الجديدة"
                 reverse
                 v-validate="'required|'"
                 name="كلمة السر الجديدة"
@@ -239,9 +239,14 @@
 <script>
 import axios from "axios";
 export default {
-  mounted() {
+  created() {
     this.userBeforeUpdate = Object.assign({}, this.user.data.user);
-    this.getImage();
+
+    if (this.userBeforeUpdate.photo != null) {
+      this.getImage();
+    } else {
+      this.showAltImage = true;
+    }
   },
   data() {
     return {
@@ -307,10 +312,10 @@ export default {
       this.yesForChange = !this.yesForChange;
     },
     updatePersoData() {
-      this.loadingPerso = true;
       console.log(this.user.token);
-      this.$validator.validateAll().then((result) => {
+      this.$validator.validateAll("form1").then((result) => {
         if (result) {
+          this.loadingPerso = true;
           axios
             .patch(
               "users/updateMe",
@@ -329,7 +334,9 @@ export default {
               if (res.status === 200) {
                 this.success = true;
                 this.loadingPerso = false;
+                Object.assign(res.data, { token: this.user.token });
                 localStorage.setItem("user", JSON.stringify(res.data));
+
                 console.log(res.data);
 
                 // console.log(res);
@@ -372,10 +379,10 @@ export default {
       reader.readAsDataURL(file);
     },
     updatePassword() {
-      this.loading = true;
       console.log(this.user.token);
-      this.$validator.validateAll().then((result) => {
+      this.$validator.validateAll("form2").then((result) => {
         if (result) {
+          this.loading = true;
           axios
             .patch(
               "users/updateMyPassword",
@@ -384,12 +391,10 @@ export default {
 
               {
                 headers: {
-                  "Content-Type": "application/json;",
                   Authorization: "Bearer " + this.user.token,
                 },
               }
             )
-
             .then((res) => {
               if (res.status === 200) {
                 this.loading = false;
@@ -408,6 +413,7 @@ export default {
               this.loading = false;
               setTimeout(() => {
                 this.passSucces = false;
+                this.$emit("forceUpdate");
               }, 3000);
             });
 

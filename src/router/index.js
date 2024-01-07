@@ -12,9 +12,15 @@ import me from "@/views/me";
 import allArticles from "../components/allArticles";
 import forgotPassword from "../components/forgotPassword";
 import getAllUserAdmin from "../components/getAllUserAdmin";
+import getAllComments from "../components/getAllComments";
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: "/getAllComments",
+    name: "getAllComments",
+    component: getAllComments,
+  },
   {
     path: "/getAllUserAdmin",
     name: "getAllUserAdmin",

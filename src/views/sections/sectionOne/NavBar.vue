@@ -3,6 +3,69 @@
     class="bg-stone-50 !navBar !lg:mb-[30px] !md:mb-[25px] !sm:mb-[15px] !mb-[10px] !lg:p-8 !md:p-7 !sm:p-5 !p-4"
   >
     <div class="myContainer flex justify-between shrink-0 grow-0">
+      <v-navigation-drawer
+        v-if="user.data.user.role == 'admin'"
+        expand-on-hover
+        rail
+        app
+        right
+        class="!bg-stone-50 py-4 px-2"
+      >
+        <v-list-item class="p-2 !text-black">
+          <v-list-item-avatar>
+            <v-img
+              crossorigin="anonymous"
+              v-if="showAltImage == false"
+              :src="imgUrl"
+              v-on:error="onImgError"
+            ></v-img>
+            <span
+              v-else
+              class="white--text text-white lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
+              >{{ user.data.user.name.charAt(0).toUpperCase() }}</span
+            >
+          </v-list-item-avatar>
+          <div>
+            <v-list-item-title class="!px-2 !text-black">{{
+              user.data.user.name
+            }}</v-list-item-title>
+            <v-list-item-subtitle class="!px-2 !text-black">{{
+              user.data.user.email
+            }}</v-list-item-subtitle>
+          </div>
+        </v-list-item>
+
+        <v-divider></v-divider>
+
+        <v-list dense class="!text-black">
+          <v-list-item
+            v-for="item in items"
+            :key="item.title"
+            link
+            class="!p-2 !text-black"
+          >
+            <v-btn
+              depressed
+              plain
+              active="false"
+              class="!p-0 !m-0"
+              :to="item.path"
+            >
+              <v-list-item-icon class="py-2">
+                <v-icon class="py-2"> {{ item.icon }}</v-icon>
+              </v-list-item-icon>
+
+              <v-list-item-content class="!p-2 !text-black">
+                <v-list-item-title
+                  class="lg:!text-[23px] md:!text-[21px] sm:!text-[19px] !text-[17px] p-2"
+                  >{{ item.title }}</v-list-item-title
+                >
+              </v-list-item-content>
+            </v-btn>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+
       <div class="md:hidden flex p-2 shrink-0 grow-0">
         <!-- <div>
           <div @click="onDisplayBar" class="flex items-start">
@@ -225,8 +288,8 @@
               ></v-img>
               <span
                 v-else
-                class="white--text lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
-                >{{ user.data.user.name.charAt(0) }}</span
+                class="white--text text-white lg:text-[30px] md:text-[25px] sm:text-[20px] text-[18px]"
+                >{{ user.data.user.name.charAt(0).toUpperCase() }}</span
               >
             </v-avatar>
             <h3
@@ -315,6 +378,7 @@
               rounded
               text
               class="lg:!text-[18px] md:!text-[16px] sm:!text-[20px] !text-[18px]"
+              v-if="user.data.user.role == 'user'"
             >
               تفعييل الحساب
               <v-icon
@@ -322,7 +386,10 @@
                 >mdi-arrow-up-bold</v-icon
               >
             </v-btn>
-            <v-divider class="my-3"></v-divider>
+            <v-divider
+              v-if="user.data.user.role == 'user'"
+              class="my-3"
+            ></v-divider>
 
             <v-btn
               to="/gestionArticles"
@@ -330,6 +397,7 @@
               rounded
               text
               class="lg:!text-[18px] md:!text-[16px] sm:!text-[20px] !text-[18px]"
+              v-if="user.data.user.role != 'user'"
             >
               ادارة مقالاتي
               <v-icon
@@ -338,7 +406,10 @@
               >
             </v-btn>
 
-            <v-divider class="my-3"></v-divider>
+            <v-divider
+              v-if="user.data.user.role != 'user'"
+              class="my-3"
+            ></v-divider>
             <v-btn
               depressed
               to="/favouritPost"
@@ -438,10 +509,49 @@ export default {
       .finally(function () {
         // always executed
       });
-    this.getImage();
+    if (
+      this.user.data.user.photo != null ||
+      this.user.data.user.photo == "default.jpg"
+    ) {
+      this.getImage();
+    } else {
+      this.showAltImage = true;
+    }
   },
   data() {
     return {
+      drawer: true,
+      items: [
+        {
+          title: " ادارة مقالاتي",
+          icon: "mdi-text-box-plus",
+          path: "/gestionArticles",
+        },
+        {
+          title: "مقالاتي المفضلة",
+          icon: "mdi-star",
+          path: "/favouritPost",
+        },
+        { title: "المشاركات", icon: "mdi-text-box", path: "/getAllUserAdmin" },
+        { title: "التعليقات", icon: "mdi-comment", path: "/getAllComments" },
+        {
+          title: "قائمة المستخدمين",
+          icon: "mdi-account-group",
+          path: "/getAllUserAdmin",
+        },
+        {
+          title: "الاحصائيات",
+          icon: "mdi-chart-bar",
+          path: "/getAllUserAdmin",
+        },
+        {
+          title: " معلومات الحساب",
+          icon: "mdi-account-cog",
+          path: "/EditProfile",
+        },
+        { title: "الاعدادات", icon: "mdi-cog", path: "/getAllUserAdmin" },
+      ],
+      mini: true,
       numwords: { type: Number, value: 10 },
       showLoginDialog: false,
       dialoglogin: false,
@@ -502,9 +612,11 @@ export default {
           console.log(this.imgUrl);
 
           console.log(new Blob([this.userAvatar.image], { type: "image/jpg" }));
+          this.showAltImage = false;
         })
         .catch((e) => {
           console.log(e.data);
+          this.showAltImage = true;
         });
     },
     inisilise() {

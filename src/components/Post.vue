@@ -13,12 +13,13 @@
       <h1 class="ttileBlog md:text-[32px] text-[25px] font-extrabold p-2">
         {{ post.title }}
       </h1>
+
       <div class="profileWriter flex gap-3 items-center p-2">
         <div>
           <v-img
             class="md:!w-[50px] w-[30px] h-[30px] md:!h-[50px] rounded-[50%]"
             v-if="showAltImage == false"
-            :src="'https://cdn.vuetifyjs.com/images/profiles/marcus.jpg'"
+            :src="imgUrl"
             v-on:error="onImgError"
           ></v-img>
 
@@ -287,8 +288,8 @@
               <v-img
                 class="md:!w-[50px] w-[30px] h-[30px] md:!h-[50px] rounded-[50%]"
                 v-if="showAltImage == false"
-                :src="'https://cdn.vuetifyjs.com/images/profiles/marcus.jpg'"
                 v-on:error="onImgError"
+                :src="photoUserComment"
               ></v-img>
 
               <span
@@ -337,6 +338,28 @@
               </v-btn>
             </div>
           </div>
+          <v-dialog v-model="dialogDelete" max-width="500px">
+            <v-card>
+              <v-card-title class="text-h5"
+                >هل متاكد من حذف تغليقك</v-card-title
+              >
+              <v-card-actions>
+                <v-spacer></v-spacer>
+
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  :loading="loadingDelete"
+                  @click="deleteItemConfirm(comment._id)"
+                  >نغم</v-btn
+                >
+                <v-btn color="blue darken-1" text @click="closeDelete"
+                  >لا</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
           <v-divider class="my-2"></v-divider>
         </div>
       </div>
@@ -355,20 +378,6 @@
         عرض القليل
       </div>
     </div>
-    <v-dialog v-model="dialogDelete" max-width="500px">
-      <v-card>
-        <v-card-title class="text-h5">هل متاكد من حذف تغليقك</v-card-title>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn color="blue darken-1" text @click="deleteItemConfirm(comment)"
-            >نغم</v-btn
-          >
-          <v-btn color="blue darken-1" text @click="closeDelete">لا</v-btn>
-          <v-spacer></v-spacer>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
   <div
     class="div text-center lg:mb-[30px] md:mb-[25px] sm:mb-[15px] mb-[10px] lg:p-8 md:p-7 sm:p-5 p-4 lg:min-h-[67vh] md:min-h-[46vh] min-h-[65vh]"
@@ -390,9 +399,11 @@ export default {
   data() {
     return {
       componentKey: 0,
+      commentObject: null,
       dialogDelete: false,
       favouritePosts: null,
       isLiked: null,
+      loadingDelete: false,
       loadingPage: null,
       newArticles: [
         {
@@ -430,7 +441,9 @@ export default {
 
         user: "",
       },
-      post: {},
+      post: { comments: [{}, {}] },
+      imgUrl: null,
+      photoUserComment: null,
       userR: { token: "" },
 
       canComment: false,
@@ -450,27 +463,6 @@ export default {
     },
   },
   methods: {
-    deleteItemConfirm(comment) {
-      axios
-        .delete(
-          "https://anthropologyca.onrender.com/api/v1/comments/" + comment._id,
-
-          {
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-              Authorization: "Bearer " + this.user.token,
-            },
-          }
-        )
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((e) => {
-          console.log(e);
-        })
-        .finally(() => {});
-      this.dialogDelete = false;
-    },
     reRender() {
       this.componentKey += 1;
       this.$forceUpdate();
@@ -485,13 +477,119 @@ export default {
     getFormattedDate(date) {
       return moment(date).format("YYYY-MM-DD");
     },
+    deleteItemConfirm(id) {
+      this.loadingDelete = true;
+      axios
+        .delete("comments/" + id, {
+          headers: {
+            Authorization: "Bearer " + this.user.token,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          this.loadingDelete = false;
+        })
+        .catch((error) => {
+          console.log(error);
+          this.loadingDelete = false;
+        })
+        .finally(() => {
+          this.loadingDelete = false;
+          this.dialogDelete = false;
+          this.$emit("forceUpdate");
+        });
+    },
     onImgError() {
       this.showAltImage = true;
+    },
+    getImageUserPhoto(comment) {
+      axios
+        .get(
+          "users/user-photo/" + comment.user.photo,
+          { responseType: "arraybuffer" },
+
+          {
+            headers: {
+              Authorization: "Bearer " + this.user.token,
+            },
+          }
+        )
+        .then((res) => {
+          this.photoUserComment = URL.createObjectURL(
+            new Blob([res.data], { tyoe: "image/jpg" })
+          );
+          console.log("here" + this.photoUserComment);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+
+    getImage() {
+      axios
+        .get(
+          "users/user-photo/" + this.post.author.photo,
+          { responseType: "arraybuffer" },
+
+          {
+            headers: {
+              Authorization: "Bearer " + this.user.token,
+            },
+          }
+        )
+        .then((res) => {
+          this.imgUrl = URL.createObjectURL(
+            new Blob([res.data], { tyoe: "image/jpg" })
+          );
+          console.log(this.imgUrl);
+        })
+        .catch((e) => {
+          console.log(e.data);
+        });
     },
     getAllComments() {},
     async addComment() {
       this.loading = true;
+      // if (this.comment != null) {
+      //   axios
+      //     .patch(
+      //       "https://anthropologyca.onrender.com/api/v1/comments/" +
+      //         this.commentObject._id,
+      //       {
+      //         comment: this.commentObject,
+      //       },
 
+      //       {
+      //         headers: {
+      //           "Content-Type": "application/json; charset=utf-8",
+      //           Authorization: "Bearer " + this.user.token,
+      //         },
+      //       }
+      //     )
+      //     .then((res) => {
+      //       console.log(res.data);
+      //       console.log(this.post);
+      //       this.loading = false;
+      //       this.success = true;
+      //     })
+      //     .catch((e) => {
+      //       console.log(e);
+      //     })
+      //     .finally(() => {
+      //       this.comment = null;
+      //       console.log("cest fait");
+      //       this.loading = false;
+      //       setTimeout(() => {
+      //         this.success = false;
+      //         this.loadingPage = true;
+
+      //         this.loadingPage = false;
+      //         this.$emit("forceUpdate");
+      //         const element = document.getElementById("comments");
+      //         element.scrollIntoView({ behavior: "smooth" });
+      //       }, 3000);
+      //     });
+      // } else {
       await axios
         .post(
           "https://anthropologyca.onrender.com/api/v1/posts/" +
@@ -527,9 +625,11 @@ export default {
           setTimeout(() => {
             this.success = false;
             this.loadingPage = true;
-        
+
             this.loadingPage = false;
             this.$emit("forceUpdate");
+            const element = document.getElementById("comments");
+            element.scrollIntoView({ behavior: "smooth" });
           }, 3000);
         });
     },
@@ -538,31 +638,8 @@ export default {
       element.scrollIntoView({ behavior: "smooth" });
       element.focus();
       this.comment = comment.comment;
+      this.commentObject = comment;
       console.log(comment);
-      axios
-        .patch(
-          "https://anthropologyca.onrender.com/api/v1/comments/" + comment._id,
-          {
-            comment: comment,
-          },
-
-          {
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-              Authorization: "Bearer " + this.user.token,
-            },
-          }
-        )
-        .then((res) => {
-          console.log(res.data);
-          console.log(this.post);
-        })
-        .catch((e) => {
-          console.log(e);
-        })
-        .finally(() => {
-          this.$emit("forceUpdate");
-        });
     },
     handleShowMoreComment() {
       this.showLess = false;
@@ -580,6 +657,7 @@ export default {
       const element = document.getElementById("commentField");
       element.focus();
     },
+
     like() {
       this.isLiked = true;
       axios
@@ -701,6 +779,7 @@ export default {
         console.log(error.response);
       })
       .finally(() => {});
+    this.getImage();
   },
 
   props: {
